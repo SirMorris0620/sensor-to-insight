@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>From Sensor to Insight</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script src="https://cdn.jsdelivr.net/npm/motion@13/dist/motion.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#14213D; --navy:#1F3A5F; --teal:#2A9D8F; --signal:#E76F51; --amber:#E9C46A;
+  --bg:#F6F8FA; --surface:#FFFFFF; --line:#D7DEE6; --muted:#5B6B7F; --dot:#C9D3DE;
+  --ok:#2A9D8F; --bad:#C2410C; --fs:1.0625rem;
+  font-family:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+:root[data-theme="dark"]{
+  --ink:#E6EDF5; --navy:#9CC3E8; --bg:#0F1B2D; --surface:#16263D; --line:#2A3D57; --muted:#9FB0C4; --dot:#2A3D57;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){--ink:#E6EDF5; --navy:#9CC3E8; --bg:#0F1B2D; --surface:#16263D; --line:#2A3D57; --muted:#9FB0C4; --dot:#2A3D57;}
+}
+*{box-sizing:border-box}
+html{height:100%}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-size:var(--fs);line-height:1.6;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+a{color:var(--teal)}
+button,input,select{font:inherit}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+code,pre,.mono{font-family:"JetBrains Mono",ui-monospace,Consolas,monospace;font-size:.88em}
+h1,h2,h3{line-height:1.25;color:var(--ink)}
+h1{font-size:2rem;margin:.2em 0 .4em}
+h2{font-size:1.4rem;margin:1.8em 0 .5em}
+h3{font-size:1.12rem;margin:1.4em 0 .4em}
+p,li{max-width:72ch}
+
+/* layout */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;display:flex;align-items:center;gap:12px;
+  padding:10px 18px;background:var(--surface);border-bottom:1px solid var(--line)}
+.brand{font-weight:700;font-size:1.05rem;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:10px}
+.brand svg{flex:none}
+.topbar .spacer{flex:1}
+.who{color:var(--muted);font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:30vw}
+.shell{display:grid;grid-template-columns:290px 1fr;min-height:calc(100vh - 58px)}
+#map{border-right:1px solid var(--line);background:var(--surface);padding:16px 14px;overflow:auto}
+#view{padding:28px clamp(16px,4vw,56px) 80px;min-width:0}
+.btn.menu-btn{display:none}
+.shell.noside{grid-template-columns:1fr}
+@media (max-width:860px){
+  .shell{grid-template-columns:1fr}
+  #map{position:fixed;inset:58px 0 0 0;z-index:15;transform:translateX(-100%);transition:transform .2s}
+  #map.open{transform:none}
+  .btn.menu-btn{display:inline-flex}
+  body.guest .btn.menu-btn{display:none}
+  .who{display:none}
+}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);
+  padding:8px 14px;border-radius:8px;cursor:pointer}
+.btn:hover{border-color:var(--teal)}
+.btn.primary{background:var(--navy);border-color:var(--navy);color:#fff}
+:root[data-theme="dark"] .btn.primary{color:#0F1B2D}
+.btn.small{padding:5px 10px;font-size:.9rem}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+
+/* course map */
+.unit{margin-bottom:14px}
+.unit-title{font-weight:700;font-size:.95rem;margin:10px 4px 6px;color:var(--ink)}
+.unit-sub{font-size:.82rem;color:var(--muted);margin:-4px 4px 6px}
+.mod-link{display:flex;align-items:center;gap:10px;padding:8px 8px;border-radius:8px;color:var(--ink);text-decoration:none;font-size:.95rem}
+.mod-link:hover{background:var(--bg)}
+.mod-link.active{background:var(--bg);box-shadow:inset 3px 0 0 var(--teal)}
+.mod-link.locked{color:var(--muted);pointer-events:none}
+.ring{flex:none}
+.map-foot{border-top:1px solid var(--line);margin-top:14px;padding-top:12px;display:flex;flex-direction:column;gap:6px}
+
+/* hero / welcome */
+.welcome{display:grid;grid-template-columns:1.1fr 1fr;gap:36px;align-items:start;max-width:1150px}
+@media (max-width:980px){.welcome{grid-template-columns:1fr}}
+.welcome>*{min-width:0}
+.scope{background:#0F1B2D;border-radius:14px;padding:18px 18px 12px;color:#CFE3F7;position:relative;overflow:hidden}
+.scope canvas{width:100%;height:220px;display:block;touch-action:none;cursor:crosshair}
+.scope .readout{display:flex;justify-content:space-between;font-family:"JetBrains Mono",monospace;font-size:.85rem;color:#8FB3D6;margin-top:6px}
+.scope .hint{font-size:.9rem;color:#9FB0C4;margin:8px 0 0}
+.hero-title{font-size:clamp(2.2rem,5vw,3.4rem);line-height:1.05;margin:18px 0 10px;letter-spacing:-.01em}
+.hero-lede{font-size:1.15rem;color:var(--muted);max-width:52ch}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px}
+.field{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.field label{font-weight:700;font-size:.95rem}
+.field input,.field select{padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.row2>*{min-width:0}
+.field input,.field select{width:100%;min-width:0}
+@media (max-width:420px){.row2{grid-template-columns:1fr}}
+.consent{font-size:.9rem;color:var(--muted);display:flex;gap:10px;align-items:flex-start;margin:6px 0 16px}
+.consent input{margin-top:5px}
+.err{color:var(--bad);font-size:.92rem;min-height:1.2em}
+
+/* module */
+.crumb{color:var(--muted);font-size:.9rem}
+.meta{display:flex;flex-wrap:wrap;gap:8px 18px;color:var(--muted);font-size:.92rem;margin-bottom:10px}
+.objectives{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 20px;margin:14px 0}
+.objectives li{margin:4px 0}
+.section{border-top:1px solid var(--line);padding-top:6px;margin-top:26px}
+.sec-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sec-head h2{margin:.9em 0 .4em;flex:1;min-width:60%}
+.sec-actions{display:flex;gap:8px}
+.done-mark{color:var(--ok);font-weight:700;font-size:.92rem}
+.note{border-left:4px solid var(--teal);background:var(--surface);padding:10px 16px;border-radius:0 8px 8px 0;margin:14px 0}
+.note.warm{border-color:var(--signal)}
+.formula{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:10px 16px;margin:12px 0;font-weight:700}
+table.t{border-collapse:collapse;width:100%;margin:12px 0;font-size:.95rem;display:block;overflow-x:auto}
+table.t th,table.t td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+table.t th{background:var(--navy);color:#fff}
+:root[data-theme="dark"] table.t th{color:#0F1B2D}
+pre.code{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--muted);border-radius:6px;padding:12px 14px;overflow-x:auto;line-height:1.45}
+
+/* bench = interactive panel with breadboard dot grid */
+.bench{margin:18px 0;border:1px solid var(--line);border-radius:12px;padding:16px;
+  background-color:var(--surface);background-image:radial-gradient(var(--dot) 1.2px,transparent 1.3px);background-size:18px 18px}
+.bench-title{font-weight:700;margin:0 0 8px;display:flex;align-items:center;gap:8px}
+.bench-title svg{flex:none}
+.bench .panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+.bench svg{max-width:100%;height:auto}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:10px 0}
+.controls label{font-size:.95rem}
+input[type=range]{accent-color:var(--teal);flex:1 1 160px;max-width:320px;min-width:0}
+.controls select{max-width:100%}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;cursor:pointer;color:var(--ink)}
+.chip.sel{border-color:var(--teal);box-shadow:0 0 0 2px var(--teal) inset}
+.chip.ok{border-color:var(--ok);color:var(--ok)}
+.chip.no{border-color:var(--bad);color:var(--bad)}
+.feedback{min-height:1.4em;font-weight:700;margin-top:8px}
+.feedback.ok{color:var(--ok)} .feedback.no{color:var(--bad)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:.95rem}
+.kv b{font-family:"JetBrains Mono",monospace}
+.tracer{display:grid;grid-template-columns:1.4fr 1fr;gap:14px}
+@media (max-width:760px){.tracer{grid-template-columns:1fr}}
+.tracer .lines div{font-family:"JetBrains Mono",monospace;font-size:.82rem;padding:1px 8px;border-radius:4px;white-space:pre}
+.tracer .lines div.hl{background:var(--amber);color:#14213D}
+.led{width:28px;height:28px;border-radius:50%;background:#55606E;display:inline-block;vertical-align:middle;transition:background .1s}
+.led.on{background:var(--amber);box-shadow:0 0 14px var(--amber)}
+.serial{font-family:"JetBrains Mono",monospace;font-size:.82rem;background:#0F1B2D;color:#BFE3D9;border-radius:6px;padding:8px;height:120px;overflow:auto}
+.meter{height:14px;border-radius:7px;background:var(--line);overflow:hidden}
+.meter i{display:block;height:100%;background:var(--teal);width:0}
+
+/* quiz, rating, upload */
+.q{margin:14px 0 18px}
+.q .opts{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.opt{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 12px;cursor:pointer;color:var(--ink)}
+.opt.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,var(--surface))}
+.opt.no{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 10%,var(--surface))}
+.explain{font-size:.95rem;color:var(--muted);margin-top:6px}
+.rating{display:flex;flex-direction:column;gap:8px}
+.rating label{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:8px;padding:10px 12px;cursor:pointer;background:var(--surface)}
+.drop{border:2px dashed var(--line);border-radius:12px;padding:20px;text-align:center;background:var(--surface)}
+.drop.over{border-color:var(--teal)}
+.drop input[type=file]{max-width:100%}
+.uplist{font-size:.92rem;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--navy);color:#fff;
+  padding:10px 18px;border-radius:8px;z-index:50;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:1}
+.progress-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:16px 0}
+.stat{font-size:2rem;font-weight:700;color:var(--navy)}
+dialog{border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);max-width:420px;width:92vw}
+dialog::backdrop{background:rgba(15,27,45,.5)}
+.banner{background:var(--amber);color:#14213D;padding:8px 18px;font-size:.92rem}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+:root[data-motion="reduce"] *{transition:none!important;animation:none!important}
+/* ===== v2: motion & component layer ===== */
+.scrollbar{position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--teal),var(--amber),var(--signal));transform-origin:0 50%;transform:scaleX(0);z-index:60}
+.topbar{backdrop-filter:saturate(1.4) blur(10px);background:color-mix(in srgb,var(--surface) 82%,transparent)}
+.kbd{font-family:"JetBrains Mono",monospace;font-size:.75rem;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 6px;color:var(--muted)}
+.search-btn{color:var(--muted);min-width:200px;justify-content:space-between}
+@media (max-width:860px){.search-btn{min-width:0}.search-btn .lbl,.search-btn .kbd{display:none}}
+@media (max-width:520px){.brand{font-size:.95rem;gap:6px}.brand svg{width:26px}.topbar{gap:8px;padding:10px 12px}body:not(.guest) .brand span{display:none}}
+
+/* hero band */
+.hero{position:relative;margin:-28px calc(-1*clamp(16px,4vw,56px)) 0;padding:56px clamp(16px,4vw,56px) 64px;
+  background:#0E1A2B;color:#E6EDF5;overflow:hidden;isolation:isolate}
+.hero::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(156,195,232,.22) 1.2px,transparent 1.3px);background-size:22px 22px;z-index:-2;
+  mask-image:radial-gradient(ellipse 80% 70% at 60% 40%,#000 40%,transparent 100%)}
+.hero-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:44px;align-items:center;max-width:1240px;margin:0 auto}
+@media (max-width:980px){.hero-grid{grid-template-columns:1fr}}
+.hero-grid>*{min-width:0}
+.beams{position:absolute;inset:0;z-index:-1;width:100%;height:100%;pointer-events:none}
+.beams path{fill:none;stroke:rgba(156,195,232,.16);stroke-width:1.5}
+.beams .pulse{stroke:url(#beamGrad);stroke-width:2.5;stroke-dasharray:60 900;animation:beam 5.5s linear infinite}
+.beams .pulse:nth-of-type(2n){animation-duration:7s;animation-delay:-2s}
+.beams .pulse:nth-of-type(3n){animation-duration:6.2s;animation-delay:-4s}
+@keyframes beam{from{stroke-dashoffset:960}to{stroke-dashoffset:0}}
+.hero h1{color:#fff;font-size:clamp(2.6rem,6vw,4.6rem);line-height:1.02;letter-spacing:-.02em;margin:0 0 18px}
+.hero h1 .w{display:inline-block;will-change:transform}
+.hero .lede{color:#B9CADD;font-size:1.18rem;max-width:50ch;margin:0 0 26px}
+.tickers{display:flex;flex-wrap:wrap;gap:12px 30px;margin:0 0 30px}
+.ticker b{display:block;font-size:2.1rem;line-height:1;color:var(--amber);font-variant-numeric:tabular-nums}
+.ticker span{color:#9FB0C4;font-size:.92rem}
+.board-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.board-chip{border:1px solid rgba(156,195,232,.3);color:#CFE3F7;border-radius:999px;padding:5px 12px;font-size:.88rem;background:rgba(255,255,255,.03)}
+.hero .scope{background:#08121F;border:1px solid rgba(156,195,232,.18);box-shadow:0 30px 80px -30px rgba(42,157,143,.45)}
+
+/* shimmer button */
+.shimmer{position:relative;isolation:isolate;overflow:hidden;border:0!important;background:var(--teal)!important;color:#08121F!important;font-weight:700;
+  padding:12px 22px!important;border-radius:999px!important}
+.shimmer::before{content:"";position:absolute;inset:-2px;z-index:-1;background:conic-gradient(from var(--a,0deg),transparent 0 70%,rgba(255,255,255,.85) 80%,transparent 90%);animation:spin 3s linear infinite}
+.shimmer::after{content:"";position:absolute;inset:2px;border-radius:999px;background:var(--teal);z-index:-1}
+@property --a{syntax:"<angle>";initial-value:0deg;inherits:false}
+@keyframes spin{to{--a:360deg}}
+
+/* registration section */
+.reg-wrap{max-width:1240px;margin:36px auto 0;display:grid;grid-template-columns:1fr 1.1fr;gap:36px;align-items:start}
+@media (max-width:980px){.reg-wrap{grid-template-columns:1fr}}
+.reg-wrap>*{min-width:0}
+.how{display:flex;flex-direction:column;gap:14px}
+.how-step{display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:start}
+.how-step i{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:var(--surface);border:1px solid var(--line);font-style:normal;font-weight:700;color:var(--teal)}
+
+/* spotlight + tilt cards (bento) */
+.bento{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin:18px 0 8px}
+.bento .span2{grid-column:span 2}.bento .span3{grid-column:span 3}.bento .span4{grid-column:span 4}.bento .span6{grid-column:span 6}
+@media (max-width:900px){.bento{grid-template-columns:repeat(2,1fr)}.bento>*{grid-column:span 2!important}}
+.spot{position:relative;overflow:hidden;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;transform-style:preserve-3d;will-change:transform}
+.spot::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .25s;
+  background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),color-mix(in srgb,var(--teal) 16%,transparent),transparent 45%)}
+.spot:hover::before{opacity:1}
+.spot .big{font-size:2.4rem;font-weight:700;line-height:1.05;color:var(--navy);font-variant-numeric:tabular-nums}
+.spot .lbl{color:var(--muted)}
+a.spot{display:block;color:inherit;text-decoration:none}
+.mod-card h3{margin:.3em 0 .2em}
+.mod-card .bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:12px}
+.mod-card .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--teal),var(--amber))}
+.mod-card .num{font-family:"JetBrains Mono",monospace;color:var(--muted);font-size:.85rem}
+.continue{background:var(--navy);color:#fff;border-color:var(--navy)}
+.continue .lbl,.continue h3{color:#fff}
+:root[data-theme="dark"] .continue{background:#1D3A5C}
+
+/* course map active pill */
+@media (min-width:861px){#map{position:sticky;top:58px;height:calc(100vh - 58px);align-self:start}}
+.pill{position:absolute;left:14px;right:14px;height:0;border-radius:8px;background:var(--bg);box-shadow:inset 3px 0 0 var(--teal);z-index:0;pointer-events:none}
+.mod-link{position:relative;z-index:1}
+.mod-link.active{background:transparent;box-shadow:none}
+
+/* module layout with toc */
+.mod-layout{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:40px}
+.mod-layout>*{min-width:0}
+.tracer>*{min-width:0}
+.tracer .lines{overflow-x:auto}
+@media (max-width:1240px){.mod-layout{grid-template-columns:1fr}.toc{display:none}}
+.toc{position:sticky;top:84px;align-self:start;font-size:.9rem;border-left:1px solid var(--line);padding-left:14px}
+.toc b{display:block;margin-bottom:6px}
+.toc a{display:block;color:var(--muted);text-decoration:none;padding:4px 0;transition:color .2s}
+.toc a.on{color:var(--teal);font-weight:700}
+.mod-hero{position:relative;padding:22px 24px;border-radius:16px;background:var(--surface);border:1px solid var(--line);overflow:hidden;margin-bottom:8px}
+.mod-hero h1{margin:.1em 0 .2em}
+.mod-hero .ring-big{position:absolute;right:20px;top:20px}
+@media (max-width:600px){.mod-hero .ring-big{display:none}}
+.section{will-change:transform}
+.done-btn.done{background:color-mix(in srgb,var(--ok) 14%,var(--surface));border-color:var(--ok);color:var(--ok);font-weight:700}
+
+/* quiz feedback motion hooks */
+.opt{transition:border-color .2s,background .2s}
+
+/* rating cards */
+.rating label{transition:border-color .2s,transform .2s}
+.rating label:has(input:checked){border-color:var(--teal);box-shadow:0 0 0 2px var(--teal) inset}
+
+/* upload */
+.drop{position:relative;overflow:hidden}
+.drop .prog{position:absolute;left:0;bottom:0;height:4px;width:100%;background:linear-gradient(90deg,transparent,var(--teal),transparent);background-size:50% 100%;background-repeat:no-repeat;opacity:0}
+.drop.busy .prog{opacity:1;animation:slide 1.1s linear infinite}
+@keyframes slide{from{background-position:-50% 0}to{background-position:150% 0}}
+
+/* toast stack */
+#toasts{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column-reverse;gap:8px;z-index:70;max-width:min(380px,calc(100vw - 36px))}
+.t-item{background:var(--navy);color:#fff;padding:12px 16px;border-radius:10px;box-shadow:0 12px 30px -12px rgba(0,0,0,.45);display:flex;gap:10px;align-items:center}
+:root[data-theme="dark"] .t-item{background:#24476E}
+.t-item.ok::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--amber);flex:none}
+.t-item.warn{background:var(--signal)}
+
+/* command palette */
+#palette{padding:0;max-width:560px;top:12vh;margin:0 auto;position:fixed}
+#palette input{width:100%;border:0;border-bottom:1px solid var(--line);padding:16px 18px;font-size:1.05rem;background:transparent;color:var(--ink);outline:none}
+#palList{max-height:50vh;overflow:auto;padding:6px}
+#palList a{display:flex;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:8px;color:var(--ink);text-decoration:none}
+#palList a.sel{background:var(--bg);box-shadow:inset 3px 0 0 var(--teal)}
+#palList small{color:var(--muted)}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:80}
+/* ===== v3: sign-up, devices, AI assistant ===== */
+[hidden]{display:none!important}
+.seg{display:flex;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:4px;gap:4px;margin-bottom:16px}
+.seg button,.seg label{flex:1;text-align:center;border:0;background:transparent;color:var(--muted);padding:9px 10px;border-radius:7px;cursor:pointer;font-weight:700}
+.seg button[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.seg-sm{margin:4px 0 0}
+.seg label{position:relative}.seg label input{position:absolute;opacity:0;pointer-events:none}
+.seg label:has(input:checked){background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.seg label:has(input:focus-visible){outline:3px solid var(--amber)}
+fieldset.field{border:0;padding:0;margin:0 0 12px}
+fieldset legend{font-weight:700;font-size:.95rem;padding:0;margin-bottom:6px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chk{display:inline-flex}.chk input{position:absolute;opacity:0;pointer-events:none}
+.chk span{border:1px solid var(--line);border-radius:999px;padding:6px 12px;cursor:pointer;background:var(--surface);font-size:.92rem;user-select:none}
+.chk input:checked+span{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 14%,var(--surface));color:var(--ink);font-weight:700}
+.chk input:focus-visible+span{outline:3px solid var(--amber)}
+.privacy{max-height:210px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:4px 14px;background:var(--bg);font-size:.88rem;margin:6px 0 10px}
+.privacy h3{font-size:1rem;margin:.6em 0 .4em}.privacy p{margin:.45em 0}
+.btn.big{width:100%;justify-content:center;padding:12px 16px;font-size:1.02rem}
+
+/* AI assistant */
+.ai-fab{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:65;display:flex;align-items:center;gap:8px;border:0;border-radius:999px;
+  padding:12px 18px;background:var(--navy);color:#fff;font-weight:700;box-shadow:0 14px 30px -10px rgba(31,58,95,.6);cursor:pointer}
+:root[data-theme="dark"] .ai-fab{background:#2A9D8F;color:#08121F}
+.ai{position:fixed;z-index:68;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);box-shadow:0 30px 70px -20px rgba(0,0,0,.45)}
+.ai[hidden]{display:none}
+.ai-head{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.ai-head b{flex:1}
+.ai-note{font-size:.8rem;color:var(--muted);padding:6px 14px;border-bottom:1px solid var(--line);margin:0}
+#aiMsgs{flex:1;overflow:auto;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:92%;padding:10px 12px;border-radius:12px;font-size:.95rem;line-height:1.5;overflow-wrap:anywhere}
+.msg p{margin:.3em 0}.msg ul,.msg ol{margin:.3em 0;padding-left:1.2em}.msg pre.code{font-size:.8rem;margin:.4em 0;max-width:100%}
+.msg.user{align-self:flex-end;background:var(--navy);color:#fff;border-bottom-right-radius:4px}
+:root[data-theme="dark"] .msg.user{background:#24476E}
+.msg.bot{align-self:flex-start;background:var(--bg);border:1px solid var(--line);border-bottom-left-radius:4px}
+.msg.sys{align-self:center;background:color-mix(in srgb,var(--amber) 22%,var(--surface));color:var(--ink);font-size:.9rem;text-align:center}
+.msg-tools{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px;font-size:.8rem;color:var(--muted)}
+.linkbtn{border:0;background:none;color:var(--muted);text-decoration:underline;cursor:pointer;padding:0;font-size:.8rem}
+.chip.small{padding:3px 9px;font-size:.78rem}
+.dots{display:inline-flex;gap:4px}.dots i{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:bob 1s infinite}
+.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+@keyframes bob{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
+#aiChips{display:flex;gap:6px;overflow-x:auto;padding:8px 14px 0;scrollbar-width:none}
+#aiChips .chip{white-space:nowrap;font-size:.85rem}
+#aiForm{display:flex;gap:8px;padding:10px 14px calc(12px + env(safe-area-inset-bottom,0px))}
+#aiInput{flex:1;resize:none;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--bg);color:var(--ink);font:inherit;min-height:44px;max-height:120px}
+
+/* laptop: floating panel */
+.ai{right:20px;bottom:calc(84px + env(safe-area-inset-bottom,0px));width:400px;height:min(620px,calc(100vh - 140px));border-radius:16px}
+/* desktop: docked side panel */
+:root[data-device="desktop"] .ai{top:58px;right:0;bottom:0;height:auto;width:400px;border-radius:0;border-width:0 0 0 1px;box-shadow:none}
+body.ai-docked .shell{margin-right:400px}
+body.ai-docked .ai-fab{display:none}
+/* tablet: side sheet, larger touch targets */
+:root[data-device="tablet"] .ai{top:58px;right:0;bottom:0;height:auto;width:min(440px,92vw);border-radius:0}
+:root[data-device="tablet"] .btn,:root[data-device="phone"] .btn{min-height:44px}
+:root[data-device="tablet"] .opt,:root[data-device="phone"] .opt{padding:12px 14px}
+:root[data-device="tablet"] .mod-link,:root[data-device="phone"] .mod-link{padding:11px 8px}
+/* phone: bottom navigation and full-screen assistant */
+.bottom-nav{display:none}
+:root[data-device="phone"] .bottom-nav:not([hidden]){display:flex;position:fixed;left:0;right:0;bottom:0;z-index:66;background:color-mix(in srgb,var(--surface) 94%,transparent);backdrop-filter:blur(10px);
+  border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px))}
+:root[data-device="phone"] .bottom-nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:none;color:var(--muted);font-size:.72rem;padding:6px 0;min-height:48px;cursor:pointer}
+:root[data-device="phone"] .bottom-nav button svg{width:22px;height:22px}
+:root[data-device="phone"] .bottom-nav button.on{color:var(--teal);font-weight:700}
+:root[data-device="phone"] body:not(.guest){padding-bottom:calc(68px + env(safe-area-inset-bottom,0px))}
+:root[data-device="phone"] .ai-fab,:root[data-device="phone"] #searchBtn,:root[data-device="phone"] #menuBtn{display:none!important}
+:root[data-device="phone"] .ai{inset:0;width:auto;height:auto;border-radius:0;border:0;z-index:75}
+:root[data-device="phone"] #toasts{bottom:calc(80px + env(safe-area-inset-bottom,0px))}
+:root[data-device="phone"] #view{padding:20px 16px 40px}
+:root[data-device="phone"] .hero{margin:-20px -16px 0;padding:40px 16px 48px}
+:root[data-device="phone"] .bench{padding:12px}
+:root[data-device="phone"] input,:root[data-device="phone"] select,:root[data-device="phone"] textarea{font-size:16px}
+@media (max-width:420px){.chk span{padding:6px 10px}}
+:root[data-device="phone"] #map{padding-bottom:96px}
+</style>
+</head>
+<body>
+<div class="scrollbar" id="scrollbar"></div>
+<div id="banner"></div>
+<header class="topbar">
+  <button class="btn small menu-btn" id="menuBtn" aria-label="Open course map">Menu</button>
+  <a class="brand" href="#/home">
+    <svg width="34" height="22" viewBox="0 0 34 22" aria-hidden="true"><path d="M1 15 L7 15 L10 4 L14 19 L18 9 L21 13 L33 13" fill="none" stroke="#2A9D8F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span>From Sensor to Insight</span>
+  </a>
+  <span class="spacer"></span>
+  <button class="btn small search-btn" id="searchBtn" aria-label="Search modules and sections"><span>Search</span><span class="kbd">Ctrl K</span></button>
+  <span class="who" id="who"></span>
+  <button class="btn small" id="settingsBtn">Settings</button>
+</header>
+<div class="shell">
+  <nav id="map" aria-label="Course map"></nav>
+  <main id="view" tabindex="-1"></main>
+</div>
+<dialog id="palette" aria-label="Search the course"><input id="palInput" placeholder="Search modules and sections…" aria-label="Search"><div id="palList"></div></dialog>
+<dialog id="settings">
+  <h2 style="margin-top:.2em">Settings</h2>
+  <div class="field"><label for="setTheme">Theme</label>
+    <select id="setTheme"><option value="auto">Match my device</option><option value="light">Light</option><option value="dark">Dark</option></select></div>
+  <div class="field"><label for="setSize">Text size</label>
+    <select id="setSize"><option value="1">Standard</option><option value="1.15">Large</option><option value="1.3">Extra large</option></select></div>
+  <div class="field"><label for="setMotion">Animations</label>
+    <select id="setMotion"><option value="full">On</option><option value="reduce">Reduced</option></select></div>
+  <div class="field"><label for="setVoice">Read-aloud speed</label>
+    <select id="setVoice"><option value="0.9">Slow</option><option value="1">Normal</option><option value="1.15">Fast</option></select></div>
+  <div class="controls">
+    <button class="btn primary" id="closeSettings">Done</button>
+    <button class="btn" id="switchUser">Switch user</button>
+  </div>
+  <p class="explain">Use "Switch user" on shared devices. Your progress on this device is saved under your email.</p>
+</dialog>
+<button class="ai-fab" id="aiFab" hidden aria-label="Ask Sensi, the AI learning assistant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v3M5.6 5.6l2.1 2.1M3 12h3M18.4 5.6l-2.1 2.1M21 12h-3"/><circle cx="12" cy="14" r="5"/></svg><span>Ask Sensi</span></button>
+<aside class="ai" id="ai" hidden aria-label="Sensi AI learning assistant">
+  <div class="ai-head"><b>Sensi • AI learning assistant</b><button class="btn small" id="aiClose" aria-label="Close assistant">Close</button></div>
+  <p class="ai-note">You are chatting with an AI, not a person. It can make mistakes, so check important answers. Your teacher can review these chats.</p>
+  <div id="aiMsgs" aria-live="polite"></div>
+  <div id="aiChips"></div>
+  <form id="aiForm"><textarea id="aiInput" rows="1" placeholder="Ask about this module…" aria-label="Your question"></textarea><button class="btn primary" id="aiSend" type="submit">Send</button></form>
+</aside>
+<nav class="bottom-nav" id="bottomNav" hidden aria-label="App navigation">
+  <button data-nav="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Home</button>
+  <button data-nav="modules"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></svg>Modules</button>
+  <button data-nav="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Search</button>
+  <button data-nav="ask"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H8l-4 4z"/><path d="M9 10h6"/></svg>Ask Sensi</button>
+  <button data-nav="progress"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Progress</button>
+</nav>
+
+<script>
+/* ============ CONFIG ============ */
+const CONFIG = {
+  API_URL: "https://script.google.com/macros/s/AKfycbz2UHq4LJScfjOKPIyygvtdF4sgerboY5WfYtGFrx0DnP9JdaogMXwOysUoDO5ERtYp/exec",   // ends with /exec
+  HEARTBEAT_SECONDS: 60,
+  IDLE_MINUTES: 5,
+  MAX_UPLOAD_MB: 10,
+  AI_MIN_AGE: 0           // 0 = no age limit; keep the same as AI_MIN_AGE in Code.gs
+};
+
+/* ============ STORAGE (safe) ============ */
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){} }
+};
+let user = store.get("sti_user", null);
+const pkey = () => "sti_prog_" + (user ? user.email : "guest");
+let prog = store.get(pkey(), {done:{}, quiz:{}, rating:{}, uploads:[], minutes:0});
+function saveProg(){ store.set(pkey(), prog); }
+const sessionId = Math.random().toString(36).slice(2) + Date.now().toString(36);
+
+/* ============ API with offline queue ============ */
+const apiReady = () => /^https:\/\/script\.google\.com\//.test(CONFIG.API_URL);
+async function api(action, data, queueIfFail = true){
+  if (!user || !apiReady()) return {ok:false, offline:true};
+  const body = JSON.stringify(Object.assign({action, email:user.email, sessionId}, data));
+  try{
+    const r = await fetch(CONFIG.API_URL, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body});
+    return await r.json();
+  }catch(e){
+    if (queueIfFail && action !== "upload"){ const q = store.get("sti_queue", []); q.push(body); store.set("sti_queue", q.slice(-200)); }
+    return {ok:false, error:"network"};
+  }
+}
+async function flushQueue(){
+  if (!apiReady()) return;
+  const q = store.get("sti_queue", []); if (!q.length) return;
+  store.set("sti_queue", []);
+  for (const body of q){
+    try{ await fetch(CONFIG.API_URL, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body}); }
+    catch(e){ const r = store.get("sti_queue", []); r.push(body); store.set("sti_queue", r); }
+  }
+}
+let evBuffer = [];
+function logEvent(moduleId, itemId, type, value){
+  evBuffer.push({ts:Date.now(), moduleId, itemId, type, value});
+  clearTimeout(logEvent.t); logEvent.t = setTimeout(sendEvents, 1500);
+}
+function sendEvents(){ if (!evBuffer.length) return; const events = evBuffer; evBuffer = []; api("event", {events}); }
+
+/* ============ ACTIVE-TIME TRACKER ============ */
+let lastActive = Date.now(), currentModule = "";
+["pointerdown","keydown","scroll","touchstart"].forEach(ev => addEventListener(ev, () => lastActive = Date.now(), {passive:true}));
+setInterval(() => {
+  if (!user || document.visibilityState !== "visible") return;
+  if (Date.now() - lastActive > CONFIG.IDLE_MINUTES * 60000) return;
+  const m = CONFIG.HEARTBEAT_SECONDS / 60;
+  prog.minutes = (prog.minutes || 0) + m; saveProg();
+  api("heartbeat", {minutes:m, moduleId:currentModule});
+}, CONFIG.HEARTBEAT_SECONDS * 1000);
+setInterval(flushQueue, 120000);
+addEventListener("online", flushQueue);
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") sendEvents(); });
+
+/* ============ HELPERS ============ */
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function toast(msg, kind){ if (window.toastStack) return window.toastStack(msg, kind); }
+function speak(text){
+  if (!("speechSynthesis" in window)) { toast("Read-aloud is not supported on this browser."); return; }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text); u.rate = Number(store.get("sti_voice", 1)); u.lang = "en-US";
+  speechSynthesis.speak(u);
+}
+const reduceMotion = () => store.get("sti_motion","full") === "reduce" || matchMedia("(prefers-reduced-motion: reduce)").matches;
+const ICON = `<svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><circle cx="5" cy="5" r="1.6" fill="#2A9D8F"/><circle cx="13" cy="5" r="1.6" fill="#2A9D8F"/><circle cx="5" cy="13" r="1.6" fill="#2A9D8F"/><circle cx="13" cy="13" r="1.6" fill="#E76F51"/><path d="M5 5 H13 V13" stroke="#2A9D8F" stroke-width="1.4" fill="none"/></svg>`;
+function bench(title, inner){ return `<div class="bench"><p class="bench-title">${ICON}${esc(title)}</p>${inner}</div>`; }
+</script>
+<script>
+/* ============ COURSE CONTENT (Unit 1) ============ */
+const COURSE = [
+ {id:"u1", title:"Unit 1: Sensors and programming foundations", sub:"Days 1\u20132", modules:[
+  {id:"1.1", title:"Launch and the IoT data lifecycle", minutes:90,
+   objectives:["Define the Internet of Things and identify its layers in our course system.",
+     "Explain the six stages of the IoT data lifecycle using a classroom example (U1-O1).",
+     "Distinguish the four types of analytics and classify questions by type (U1-O1).",
+     "Write a data question your sensors can actually answer.",
+     "Describe the human role when AI can write code."],
+   sections:[
+    {id:"hook", title:"Which spot in this room is best for studying?", html:`
+     <p>Look around the room. Where would you sit to study for two hours: near the window, near the door, or in the middle? Write your guess and one reason before reading on.</p>
+     <p>Most people answer from feeling. Feelings matter, but they are hard to compare and easy to argue about. In this course you will answer questions like this with <b>evidence</b>: measurements you collect, clean, analyze, and present yourself.</p>
+     <div class="note warm">In April 2024, extreme heat led about 7,000 Philippine schools to suspend face-to-face classes in a single week, affecting more than a million students. PAGASA classifies a heat index of 42\u201351 \u00b0C as <i>danger</i>. Decisions like these depend on good data.</div>`},
+    {id:"iot", title:"What is the Internet of Things?", html:`
+     <p>The <b>Internet of Things (IoT)</b> is a network of physical objects that sense, process, and exchange data over the internet. In everyday terms: a thing measures something, sends the data somewhere useful, and something or someone acts on it.</p>
+     <p>IoT systems are usually described in <b>layers</b>. A <b>sensor</b> turns a physical quantity into an electrical signal; an <b>actuator</b> does the opposite, turning a signal into action, such as lighting an LED or sounding a buzzer.</p>`, interactive:"iotflow"},
+    {id:"lifecycle", title:"The IoT data lifecycle", html:`
+     <p>Collecting numbers is only the beginning. Data becomes useful when it moves through a full cycle, from a question to an action. This course uses six stages. The cycle loops: sharing a finding usually raises a new question.</p>`, interactive:"lifecycle"},
+    {id:"analytics", title:"Four types of analytics", html:`
+     <p><b>Analytics</b> means using data to answer questions and support decisions. A widely used progression sorts it into four types:</p>
+     <table class="t"><tr><th>Type</th><th>Question</th><th>Classroom example</th></tr>
+     <tr><td>Descriptive</td><td>What happened?</td><td>The window side peaked at 33.1 \u00b0C at about 13:45.</td></tr>
+     <tr><td>Diagnostic</td><td>Why did it happen?</td><td>Direct afternoon sun on the window side explains the difference.</td></tr>
+     <tr><td>Predictive</td><td>What will happen?</td><td>Tomorrow the window side will likely pass 32 \u00b0C by 13:00.</td></tr>
+     <tr><td>Prescriptive</td><td>What should we do?</td><td>Switch on the fan automatically at 31 \u00b0C.</td></tr></table>
+     <p>Tip: <i>how many, what was</i> \u2192 descriptive; <i>why</i> \u2192 diagnostic; <i>will</i> \u2192 predictive; <i>should</i> \u2192 prescriptive.</p>`, interactive:"analytics"},
+    {id:"question", title:"Writing a good data question", html:`
+     <p>A strong data question is <b>specific</b> (what, where, when), <b>measurable</b> with your sensors, <b>comparative or time-based</b>, <b>useful</b> to someone, and <b>respectful</b> (no personal information).</p>
+     <table class="t"><tr><th>Weak</th><th>Stronger</th></tr>
+     <tr><td>"Is our room hot?"</td><td>"Is the window side warmer than the door side between 12:00 and 15:00?"</td></tr>
+     <tr><td>"Do students like the room?"</td><td>"Is the back of the room darker than the front during morning classes?"</td></tr></table>
+     <p><b>Team question card:</b> write your question, the sensors you need, where and when you will measure, the analytics type, and who could act on the answer. Upload a photo of it at the end of this module.</p>`},
+    {id:"ai", title:"If AI can write the code, what is my job?", html:`
+     <ul><li><b>AI can be confidently wrong or unsafe.</b> In one study, about 40% of programs GitHub Copilot generated for security-relevant scenarios contained vulnerabilities.</li>
+     <li><b>Leaning on AI can weaken learning.</b> In a field experiment with nearly 1,000 high school students, unrestricted GPT-4 access lowered later exam scores by 17% once the AI was removed.</li>
+     <li><b>Humans remain accountable.</b> UNESCO's AI competency framework for students puts a human-centred mindset first.</li></ul>
+     <p>In this course, AI is your partner, but <b>you</b> specify the problem, check the answer, connect the parts, make the decision, and take responsibility.</p>
+     <div class="note"><b>Think, pair, share:</b> list three things a person must still do when AI writes the code. Agree on the most important one with a partner.</div>`}
+   ],
+   quiz:[
+    {q:"Which of these is an actuator?", o:["DHT22","LDR","Buzzer","Google Sheet"], a:2, e:"A buzzer turns a signal into action. The DHT22 and LDR are sensors; a Sheet is software."},
+    {q:"A team removes duplicate rows from its Sheet. Which lifecycle stage is this?", o:["Ask","Collect","Clean","Share"], a:2, e:"Fixing data problems happens in the Clean stage."},
+    {q:"\"Will the room pass 32 \u00b0C by 2:00 PM?\" is which type of analytics?", o:["Descriptive","Diagnostic","Predictive","Prescriptive"], a:2, e:"The key word is will: it asks about the future."},
+    {q:"\"Why was the window side warmer?\" is which type of analytics?", o:["Descriptive","Diagnostic","Predictive","Prescriptive"], a:1, e:"The key word is why: it asks for a cause."},
+    {q:"Which question can our kit answer?", o:["Do students like this room?","Is the window side warmer than the door side between 12:00 and 15:00?","Is our school the best?","Which subject is most fun?"], a:1, e:"It is specific, measurable with our sensors, comparative, and useful."}
+   ],
+   rating:["I can name the lifecycle stages only when I look at the diagram.","I can explain most stages and analytics types with some help.","I can explain all six stages and classify questions by analytics type on my own.","I can do level 3 and help a classmate write a strong data question."],
+   checkpoint:{code:"U1-O1", task:"Label the 6 lifecycle stages and classify 4 questions by analytics type.", met:"6 of 6 stages and 4 of 4 questions correct.", upload:"Upload a photo of your team question card."}
+  },
+  {id:"1.2", title:"Board setup and programming basics", minutes:120,
+   objectives:["Describe what a microcontroller is and compare the four course boards.",
+     "Set up the tools and upload a program to your board (U1-O2).",
+     "Identify the structure of an Arduino sketch and a MicroPython script (U1-O2).",
+     "Use variables, data types, operators, conditionals, loops, and functions (U1-O2).",
+     "Classify and fix syntax, runtime, and logic errors."],
+   sections:[
+    {id:"mcu", title:"What is a microcontroller?", html:`
+     <p>A <b>microcontroller</b> is a complete small computer on one chip or module: a <b>processor</b> that carries out instructions, <b>memory</b> that stores your program, and <b>input/output pins</b> that connect to sensors and devices. It runs one program, starts instantly, uses little energy, and reacts to the physical world in real time.</p>
+     <table class="t"><tr><th>Board</th><th>Processor</th><th>Language here</th></tr>
+     <tr><td>Arduino Uno R4 WiFi</td><td>Renesas RA4M1 (Arm Cortex-M4, 48 MHz) + ESP32-S3 for Wi-Fi</td><td>Arduino C++</td></tr>
+     <tr><td>ESP32 DevKit</td><td>Dual-core Xtensa up to 240 MHz, built-in Wi-Fi</td><td>Arduino C++</td></tr>
+     <tr><td>ESP8266 NodeMCU</td><td>Tensilica L106 at 80/160 MHz, built-in Wi-Fi</td><td>Arduino C++</td></tr>
+     <tr><td>Raspberry Pi Pico W</td><td>RP2040, dual Cortex-M0+ up to 133 MHz, CYW43439 Wi-Fi</td><td>MicroPython</td></tr></table>`},
+    {id:"setup", title:"Setting up your tools", html:`
+     <p><b>Arduino IDE 2</b> (Uno R4 WiFi, ESP32, ESP8266): install the board package from Boards Manager, select the board and port, and open the Serial Monitor at <b>115200 baud</b>. ESP boards need these Boards Manager URLs:</p>
+     <pre class="code">https://espressif.github.io/arduino-esp32/package_esp32_index.json
+https://arduino.esp8266.com/stable/package_esp8266com_index.json</pre>
+     <p><b>Thonny</b> (Pico W): hold BOOTSEL while plugging in, install the MicroPython firmware for the Pico W, then type <code>print("hello")</code> in the Shell.</p>
+     <div class="note">On an iPad or without hardware, use the Wokwi online simulator for ESP32 and Pico W projects.</div>`},
+    {id:"structure", title:"Program structure and your first program", html:`
+     <p>In Arduino C++, <code>setup()</code> runs <b>once</b> after power-up or reset, and <code>loop()</code> runs <b>forever</b>. MicroPython runs top to bottom, so setup lines go first and <code>while True:</code> does the job of <code>loop()</code>. Step through P1 below to see exactly which line runs when.</p>`, interactive:"tracer"},
+    {id:"blocks", title:"Programming building blocks", html:`
+     <table class="t"><tr><th>Stores</th><th>C++</th><th>Python</th></tr>
+     <tr><td>Whole number</td><td>int</td><td>int</td></tr><tr><td>Decimal</td><td>float</td><td>float</td></tr>
+     <tr><td>True/false</td><td>bool</td><td>bool</td></tr><tr><td>Text</td><td>String</td><td>str</td></tr></table>
+     <div class="note warm"><b>Integer division trap:</b> in C++, <code>7 / 2</code> gives <b>3</b> because both are integers. In Python, <code>7 / 2</code> gives 3.5 and <code>7 // 2</code> gives 3.</div>
+     <p><b>Decisions</b> use <code>if / else</code>; <b>repetition</b> uses <code>for</code> loops with a start, a condition, and a step; <b>functions</b> package a job with <b>parameters</b> and can <b>return</b> a value.</p>`, interactive:"primm"},
+    {id:"errors", title:"Three kinds of errors", html:`
+     <table class="t"><tr><th>Kind</th><th>What happens</th><th>Example</th></tr>
+     <tr><td>Syntax</td><td>Will not upload or run</td><td>Missing semicolon; <code>serial</code> instead of <code>Serial</code>; wrong indentation in Python</td></tr>
+     <tr><td>Runtime</td><td>Uploads, then crashes</td><td>Dividing by zero; using a variable before creating it</td></tr>
+     <tr><td>Logic</td><td>Runs, but does the wrong thing</td><td>LED never turns off because both lines use HIGH</td></tr></table>
+     <p><b>Core challenge:</b> blink 3 times quickly (0.15 s on/off), then pause 2 s, forever, using a <code>for</code> loop. <b>Extension:</b> write <code>blinkTimes(n, ms)</code> and blink SOS.</p>`}
+   ],
+   quiz:[
+    {q:"Which function runs only once when the board starts?", o:["loop()","setup()","delay()","Serial.print()"], a:1, e:"setup() runs once after power-up or reset."},
+    {q:"What does 115200 in Serial.begin(115200) set?", o:["The pin number","The baud rate, which must match the Serial Monitor","The delay in ms","The LED brightness"], a:1, e:"It is the serial speed in bits per second."},
+    {q:"int x = 9; int y = 4; Serial.println(x / y); prints:", o:["2.25","2","3","2.0"], a:1, e:"Integer division drops the decimal part."},
+    {q:"In MicroPython, what shows which lines are inside a loop?", o:["Curly braces","Semicolons","Indentation","Comments"], a:2, e:"Python uses indentation (4 spaces) to define blocks."},
+    {q:"A program runs, but the LED never turns off. What kind of error is this?", o:["Syntax","Runtime","Logic","Network"], a:2, e:"It runs without a message but does the wrong thing."}
+   ],
+   rating:["I can upload P1, but I need help to change it.","I can change values in P1 and explain most lines with some help.","I can complete the Core challenge alone and explain setup, loop, variables, and loops.","I can complete the Extension and help a classmate fix an error."],
+   checkpoint:{code:"U1-O2", task:"Complete the Core challenge and explain the code.", met:"Pattern repeats 5+ times; you point to setup, loop, a variable, and the loop structure.", upload:"Upload your code file (.ino or .py) and a short video or photo of the blinking pattern."}
+  },
+  {id:"1.3", title:"Reading sensors", minutes:150,
+   objectives:["Distinguish analog and digital signals and explain the voltage divider.",
+     "Explain how an ADC turns voltage into numbers and calculate readings for your board.",
+     "Wire an LDR and a DHT22 and convert raw readings to calibrated units (U1-O3).",
+     "Implement non-blocking timing and justify it over delay() (U1-O4).",
+     "Use a structured AI prompt and verify each claim against documentation (U1-O7)."],
+   sections:[
+    {id:"signals", title:"Analog and digital signals", html:`
+     <p>An <b>analog</b> signal can take any value in a range, like a dimmer. A <b>digital</b> signal has only two levels, HIGH and LOW. Our LDR gives an analog voltage. The DHT22 contains its own chip and sends its results as coded digital pulses.</p>`},
+    {id:"divider", title:"From light to voltage: the voltage divider", html:`
+     <p>An <b>LDR</b> has high resistance in the dark and low resistance in bright light. Wired in series with a fixed 10 k\u03a9 resistor, it forms a <b>voltage divider</b>:</p>
+     <div class="formula">V out = V in \u00d7 R fixed \u00f7 (R LDR + R fixed)</div>
+     <p>Drag the light slider to see how light becomes a voltage, then a number on your board.</p>`, interactive:"divider"},
+    {id:"adc", title:"From voltage to numbers: the ADC", html:`
+     <p>The <b>analog-to-digital converter</b> turns voltage into a whole number. An <i>n</i>-bit ADC has 2<sup>n</sup> levels: more bits mean smaller steps.</p>
+     <table class="t"><tr><th>Board</th><th>Default range</th><th>Note</th></tr>
+     <tr><td>Uno R4 WiFi</td><td>0\u20131023 (10-bit; up to 14-bit)</td><td>5 V reference, so a 3.3 V sensor tops out near 675</td></tr>
+     <tr><td>ESP32</td><td>0\u20134095 (12-bit)</td><td>Use ADC1 pins such as GPIO 34; ADC2 cannot be read while Wi-Fi runs</td></tr>
+     <tr><td>ESP8266</td><td>0\u20131023</td><td>One analog pin (A0)</td></tr>
+     <tr><td>Pico W</td><td>read_u16(): 0\u201365535</td><td>12-bit hardware scaled to 16-bit</td></tr></table>`, interactive:"adc"},
+    {id:"dht", title:"The DHT22 and calibration", html:`
+     <p>The <b>DHT22</b> is accurate to about \u00b10.5 \u00b0C and 2\u20135% humidity and gives a new reading <b>at most once every 2 seconds</b>. A <b>library</b> handles its timed pulses for you. Failed reads return <b>NaN</b>, which good code skips instead of logging as 0.</p>
+     <div class="formula">light % = (raw \u2212 dark raw) \u00f7 (bright raw \u2212 dark raw) \u00d7 100, clamped to 0\u2013100</div>
+     <p>Example: dark 40, bright 620, raw 330 \u2192 290 \u00f7 580 \u00d7 100 = <b>50%</b>.</p>`},
+    {id:"timing", title:"Timing: why delay() is a trap", html:`
+     <p><code>delay()</code> freezes the board. Professional code uses <b>non-blocking timing</b>: check the clock every loop and act only when enough time has passed.</p>
+     <pre class="code">if (now - lastRead >= INTERVAL_MS) {   // has enough time passed?
+  lastRead = now;
+  // ...read the sensors...
+}</pre>
+     <p>Try it: press the button during the simulation and see which board notices.</p>`, interactive:"timing"},
+    {id:"aiverify", title:"AI activity: AI explains, you verify", html:`
+     <p>AI can produce fluent explanations that are wrong. Use a <b>PARTS</b> prompt (Persona, Act, Recipient, Theme, Structure) with a <b>Chain-of-Thought</b> instruction, then check at least 5 claims against the walkthrough or official documentation.</p>
+     <div class="note"><b>Sample prompt:</b> You are an embedded systems instructor who teaches beginners (P). Explain, line by line, what the P2 sketch does (A) for a learner who knows loops but not millis() (R), about reading a DHT22 and an LDR every 2 seconds without delay() (T). Use a table: line, code, meaning, then 3 quiz questions (S). Think step by step and explain why the timer works before the table.</div>
+     <p>Record each claim as verified, wrong, or partly right, with the source you used, and add a row to your AI use log.</p>`}
+   ],
+   quiz:[
+    {q:"Which sensor gives an analog signal?", o:["DHT22","LDR in a voltage divider","Both","Neither"], a:1, e:"The LDR divider gives a varying voltage; the DHT22 sends digital pulses."},
+    {q:"In our wiring, brighter light makes V out\u2026", o:["Lower","Higher","Unchanged","Negative"], a:1, e:"LDR resistance falls, so more of the 3.3 V appears across the fixed resistor."},
+    {q:"How many values can a 12-bit ADC produce?", o:["1024","2048","4096","65536"], a:2, e:"2^12 = 4096 values (0 to 4095)."},
+    {q:"Dark raw 100, bright raw 900, raw 500. Calibrated light %?", o:["25%","50%","55.6%","62.5%"], a:1, e:"(500 \u2212 100) \u00f7 (900 \u2212 100) \u00d7 100 = 50%."},
+    {q:"Why does P2 use if (now - lastRead >= INTERVAL_MS) instead of delay(2000)?", o:["It is shorter","The board stays free to do other tasks","delay() does not exist on ESP32","It makes readings more accurate"], a:1, e:"Non-blocking timing keeps the board responsive."}
+   ],
+   rating:["I can upload P2 and see readings, but cannot yet explain them.","I can explain the divider or the ADC and do the Core challenge with help.","I can explain light \u2192 % fully, do the Core alone, and justify millis().","I can complete the Boss Challenge and help a classmate debug."],
+   checkpoint:{code:"U1-O3, U1-O4, U1-O7", task:"Show calibrated P2 output, complete the Boss Challenge (LED below 30% without delay()), and complete the AI verification table.", met:"5+ valid CSV rows; no delay() over 1 s; 5 AI claims checked with sources.", upload:"Upload a screenshot of your Serial Monitor output, your code, and your AI verification table."}
+  },
+  {id:"1.4", title:"Your first dataset in Google Sheets", minutes:120,
+   objectives:["Describe a dataset using observation, variable, and value.",
+     "Classify variables by level of measurement (U1-O5).",
+     "Identify sources of measurement error and distinguish accuracy from precision (U1-O5).",
+     "Import sensor data into Google Sheets and summarize it with formulas and a chart.",
+     "Calculate the data volume of a sampling plan (U1-O6)."],
+   sections:[
+    {id:"anatomy", title:"The anatomy of a dataset", html:`
+     <p>P2 prints <b>CSV</b> (comma-separated values). In a <b>tidy</b> dataset, each variable is a column, each observation is a row, and each value has its own cell. Units in column names (<code>temp_C</code>, <code>hum_pct</code>) prevent costly mistakes.</p>`},
+    {id:"levels", title:"Levels of measurement", html:`
+     <p>The level of measurement decides which statistics make sense. <b>Nominal</b>: labels (device ID). <b>Ordinal</b>: ordered categories (Dark &lt; Dim &lt; Bright). <b>Interval</b>: equal gaps, no true zero (\u00b0C, so 30 \u00b0C is not \"twice as hot\" as 15 \u00b0C). <b>Ratio</b>: true zero (seconds, humidity %).</p>`, interactive:"levels"},
+    {id:"error", title:"Accuracy, precision, and error", html:`
+     <p><b>Systematic error (bias)</b> pushes readings one way, such as a sensor in sunlight reading high. <b>Random error</b> scatters readings, such as electrical noise. <b>Accuracy</b> is closeness to the true value; <b>precision</b> is closeness of repeated readings to each other.</p>
+     <div class="note"><b>Side-by-side test:</b> place your DHT22 next to another team's for 5 minutes, away from sun and boards. If averages differ by more than 1 \u00b0C, record the offset.</div>`},
+    {id:"volume", title:"How much data? Sampling and volume", html:`
+     <div class="formula">Rows per day = readings per send \u00d7 (86,400 \u00f7 interval in seconds)</div>
+     <p>A Google Sheet holds up to 10 million cells. Use the calculator to see how long your plan would take to fill one.</p>`, interactive:"volume"},
+    {id:"sheets", title:"Guided build: from Serial Monitor to Sheets", html:`
+     <ol><li>Log P2 for 10 minutes with three events: cover the LDR, shine a flashlight, breathe on the DHT22.</li>
+     <li>Paste into a new Sheet, then <b>Data \u2192 Split text to columns</b>. Delete rows starting with <code>#</code>.</li>
+     <li>Add <code>time_s</code> with <code>=A2/1000</code>.</li>
+     <li>Summarize: <code>=COUNT(B2:B)</code>, <code>=MAX(B2:B)</code>, <code>=MIN(B2:B)</code>, <code>=AVERAGE(B2:B)</code>, <code>=IF(D2>50,"Bright","Dark")</code>, <code>=COUNTIF(F2:F,"Bright")</code>.</li>
+     <li>Insert a labeled line chart and write two sentences that mention a number.</li></ol>
+     <p>Check your formula results against this sample dataset:</p>`, interactive:"sample"}
+   ],
+   quiz:[
+    {q:"In a tidy dataset, a row is one\u2026", o:["Variable","Observation","Unit","Formula"], a:1, e:"Each row is one observation; each column is a variable."},
+    {q:"Temperature in \u00b0C is which level of measurement?", o:["Nominal","Ordinal","Interval","Ratio"], a:2, e:"Equal gaps but no true zero."},
+    {q:"A sensor next to a warm board always reads 1.2 \u00b0C high. This is\u2026", o:["Random error affecting precision","Systematic error affecting accuracy","No error","A logic error"], a:1, e:"Consistent one-direction error is bias; it hurts accuracy."},
+    {q:"3 readings every 10 seconds produce how many rows per day?", o:["8,640","25,920","86,400","259,200"], a:1, e:"3 \u00d7 (86,400 \u00f7 10) = 25,920."},
+    {q:"Which formula counts cells in F2:F that say Bright?", o:["=COUNT(F2:F)","=SUM(F2:F,\"Bright\")","=COUNTIF(F2:F,\"Bright\")","=IF(F2:F=\"Bright\")"], a:2, e:"COUNTIF counts cells matching a condition."}
+   ],
+   rating:["I can paste data into Sheets but need help with formulas and charts.","I can calculate MAX, MIN, AVERAGE and make a chart with help.","I can build the summary and a labeled chart alone and classify variables.","I can complete the Extension, explain error sources, and help others check formulas."],
+   checkpoint:{code:"U1-O5, U1-O6", task:"Classify 4 variables, list error sources for your setup, and calculate rows per day for your plan.", met:"4 of 4 levels correct, 2+ error sources with fixes, correct rows per day.", upload:"Upload a screenshot (or exported file) of your Sheet showing formulas and a labeled chart."}
+  }
+ ]},
+ {id:"u2", title:"Unit 2: Connecting to the cloud", sub:"Days 3\u20134", locked:true, modules:[{id:"2.1",title:"Networks, HTTP, and JSON"},{id:"2.2",title:"The Apps Script logger"},{id:"2.3",title:"Device to cloud"},{id:"2.4",title:"Reliability"}]},
+ {id:"la", title:"Python Lab A", sub:"Day 5", locked:true, modules:[{id:"A",title:"Python and Google Colab"}]},
+ {id:"u3", title:"Unit 3: Making sense of the data", sub:"Days 6\u20137", locked:true, modules:[{id:"3.1",title:"Tidy data"},{id:"3.2",title:"Cleaning"},{id:"3.3",title:"Analysis"},{id:"3.4",title:"Mini investigation"}]},
+ {id:"u4", title:"Unit 4: Acting on data and data science", sub:"Days 8\u20139", locked:true, modules:[{id:"4.1",title:"Alerts"},{id:"4.2",title:"Two-way control"},{id:"4.3",title:"Dashboard"},{id:"4.4",title:"Security and ethics"}]},
+ {id:"u5", title:"Unit 5: Capstone", sub:"Day 10", locked:true, modules:[{id:"5",title:"Capstone prototype"}]}
+];
+const MODULES = {}; COURSE.forEach(u => u.modules.forEach(m => { if (!u.locked) MODULES[m.id] = m; }));
+</script>
+<script>
+/* ============ INTERACTIVES ============ */
+const INTERACTIVES = {
+ iotflow(el){
+  el.innerHTML = bench("See a reading travel through the system", `
+   <svg viewBox="0 0 720 210" role="img" aria-label="IoT data flow diagram">
+    ${[["Sensors","#2A9D8F"],["Board","#1F3A5F"],["Wi-Fi","#5B6B7F"],["Apps Script","#E76F51"],["Sheets","#C9A227"]].map((b,i)=>`
+     <rect x="${10+i*142}" y="40" width="128" height="70" rx="10" fill="${b[1]}"/>
+     <text x="${74+i*142}" y="80" text-anchor="middle" fill="#fff" font-size="15" font-weight="700">${b[0]}</text>`).join("")}
+    <circle id="pkt" cx="74" cy="140" r="9" fill="#E9C46A" opacity="0"/>
+    <circle id="cmd" cx="642" cy="170" r="9" fill="#E76F51" opacity="0"/>
+    <circle id="ledI" cx="216" cy="22" r="10" fill="#55606E"/><text x="236" y="27" font-size="13" fill="currentColor">LED</text>
+   </svg>
+   <div class="controls"><button class="btn primary" data-a="send">Send a reading</button><button class="btn" data-a="cmd">Send a command back</button></div>
+   <div class="panel" aria-live="polite" id="flowMsg">Press "Send a reading" to follow one temperature value.</div>`);
+  const steps = ["The DHT22 measures 29.4 \u00b0C (sensing layer).","The board reads the sensor and turns it into a number (edge device).","Wi-Fi carries an HTTPS request to the internet (network layer).","Apps Script checks and stores the reading (cloud processing).","The Sheet and dashboard show it to people (application layer)."];
+  const pkt = $("#pkt",el), cmd = $("#cmd",el), msg = $("#flowMsg",el), led = $("#ledI",el);
+  function move(dot, xs, y, texts, done){
+   dot.setAttribute("opacity","1"); let i = 0;
+   const go = () => { if (i >= xs.length){ done && done(); return; } dot.setAttribute("cx", xs[i]); dot.setAttribute("cy", y); msg.textContent = texts[i]; i++; setTimeout(go, reduceMotion()? 50 : 900); };
+   go();
+  }
+  el.querySelector('[data-a="send"]').onclick = () => move(pkt,[74,216,358,500,642],140,steps);
+  el.querySelector('[data-a="cmd"]').onclick = () => move(cmd,[642,500,358,216],170,["You tick \"LED on\" in the Sheet.","Apps Script prepares the command.","The command travels back over the network.","The board receives it and turns on the LED (actuator)."],() => { led.setAttribute("fill","#E9C46A"); setTimeout(()=>led.setAttribute("fill","#55606E"),2500); });
+ },
+ lifecycle(el){
+  const S = [["Ask","What do we want to know, and why?","\"Is the window side warmer after lunch?\""],["Collect","How will we measure it?","Two sensors log every 30 s from 12:00 to 15:00."],["Clean","Can we trust the data?","Remove a duplicate row; flag a spike from a hand."],["Analyze","What patterns do we see?","The window side averaged 1.0 \u00b0C warmer."],["Act","What should happen because of it?","Switch on a fan above 32 \u00b0C."],["Share","How do we communicate it honestly?","A one-page data story with a chart and a limitation."]];
+  const cols = ["#1F3A5F","#2A9D8F","#3D8361","#E76F51","#C2410C","#7C3AED"];
+  el.innerHTML = bench("Tap each stage of the lifecycle", `
+   <svg viewBox="0 0 360 300" style="max-width:380px;display:block;margin:auto" role="group" aria-label="Lifecycle stages">
+    ${S.map((s,i)=>{const a=-Math.PI/2+i*Math.PI/3,x=180+110*Math.cos(a),y=150+110*Math.sin(a);return `<g tabindex="0" role="button" data-i="${i}" style="cursor:pointer"><circle cx="${x}" cy="${y}" r="38" fill="${cols[i]}"/><text x="${x}" y="${y+5}" text-anchor="middle" fill="#fff" font-weight="700" font-size="15">${s[0]}</text></g>`}).join("")}
+    <text x="180" y="155" text-anchor="middle" font-size="14" font-weight="700" fill="currentColor">IoT data lifecycle</text>
+   </svg><div class="panel" id="lcMsg" aria-live="polite">Choose a stage to see its key question and an example.</div>`);
+  el.querySelectorAll("g[data-i]").forEach(g => { const f = () => { const s = S[g.dataset.i]; $("#lcMsg",el).innerHTML = `<b>${s[0]}:</b> ${s[1]}<br><i>Example:</i> ${s[2]}`; }; g.onclick = f; g.onkeydown = e => { if (e.key==="Enter"||e.key===" ") f(); }; });
+ },
+ analytics(el){
+  const Q = [["How many minutes was the room above 30 \u00b0C today?",0],["Did the temperature rise because the aircon was switched off?",1],["What will the temperature be at 2:00 PM?",2],["At what temperature should the fan turn on automatically?",3],["What was the brightest moment this morning?",0],["Will the back of the room be too dark for afternoon class?",2]];
+  const T = ["Descriptive","Diagnostic","Predictive","Prescriptive"]; let i = 0, score = 0;
+  el.innerHTML = bench("Classify the question", `<div class="panel"><p id="aq" style="font-weight:700"></p><div class="controls" id="ab"></div><div class="feedback" id="af"></div><div class="controls"><button class="btn small" id="an">Next question</button><span id="as" class="explain"></span></div></div>`);
+  const show = () => { $("#aq",el).textContent = Q[i][0]; $("#af",el).textContent=""; $("#af",el).className="feedback"; $("#ab",el).innerHTML = T.map((t,k)=>`<button class="chip" data-k="${k}">${t}</button>`).join("");
+   $("#ab",el).querySelectorAll("button").forEach(b => b.onclick = () => { const ok = +b.dataset.k === Q[i][1]; if (ok) score++; b.classList.add(ok?"ok":"no"); $("#af",el).textContent = ok ? "Correct." : "Not quite: this is " + T[Q[i][1]] + "."; $("#af",el).className = "feedback " + (ok?"ok":"no"); $("#ab",el).querySelectorAll("button").forEach(x=>x.disabled=true); $("#as",el).textContent = `Score: ${score}`; }); };
+  $("#an",el).onclick = () => { i = (i+1) % Q.length; show(); }; show();
+ },
+ tracer(el){
+  const code = ["int count = 0;","","void setup() {","  Serial.begin(115200);","  pinMode(LED_PIN, OUTPUT);","  Serial.println(\"Hello from my board!\");","}","","void loop() {","  digitalWrite(LED_PIN, HIGH);","  delay(500);","  digitalWrite(LED_PIN, LOW);","  delay(500);","  count = count + 1;","  Serial.print(\"Blink #\");","  Serial.println(count);","}"];
+  const setupSeq = [3,4,5], loopSeq = [9,10,11,12,13,14,15];
+  const explain = {3:"Opens serial at 115200 baud.",4:"Makes the LED pin an output.",5:"Prints the greeting once.",9:"LED on.",10:"Wait 0.5 s: nothing else can happen.",11:"LED off.",12:"Wait another 0.5 s.",13:"Add 1 to count.",14:"Print the label without a new line.",15:"Print count and start a new line."};
+  el.innerHTML = bench("Step through P1 line by line", `<div class="tracer"><div class="panel lines" id="tl">${code.map((l,i)=>`<div data-l="${i}">${esc(l)||" "}</div>`).join("")}</div>
+   <div class="panel"><div class="kv"><span>LED</span><span><span class="led" id="tled"></span></span><span>count</span><b id="tc">0</b><span>Time</span><b id="tt">0.0 s</b><span>Phase</span><b id="tp">not started</b></div>
+   <p class="explain" id="tx">Press Step to run the next line.</p><div class="serial" id="ts" aria-label="Serial Monitor"></div></div></div>
+   <div class="controls"><button class="btn primary" id="tstep">Step</button><button class="btn" id="tauto">Auto run</button><button class="btn" id="treset">Reset</button></div>`);
+  let pos = -1, phase = "setup", count = 0, time = 0, timer = null;
+  const serial = $("#ts",el);
+  const out = s => { serial.textContent += s; serial.scrollTop = serial.scrollHeight; };
+  function step(){
+   let line;
+   if (phase === "setup"){ pos++; if (pos >= setupSeq.length){ phase = "loop"; pos = 0; line = loopSeq[0]; } else line = setupSeq[pos]; }
+   else { pos = (pos+1) % loopSeq.length; line = loopSeq[pos]; }
+   el.querySelectorAll("#tl div").forEach(d => d.classList.toggle("hl", +d.dataset.l === line));
+   if (line===5) out("Hello from my board!\n"); if (line===9) $("#tled",el).classList.add("on"); if (line===11) $("#tled",el).classList.remove("on");
+   if (line===10||line===12) time += 0.5; if (line===13) count++; if (line===14) out("Blink #"); if (line===15) out(count+"\n");
+   $("#tc",el).textContent = count; $("#tt",el).textContent = time.toFixed(1)+" s"; $("#tp",el).textContent = phase === "setup" ? "setup() runs once" : "loop() repeats"; $("#tx",el).textContent = explain[line];
+  }
+  $("#tstep",el).onclick = step;
+  $("#tauto",el).onclick = () => { if (timer){ clearInterval(timer); timer=null; $("#tauto",el).textContent="Auto run"; } else { timer = setInterval(step, reduceMotion()?400:650); $("#tauto",el).textContent="Pause"; } };
+  $("#treset",el).onclick = () => { clearInterval(timer); timer=null; $("#tauto",el).textContent="Auto run"; pos=-1; phase="setup"; count=0; time=0; serial.textContent=""; $("#tled",el).classList.remove("on"); el.querySelectorAll("#tl div").forEach(d=>d.classList.remove("hl")); $("#tc",el).textContent="0"; $("#tt",el).textContent="0.0 s"; $("#tp",el).textContent="not started"; $("#tx",el).textContent="Press Step to run the next line."; };
+ },
+ primm(el){
+  el.innerHTML = bench("Predict, then run (Drill 1)", `<pre class="code">int a = 7;  int b = 2;  float c = 7.0;
+Serial.println(a / b);   // line 1
+Serial.println(c / b);   // line 2
+Serial.println(a % b);   // line 3</pre>
+   <div class="controls"><label>Line 1 <input id="p1" size="6" class="mono"></label><label>Line 2 <input id="p2" size="6" class="mono"></label><label>Line 3 <input id="p3" size="6" class="mono"></label><button class="btn primary" id="prun">Run</button></div>
+   <div class="panel" id="pout" aria-live="polite">Write your predictions first.</div>`);
+  $("#prun",el).onclick = () => {
+   const ans = ["3","3.50","1"], got = ["p1","p2","p3"].map(id => $("#"+id,el).value.trim());
+   const right = got.filter((g,i)=> g===ans[i] || (i===1 && (g==="3.5"))).length;
+   $("#pout",el).innerHTML = `Output: <b class="mono">3</b>, <b class="mono">3.50</b>, <b class="mono">1</b>. You predicted ${right} of 3.<br>Integer \u00f7 integer drops decimals (3). A float keeps them (Serial prints 2 decimals). % gives the remainder of 7 \u00f7 2 (1).`;
+   logEvent(currentModule,"primm1","activity",right+"/3");
+  };
+ },
+ divider(el){
+  el.innerHTML = bench("Light \u2192 resistance \u2192 voltage \u2192 number", `
+   <div class="controls"><label for="dl">Light</label><input type="range" id="dl" min="0" max="100" value="50" aria-label="Light level"><span id="dlv" class="mono"></span>
+   <label for="db">Board</label><select id="db"><option value="esp32">ESP32 (0\u20134095, 3.3 V)</option><option value="r4">Uno R4 WiFi (0\u20131023, 5 V ref)</option><option value="esp8266">ESP8266 (0\u20131023, 3.3 V)</option><option value="pico">Pico W (read_u16, 3.3 V)</option></select></div>
+   <div class="panel"><div class="kv"><span>LDR resistance</span><b id="dr"></b><span>V out</span><b id="dv"></b><span>Raw reading</span><b id="dw"></b></div><div class="meter" style="margin-top:10px"><i id="dm"></i></div><p class="explain" id="dn"></p></div>`);
+  const B = {esp32:[4095,3.3],r4:[1023,5],esp8266:[1023,3.3],pico:[65535,3.3]};
+  const upd = () => { const L = +$("#dl",el).value; const R = Math.exp(Math.log(100000) + (Math.log(1000)-Math.log(100000))*L/100); const V = 3.3*10000/(R+10000); const [mx,ref] = B[$("#db",el).value]; const raw = Math.round(Math.min(V/ref,1)*mx);
+   $("#dlv",el).textContent = L+"%"; $("#dr",el).textContent = R>=1000 ? (R/1000).toFixed(1)+" k\u03a9" : Math.round(R)+" \u03a9"; $("#dv",el).textContent = V.toFixed(2)+" V"; $("#dw",el).textContent = raw.toLocaleString(); $("#dm",el).style.width = (raw/mx*100)+"%";
+   $("#dn",el).textContent = $("#db",el).value==="r4" ? "Uno R4: the 5 V reference means a 3.3 V signal can never pass about 675." : "Brighter light lowers the LDR's resistance, so V out rises."; };
+  el.querySelectorAll("input,select").forEach(x => x.oninput = upd); upd();
+ },
+ adc(el){
+  el.innerHTML = bench("Change the ADC resolution", `<div class="controls"><label for="ab2">Bits</label><input type="range" id="ab2" min="1" max="10" value="3"><span id="abv" class="mono"></span></div><canvas id="ac" width="640" height="260" style="width:100%;max-width:640px;background:var(--surface);border:1px solid var(--line);border-radius:8px"></canvas><p class="explain" id="an2"></p>`);
+  const cv = $("#ac",el), g = cv.getContext("2d");
+  const draw = () => { const bits = +$("#ab2",el).value, lv = 2**bits, W = cv.width, H = cv.height, pad = 30; g.clearRect(0,0,W,H);
+   g.strokeStyle="#8A99AB"; g.setLineDash([6,5]); g.beginPath(); g.moveTo(pad,H-pad); g.lineTo(W-pad,pad); g.stroke(); g.setLineDash([]);
+   g.strokeStyle="#E76F51"; g.lineWidth=2.5; g.beginPath();
+   for (let px=0; px<=W-2*pad; px++){ const v = px/(W-2*pad); const q = Math.round(v*(lv-1))/(lv-1); const x = pad+px, y = H-pad-q*(H-2*pad); px===0 ? g.moveTo(x,y) : g.lineTo(x,y); }
+   g.stroke(); g.lineWidth=1;
+   $("#abv",el).textContent = `${bits}-bit = ${lv} levels`; $("#an2",el).textContent = `Step size at 3.3 V: ${(3.3/lv*1000).toFixed(bits>6?2:0)} mV. The dashed line is the true voltage; the orange steps are what the board sees.`; };
+  $("#ab2",el).oninput = draw; draw();
+ },
+ timing(el){
+  el.innerHTML = bench("Which board notices your button press?", `<p class="explain">Both boards read a sensor every 2 seconds. Start the 10-second run and press the button several times.</p>
+   <div class="controls"><button class="btn primary" id="trun">Start 10-second run</button><button class="btn" id="tbtn" disabled>Press button</button></div>
+   <div class="panel"><div class="kv"><span>delay() board</span><b id="td">0 of 0 noticed</b><span>millis() board</span><b id="tm">0 of 0 noticed</b><span>Time</span><b id="tclk">0.0 s</b></div><p class="explain" id="tmsg"></p></div>`);
+  let start = 0, presses = 0, dSeen = 0, tick = null;
+  $("#trun",el).onclick = () => { presses = dSeen = 0; start = performance.now(); $("#tbtn",el).disabled = false; $("#trun",el).disabled = true; $("#tmsg",el).textContent = "";
+   tick = setInterval(() => { const t = (performance.now()-start)/1000; $("#tclk",el).textContent = t.toFixed(1)+" s"; if (t >= 10){ clearInterval(tick); $("#tbtn",el).disabled = true; $("#trun",el).disabled = false;
+    $("#tmsg",el).textContent = "The delay() board only checks the button in the instant between waits, so it misses most presses. The millis() board checks on every pass through loop()."; logEvent(currentModule,"timing","activity",dSeen+"/"+presses); } }, 100); };
+  $("#tbtn",el).onclick = () => { const t = (performance.now()-start)/1000; presses++; if ((t % 2) < 0.15) dSeen++; $("#td",el).textContent = `${dSeen} of ${presses} noticed`; $("#tm",el).textContent = `${presses} of ${presses} noticed`; };
+ },
+ levels(el){
+  const V = [["device_id (team3-esp32)",0],["Light label: Dark/Dim/Bright",1],["Temperature in \u00b0C",2],["Humidity %",3],["Time in seconds",3],["Sensor name (temp, hum)",0]];
+  const L = ["Nominal","Ordinal","Interval","Ratio"]; let sel = null, right = 0;
+  el.innerHTML = bench("Sort the variables", `<p class="explain">Choose a variable, then its level.</p><div class="controls" id="lv">${V.map((v,i)=>`<button class="chip" data-i="${i}">${v[0]}</button>`).join("")}</div><div class="controls" id="ll">${L.map((l,k)=>`<button class="btn small" data-k="${k}">${l}</button>`).join("")}</div><div class="feedback" id="lf"></div>`);
+  el.querySelectorAll("#lv .chip").forEach(c => c.onclick = () => { if (c.classList.contains("ok")) return; el.querySelectorAll("#lv .chip").forEach(x=>x.classList.remove("sel")); c.classList.add("sel"); sel = +c.dataset.i; });
+  el.querySelectorAll("#ll button").forEach(b => b.onclick = () => { if (sel==null) { $("#lf",el).textContent = "Choose a variable first."; return; }
+   const chip = el.querySelector(`#lv .chip[data-i="${sel}"]`), ok = V[sel][1] === +b.dataset.k;
+   chip.classList.remove("sel"); if (ok){ chip.classList.add("ok"); right++; } else chip.classList.add("no");
+   $("#lf",el).textContent = ok ? `Correct: ${L[V[sel][1]]}.` : `Not quite: it is ${L[V[sel][1]]}.`; $("#lf",el).className = "feedback "+(ok?"ok":"no");
+   if (!ok) setTimeout(()=>chip.classList.remove("no"),1200); sel = null; if (right === V.length) logEvent(currentModule,"levels","activity","complete"); });
+ },
+ volume(el){
+  el.innerHTML = bench("Data volume calculator", `<div class="controls">
+   <label>Interval (s) <input id="vi" type="number" min="2" value="30" style="width:80px"></label>
+   <label>Readings per send <input id="vr" type="number" min="1" value="3" style="width:70px"></label>
+   <label>Devices <input id="vd" type="number" min="1" value="1" style="width:70px"></label>
+   <label>Columns per row <input id="vc" type="number" min="1" value="5" style="width:70px"></label></div>
+   <div class="panel"><div class="kv"><span>Rows per day</span><b id="vrow"></b><span>Days to fill a Sheet</span><b id="vday"></b></div><p class="explain" id="vnote"></p></div>`);
+  const upd = () => { const i = Math.max(2,+$("#vi",el).value||30), r = Math.max(1,+$("#vr",el).value||1), d = Math.max(1,+$("#vd",el).value||1), c = Math.max(1,+$("#vc",el).value||5);
+   const rows = r*86400/i*d, days = (10000000/c)/rows; $("#vrow",el).textContent = Math.round(rows).toLocaleString(); $("#vday",el).textContent = days.toFixed(1);
+   $("#vnote",el).textContent = i < 2 ? "" : "Formula: readings \u00d7 (86,400 \u00f7 interval) \u00d7 devices. Limit: 10,000,000 cells \u00f7 columns."; };
+  el.querySelectorAll("input").forEach(x => x.oninput = upd); upd();
+ },
+ sample(el){
+  const rows = [[2,29.4,70.8,52.3],[4,29.4,70.9,52.1],[6,29.5,70.8,51.8],[8,29.5,70.9,12.4],[10,29.5,71.0,10.9],[12,29.5,70.9,11.6],[16,29.6,71.1,52.0],[18,29.6,71.0,95.7],[20,29.6,71.1,96.3],[22,29.7,71.0,52.4],[24,29.9,78.6,52.2],[26,30.2,84.1,52.5],[28,30.1,80.3,52.3],[30,29.9,75.2,52.1]];
+  const temps = rows.map(r=>r[1]), avg = temps.reduce((a,b)=>a+b,0)/temps.length, bright = rows.filter(r=>r[3]>50).length;
+  el.innerHTML = bench("Sample dataset: check your formulas", `<canvas id="sc" width="640" height="220" style="width:100%;max-width:640px;background:var(--surface);border:1px solid var(--line);border-radius:8px"></canvas>
+   <details style="margin-top:8px"><summary>Show the answers</summary><div class="kv" style="margin-top:6px"><span>COUNT</span><b>${temps.length}</b><span>MAX / MIN temp</span><b>${Math.max(...temps)} / ${Math.min(...temps)} \u00b0C</b><span>AVERAGE temp</span><b>${avg.toFixed(2)} \u00b0C</b><span>Bright / Dark</span><b>${bright} / ${rows.length-bright}</b></div></details>`);
+  const cv = $("#sc",el), g = cv.getContext("2d"), W = cv.width, H = cv.height, p = 34;
+  const x = t => p + (t-2)/(30-2)*(W-2*p), y = v => H-p - v/100*(H-2*p);
+  g.strokeStyle="#C9D3DE"; for (let v=0; v<=100; v+=25){ g.beginPath(); g.moveTo(p,y(v)); g.lineTo(W-p,y(v)); g.stroke(); g.fillStyle="#5B6B7F"; g.font="11px sans-serif"; g.fillText(v+"%",4,y(v)+4); }
+  g.strokeStyle="#C9A227"; g.lineWidth=2.5; g.beginPath(); rows.forEach((r,i)=> i? g.lineTo(x(r[0]),y(r[3])) : g.moveTo(x(r[0]),y(r[3]))); g.stroke();
+  g.fillStyle="#5B6B7F"; g.fillText("Light (%) over time (s): hand at 8\u201312 s, flashlight at 18\u201320 s",p,16);
+ }
+};
+</script>
+<script>/* ============ v2 MOTION LAYER ============ */
+const M = window.Motion || null;
+const canAnim = () => !!(M && M.animate) && !reduceMotion();
+const SPRING = {type:"spring", stiffness:320, damping:30};
+function A(el, kf, opt){ if (!el || !canAnim()) return null; try { return M.animate(el, kf, opt || {duration:.45, ease:[.22,1,.36,1]}); } catch(e){ return null; } }
+function stag(t, from){ return (M && M.stagger) ? M.stagger(t, from ? {startDelay:from} : undefined) : 0; }
+function tween(from, to, ms, cb){
+  if (reduceMotion()) { cb(to); return; }
+  const t0 = performance.now();
+  const step = now => { const p = Math.min(1, (now - t0) / ms), e = 1 - Math.pow(1 - p, 3); cb(from + (to - from) * e); if (p < 1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+}
+function tick(el, to, decimals, suffix){ tween(0, to, 1200, v => el.textContent = v.toFixed(decimals || 0) + (suffix || "")); }
+
+/* toast stack */
+window.toastStack = function(msg, kind){
+  let box = $("#toasts"); if (!box){ box = document.createElement("div"); box.id = "toasts"; box.setAttribute("aria-live","polite"); document.body.appendChild(box); }
+  const t = document.createElement("div"); t.className = "t-item " + (kind || "ok"); t.textContent = msg; box.appendChild(t);
+  A(t, {opacity:[0,1], y:[24,0], scale:[.96,1]}, SPRING);
+  setTimeout(() => { const a = A(t, {opacity:0, x:40}, {duration:.3}); setTimeout(() => t.remove(), a ? 320 : 0); }, 3000);
+};
+
+/* confetti burst */
+function confetti(){
+  if (reduceMotion()) return;
+  let cv = $("#confetti"); if (!cv){ cv = document.createElement("canvas"); cv.id = "confetti"; document.body.appendChild(cv); }
+  const g = cv.getContext("2d"); cv.width = innerWidth; cv.height = innerHeight;
+  const cols = ["#2A9D8F","#E9C46A","#E76F51","#1F3A5F","#9CC3E8"];
+  const P = Array.from({length:140}, () => ({x:innerWidth/2, y:innerHeight*0.35, vx:(Math.random()-0.5)*14, vy:-Math.random()*13-4, r:Math.random()*6+3, c:cols[Math.random()*5|0], a:Math.random()*6, va:(Math.random()-0.5)*0.3}));
+  const t0 = performance.now();
+  (function f(now){ const dt = (now - t0)/1000; g.clearRect(0,0,cv.width,cv.height);
+    P.forEach(p => { p.vy += 0.35; p.x += p.vx; p.y += p.vy; p.a += p.va; g.save(); g.translate(p.x,p.y); g.rotate(p.a); g.fillStyle = p.c; g.globalAlpha = Math.max(0, 1 - dt/2.2); g.fillRect(-p.r/2,-p.r/2,p.r,p.r*0.6); g.restore(); });
+    if (dt < 2.2) requestAnimationFrame(f); else g.clearRect(0,0,cv.width,cv.height); })(t0);
+}
+
+/* spotlight + tilt cards */
+function spotify(root){
+  root.querySelectorAll(".spot").forEach(el => {
+    el.addEventListener("pointermove", e => {
+      const r = el.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+      el.style.setProperty("--mx", x + "px"); el.style.setProperty("--my", y + "px");
+      if (e.pointerType === "mouse" && !reduceMotion()){ el.style.transition = "transform .08s"; el.style.transform = `perspective(900px) rotateX(${(0.5 - y/r.height)*5}deg) rotateY(${(x/r.width - 0.5)*6}deg)`; }
+    });
+    el.addEventListener("pointerleave", () => { el.style.transition = "transform .5s cubic-bezier(.22,1,.36,1)"; el.style.transform = ""; });
+  });
+}
+
+/* reveal on scroll */
+function reveal(nodes, opts){
+  const list = [...nodes]; if (!canAnim() || !("IntersectionObserver" in window)) return;
+  list.forEach(n => { n.style.opacity = 0; n.style.transform = "translateY(24px)"; });
+  const io = new IntersectionObserver(entries => entries.forEach(en => { if (!en.isIntersecting) return; io.unobserve(en.target);
+    const a = A(en.target, {opacity:1, y:[24,0]}, Object.assign({duration:.6, ease:[.22,1,.36,1]}, opts||{}));
+    if (!a){ en.target.style.opacity = ""; en.target.style.transform = ""; } }), {threshold:0.08});
+  list.forEach(n => io.observe(n));
+}
+
+/* scroll progress bar */
+addEventListener("scroll", () => { const b = $("#scrollbar"); if (!b) return; const h = document.documentElement; const p = h.scrollTop / Math.max(1, h.scrollHeight - h.clientHeight); b.style.transform = `scaleX(${p})`; }, {passive:true});
+
+/* ============ RENDERING ============ */
+function ring(pct, size){ size = size || 24; const r = size*0.375, c = 2*Math.PI*r, sw = size/8;
+  return `<svg class="ring" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--line)" stroke-width="${sw}"/><circle class="ring-fg" data-c="${c}" data-p="${pct}" cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--teal)" stroke-width="${sw}" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-pct)}" transform="rotate(-90 ${size/2} ${size/2})" stroke-linecap="round"/></svg>`; }
+function animateRings(root){ root.querySelectorAll(".ring-fg").forEach(c => { const C = +c.dataset.c, p = +c.dataset.p; if (!p) return; A(c, {strokeDashoffset:[C, C*(1-p)]}, {duration:1.1, ease:[.22,1,.36,1]}); }); }
+function modulePct(m){ if (!m.sections) return 0; const total = m.sections.length + 1; let d = m.sections.filter(s => prog.done[m.id+":"+s.id]).length; if (prog.rating[m.id]) d++; return d/total; }
+
+let pillTop = null;
+function renderMap(){
+  const cur = (location.hash.match(/^#\/m\/([^?]+)/) || [])[1];
+  $("#map").innerHTML = `<div class="pill" id="pill"></div>` + COURSE.map(u => `<div class="unit"><div class="unit-title">${esc(u.title)}</div><div class="unit-sub">${esc(u.sub)}${u.locked?" \u2022 coming soon":""}</div>
+    ${u.modules.map(m => u.locked ? `<span class="mod-link locked">${ring(0)}${esc(m.id)} ${esc(m.title)}</span>` :
+      `<a class="mod-link ${cur===m.id?"active":""}" href="#/m/${m.id}">${ring(modulePct(m))}<span>${esc(m.id)} ${esc(m.title)}</span></a>`).join("")}</div>`).join("") +
+    `<div class="map-foot"><a class="mod-link ${location.hash==="#/progress"?"active":""}" href="#/progress">My progress</a><a class="mod-link ${(!cur && location.hash!=="#/progress")?"active":""}" href="#/home">Course home</a></div>`;
+  const act = $("#map .mod-link.active"), pill = $("#pill");
+  if (act && pill){ const top = act.offsetTop, h = act.offsetHeight; pill.style.height = h + "px";
+    if (pillTop != null && canAnim()) A(pill, {top:[pillTop + "px", top + "px"]}, SPRING); pill.style.top = top + "px"; pillTop = top; }
+}
+function renderWho(){ $("#who").textContent = user ? `${user.givenName || user.name} \u2022 ${user.role}` : ""; }
+
+function startScope(){
+  const cv = $("#scope"); if (!cv) return; const g = cv.getContext("2d"); const W = cv.width, H = cv.height;
+  const pts = Array.from({length:180}, () => 52 + (Math.random()-0.5)*1.6); let shadow = 0, target = 0;
+  const setT = ev => { const r = cv.getBoundingClientRect(); const cx = (ev.clientX - r.left)/r.width; target = cx > 0 && cx < 1 ? 1 : 0; };
+  cv.addEventListener("pointermove", setT); cv.addEventListener("pointerdown", setT); cv.addEventListener("pointerleave", () => target = 0);
+  function frame(){ if (!document.body.contains(cv)) return; shadow += (target - shadow) * 0.12;
+   const v = 52 - 40*shadow + (Math.random()-0.5)*1.6; pts.push(v); if (pts.length > 180) pts.shift();
+   g.clearRect(0,0,W,H); g.strokeStyle = "rgba(143,179,214,.16)"; g.lineWidth = 1; for (let k=1;k<4;k++){ g.beginPath(); g.moveTo(0,H*k/4); g.lineTo(W,H*k/4); g.stroke(); }
+   const grad = g.createLinearGradient(0,0,W,0); grad.addColorStop(0,"rgba(233,196,106,.15)"); grad.addColorStop(1,"#E9C46A");
+   g.strokeStyle = grad; g.lineWidth = 3; g.beginPath(); pts.forEach((p,i) => { const x = W - (pts.length-1-i)*(W/179), y = H - p/100*H; i ? g.lineTo(x,y) : g.moveTo(x,y); }); g.stroke();
+   const lx = W, ly = H - pts[pts.length-1]/100*H; g.fillStyle = "#E9C46A"; g.beginPath(); g.arc(lx-4, ly, 6, 0, Math.PI*2); g.fill();
+   const lab = $("#scopeVal"); if (lab) lab.textContent = v.toFixed(1)+" %";
+   reduceMotion() ? setTimeout(() => requestAnimationFrame(frame), 250) : requestAnimationFrame(frame); }
+  frame();
+}
+
+function viewHome(){
+  const mods = Object.values(MODULES), done = mods.filter(m => modulePct(m) === 1).length;
+  const next = mods.find(m => modulePct(m) < 1) || mods[mods.length-1];
+  $("#view").innerHTML = `<p class="crumb">Course home</p><h1>Welcome, ${esc(user.givenName || user.name.split(" ")[0])}</h1>
+   <div class="bento">
+    <a class="spot continue span4" href="#/m/${next.id}"><span class="lbl">${modulePct(next) ? "Continue where you left off" : "Start here"}</span><h3>Module ${next.id}: ${esc(next.title)}</h3>
+     <span class="lbl">${next.minutes} minutes \u2022 ${Math.round(modulePct(next)*100)}% done</span></a>
+    <div class="spot span2"><div class="big" data-tick="${done}">0</div><div class="lbl">of ${mods.length} Unit 1 modules complete</div></div>
+    <div class="spot span3"><div class="big" data-tick="${((prog.minutes||0)/60).toFixed(1)}" data-dec="1" data-suf=" h">0</div><div class="lbl">active learning time on this device</div></div>
+    <div class="spot span3"><div class="big" data-tick="${(prog.uploads||[]).length}">0</div><div class="lbl">files uploaded for your teacher</div></div>
+   </div>
+   <h2>Unit 1 modules</h2><div class="bento">
+    ${mods.map(m => `<a class="spot mod-card span3" href="#/m/${m.id}"><span class="num">Module ${m.id} \u2022 ${m.minutes} min</span><h3>${esc(m.title)}</h3>
+      <span class="lbl">${m.sections.length} sections, quiz, checkpoint ${esc(m.checkpoint.code)}</span><div class="bar"><i data-w="${Math.round(modulePct(m)*100)}"></i></div></a>`).join("")}
+   </div><div class="note">Press <span class="kbd">Ctrl</span> + <span class="kbd">K</span> (or tap Search) to jump to any module or section. Use Listen on any section to hear it read aloud.</div>`;
+  document.querySelectorAll("[data-tick]").forEach(el => tick(el, +el.dataset.tick, +(el.dataset.dec||0), el.dataset.suf||""));
+  document.querySelectorAll(".mod-card .bar i").forEach(i => { if (canAnim()) A(i, {width:["0%", i.dataset.w + "%"]}, {duration:1, delay:.3, ease:[.22,1,.36,1]}); i.style.width = i.dataset.w + "%"; });
+  A(document.querySelectorAll(".bento .spot"), {opacity:[0,1], y:[20,0], scale:[.98,1]}, {delay:stag(0.06), type:"spring", stiffness:260, damping:26});
+  spotify($("#view"));
+}
+
+let pendingAnchor = null, currentSection = "";
+function viewModule(id){
+  const m = MODULES[id]; if (!m){ location.hash = "#/home"; return; }
+  currentModule = id; logEvent(id, "open", "module_open", "");
+  const v = $("#view"), pct = modulePct(m);
+  v.innerHTML = `<div class="mod-layout"><div>
+   <div class="mod-hero"><p class="crumb">Unit 1 \u2022 Module ${id}</p><h1>${esc(m.title)}</h1>
+    <div class="meta"><span>${m.minutes} minutes</span><span>Checkpoint: ${esc(m.checkpoint.code)}</span><span id="pctLbl">${Math.round(pct*100)}% done</span></div>
+    <div class="ring-big">${ring(pct, 64)}</div></div>
+   <div class="objectives"><b>By the end of this module, you will be able to:</b><ul>${m.objectives.map(o=>`<li>${esc(o)}</li>`).join("")}</ul></div>
+   ${m.sections.map((s,i) => `<section class="section" id="s-${s.id}"><div class="sec-head"><h2>${i+1}. ${esc(s.title)}</h2>
+     <div class="sec-actions"><button class="btn small" data-listen="${s.id}">Listen</button><button class="btn small done-btn ${prog.done[id+":"+s.id]?"done":""}" data-done="${s.id}">${prog.done[id+":"+s.id]?"Done":"Mark as done"}</button></div></div>
+     <div class="sec-body">${s.html}</div>${s.interactive ? `<div data-int="${s.interactive}"></div>` : ""}</section>`).join("")}
+   <section class="section" id="s-quiz"><h2>Check your understanding</h2><div id="quiz"></div></section>
+   <section class="section" id="s-rating"><h2>Self-rating</h2><p>Choose the description that fits you right now.</p><div class="rating" id="rating"></div></section>
+   <section class="section" id="s-output"><h2>Competency checkpoint and output</h2>
+    <table class="t"><tr><th>Objective</th><th>Task</th><th>Met when\u2026</th></tr><tr><td>${esc(m.checkpoint.code)}</td><td>${esc(m.checkpoint.task)}</td><td>${esc(m.checkpoint.met)}</td></tr></table>
+    <p><b>${esc(m.checkpoint.upload)}</b> Images, PDF, Office files, CSV, code files, ZIP, or short videos up to ${CONFIG.MAX_UPLOAD_MB} MB.</p>
+    <div class="drop" id="drop"><p>Drop a file here or</p><input type="file" id="file" aria-label="Choose a file to upload"><p class="err" id="upErr"></p><span class="prog"></span></div>
+    <div class="uplist" id="uplist"></div></section>
+   <div class="controls" style="margin-top:28px">${prevNext(id)}</div></div>
+   <nav class="toc" aria-label="On this page"><b>On this page</b>${m.sections.map(s=>`<a href="#/m/${id}?s=${s.id}" data-toc="s-${s.id}">${esc(s.title)}</a>`).join("")}
+    <a href="#/m/${id}?s=quiz" data-toc="s-quiz">Quiz</a><a href="#/m/${id}?s=rating" data-toc="s-rating">Self-rating</a><a href="#/m/${id}?s=output" data-toc="s-output">Checkpoint and output</a></nav></div>`;
+  v.querySelectorAll("[data-int]").forEach(el => INTERACTIVES[el.dataset.int](el));
+  v.querySelectorAll("[data-listen]").forEach(b => b.onclick = () => { const sec = m.sections.find(s=>s.id===b.dataset.listen); speak(sec.title + ". " + v.querySelector("#s-"+sec.id+" .sec-body").innerText); A(b, {scale:[1,.92,1]}, {duration:.3}); });
+  v.querySelectorAll("[data-done]").forEach(b => b.onclick = () => {
+    const key = id+":"+b.dataset.done; if (prog.done[key]) return;
+    prog.done[key] = Date.now(); saveProg(); logEvent(id, b.dataset.done, "section_done", "1");
+    b.classList.add("done"); b.textContent = "Done"; A(b, {scale:[1,1.15,1]}, {type:"spring", stiffness:500, damping:14});
+    updateModuleProgress(m); checkModuleDone(m); renderMap(); });
+  v.querySelectorAll(".toc a").forEach(a => a.onclick = e => { e.preventDefault(); const t = document.getElementById(a.dataset.toc); if (t) t.scrollIntoView({behavior: reduceMotion()?"auto":"smooth", block:"start"}); history.replaceState(null, "", a.getAttribute("href")); });
+  renderQuiz(m); renderRating(m); setupUpload(m); renderMap(); animateRings(v);
+  reveal(v.querySelectorAll(".section, .objectives"));
+  if ("IntersectionObserver" in window){
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ currentSection = e.target.id; v.querySelectorAll(".toc a").forEach(a => a.classList.toggle("on", a.dataset.toc === e.target.id)); } }), {rootMargin:"-30% 0px -60% 0px"});
+    v.querySelectorAll(".section[id]").forEach(s => io.observe(s));
+  }
+  if (pendingAnchor){ const t = document.getElementById("s-" + pendingAnchor); pendingAnchor = null; if (t) setTimeout(() => { t.style.opacity = ""; t.style.transform = ""; t.scrollIntoView({block:"start"}); }, 60); }
+  else v.focus({preventScroll:true});
+}
+function updateModuleProgress(m){ const p = modulePct(m), lbl = $("#pctLbl"); if (lbl) lbl.textContent = Math.round(p*100) + "% done";
+  const c = $(".ring-big .ring-fg"); if (c){ const C = +c.dataset.c, prev = +c.getAttribute("stroke-dashoffset"); c.setAttribute("stroke-dashoffset", C*(1-p)); A(c, {strokeDashoffset:[prev, C*(1-p)]}, {duration:.8}); } }
+function prevNext(id){ const ids = Object.keys(MODULES), i = ids.indexOf(id);
+  return (i>0?`<a class="btn" href="#/m/${ids[i-1]}">Previous module</a>`:"") + (i<ids.length-1?`<a class="btn primary" href="#/m/${ids[i+1]}">Next module</a>`:`<a class="btn primary" href="#/progress">See my progress</a>`); }
+function checkModuleDone(m){ if (modulePct(m) === 1 && !prog.done[m.id+":__module"]) { prog.done[m.id+":__module"] = Date.now(); saveProg(); logEvent(m.id, "module", "module_done", "1"); toast(`Module ${m.id} complete.`); confetti(); } }
+function renderQuiz(m){
+  const box = $("#quiz"); box.innerHTML = m.quiz.map((q,i) => `<div class="q"><b>${i+1}. ${esc(q.q)}</b><div class="opts">${q.o.map((o,k)=>`<button class="opt" data-q="${i}" data-k="${k}">${esc(o)}</button>`).join("")}</div><div class="explain" id="qe${i}"></div></div>`).join("");
+  m.quiz.forEach((q,i) => { const prev = prog.quiz[m.id+":"+i]; if (prev != null) mark(i, prev, false); });
+  box.querySelectorAll(".opt").forEach(b => b.onclick = () => { const i = +b.dataset.q; if (prog.quiz[m.id+":"+i] != null) return; mark(i, +b.dataset.k, true); });
+  function mark(i, k, fresh){ const q = m.quiz[i]; const btns = box.querySelectorAll(`.opt[data-q="${i}"]`);
+   btns.forEach(x => { x.disabled = true; if (+x.dataset.k === q.a) x.classList.add("ok"); }); if (k !== q.a) btns[k].classList.add("no");
+   const ex = $("#qe"+i); ex.textContent = (k===q.a ? "Correct. " : "Not quite. ") + q.e;
+   if (fresh){ prog.quiz[m.id+":"+i] = k; saveProg(); logEvent(m.id, "q"+(i+1), "quiz", (k===q.a ? "correct" : "incorrect") + "|" + k);
+     if (k === q.a) A(btns[k], {scale:[1,1.04,1]}, {type:"spring", stiffness:500, damping:15}); else A(btns[k], {x:[0,-9,9,-6,6,0]}, {duration:.42});
+     A(ex, {opacity:[0,1], y:[-6,0]}, {duration:.3}); } }
+}
+function renderRating(m){
+  const box = $("#rating"); box.innerHTML = m.rating.map((r,i)=>`<label><input type="radio" name="rate" value="${i+1}" ${prog.rating[m.id]==i+1?"checked":""}><span><b>Level ${i+1}.</b> ${esc(r)}</span></label>`).join("");
+  box.querySelectorAll("input").forEach(x => x.onchange = () => { prog.rating[m.id] = +x.value; saveProg(); logEvent(m.id, "rating", "self_rating", x.value); toast("Self-rating saved."); A(x.closest("label"), {scale:[1,1.02,1]}, {type:"spring", stiffness:400, damping:18}); updateModuleProgress(m); checkModuleDone(m); renderMap(); });
+}
+function setupUpload(m){
+  const list = () => { const ups = (prog.uploads||[]).filter(u => u.module === m.id); $("#uplist").innerHTML = ups.length ? "Uploaded: " + ups.map(u => esc(u.name)).join(", ") : ""; };
+  const d = $("#drop");
+  const send = async file => {
+    $("#upErr").textContent = "";
+    if (!file) return; if (file.size > CONFIG.MAX_UPLOAD_MB*1024*1024) return $("#upErr").textContent = `This file is larger than ${CONFIG.MAX_UPLOAD_MB} MB. Compress it or upload a smaller version.`;
+    if (!apiReady()) return $("#upErr").textContent = "Uploads are not connected yet. Ask your teacher to add the course server address.";
+    $("#upErr").textContent = "Uploading " + file.name + "\u2026"; d.classList.add("busy");
+    const data = await new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(",")[1]); r.onerror = rej; r.readAsDataURL(file); });
+    const resp = await api("upload", {moduleId:m.id, fileName:file.name, mimeType:file.type || "application/octet-stream", data}, false);
+    d.classList.remove("busy");
+    if (resp.ok){ prog.uploads.push({module:m.id, name:file.name, ts:Date.now()}); saveProg(); $("#upErr").textContent = ""; toast("Uploaded " + file.name); list(); logEvent(m.id, "upload", "upload", file.name); A(d, {scale:[1,1.02,1]}, {duration:.4}); }
+    else { $("#upErr").textContent = ({file_type_not_allowed:"This file type is not accepted. Use an image, PDF, Office file, CSV, code file, ZIP, or video.", file_too_large:"This file is too large.", daily_upload_limit:"You have reached today's upload limit. Try again tomorrow.", network:"The upload did not reach the server. Check your connection and try again."})[resp.error] || "Upload failed: " + (resp.error || "unknown error"); A(d, {x:[0,-8,8,-4,4,0]}, {duration:.4}); }
+  };
+  $("#file").onchange = e => send(e.target.files[0]);
+  d.ondragover = e => { e.preventDefault(); d.classList.add("over"); }; d.ondragleave = () => d.classList.remove("over");
+  d.ondrop = e => { e.preventDefault(); d.classList.remove("over"); send(e.dataTransfer.files[0]); };
+  list();
+}
+function viewProgress(){
+  const mods = Object.values(MODULES);
+  $("#view").innerHTML = `<p class="crumb">My progress</p><h1>My progress</h1>
+   <div class="bento"><div class="spot span3"><div class="big" data-tick="${((prog.minutes||0)/60).toFixed(1)}" data-dec="1" data-suf=" h">0</div><div class="lbl">active time on this device</div></div>
+    <div class="spot span3"><div class="big" data-tick="${(prog.uploads||[]).length}">0</div><div class="lbl">files uploaded</div></div>
+    ${mods.map(m => { const qa = m.quiz.map((q,i)=>prog.quiz[m.id+":"+i]); const ans = qa.filter(x=>x!=null).length, right = qa.filter((x,i)=>x===m.quiz[i].a).length;
+      return `<a class="spot mod-card span3" href="#/m/${m.id}"><span class="num">Module ${m.id}</span><h3>${esc(m.title)}</h3>
+       <div class="kv"><span>Progress</span><b>${Math.round(modulePct(m)*100)}%</b><span>Quiz</span><b>${ans?right+" / "+m.quiz.length:"not started"}</b><span>Self-rating</span><b>${prog.rating[m.id]?"Level "+prog.rating[m.id]:"not yet"}</b><span>Uploads</span><b>${(prog.uploads||[]).filter(u=>u.module===m.id).length}</b></div>
+       <div class="bar"><i data-w="${Math.round(modulePct(m)*100)}"></i></div></a>`; }).join("")}</div>
+   <p class="explain">Your teacher sees your time, progress, and uploads from all your devices in the course records.</p>`;
+  document.querySelectorAll("[data-tick]").forEach(el => tick(el, +el.dataset.tick, +(el.dataset.dec||0), el.dataset.suf||""));
+  document.querySelectorAll(".mod-card .bar i").forEach(i => { if (canAnim()) A(i, {width:["0%", i.dataset.w + "%"]}, {duration:1, delay:.2}); i.style.width = i.dataset.w + "%"; });
+  A(document.querySelectorAll(".bento .spot"), {opacity:[0,1], y:[20,0]}, {delay:stag(0.05), duration:.5});
+  spotify($("#view"));
+}
+
+/* ============ COMMAND PALETTE ============ */
+function buildIndex(){ const out = []; Object.values(MODULES).forEach(m => { out.push({t:`Module ${m.id}: ${m.title}`, sub:"Module", h:`#/m/${m.id}`}); m.sections.forEach(s => out.push({t:s.title, sub:`Module ${m.id}`, h:`#/m/${m.id}?s=${s.id}`})); });
+  out.push({t:"My progress", sub:"Page", h:"#/progress"}, {t:"Course home", sub:"Page", h:"#/home"}, {t:"Settings", sub:"Page", h:"settings"}); return out; }
+function openPalette(){
+  if (!user) return; const dlg = $("#palette"), inp = $("#palInput"), list = $("#palList"), idx = buildIndex(); let sel = 0, items = idx;
+  const draw = () => { list.innerHTML = items.slice(0,40).map((it,i)=>`<a href="${it.h}" class="${i===sel?"sel":""}" data-i="${i}"><span>${esc(it.t)}</span><small>${esc(it.sub)}</small></a>`).join("") || `<p class="explain" style="padding:10px 12px">No matches. Try a module number like 1.3, or a word like ADC.</p>`;
+    list.querySelectorAll("a").forEach(a => a.onclick = e => { e.preventDefault(); go(items[+a.dataset.i]); }); const s = list.querySelector(".sel"); if (s) s.scrollIntoView({block:"nearest"}); };
+  const go = it => { dlg.close(); if (!it) return; if (it.h === "settings") return $("#settings").showModal(); location.hash = it.h; };
+  inp.value = ""; draw(); dlg.showModal(); inp.focus(); A(dlg, {opacity:[0,1], scale:[.97,1], y:[-8,0]}, SPRING);
+  inp.oninput = () => { const q = inp.value.toLowerCase().trim(); items = q ? idx.filter(it => (it.t + " " + it.sub).toLowerCase().includes(q)) : idx; sel = 0; draw(); };
+  inp.onkeydown = e => { if (e.key==="ArrowDown"){ sel = Math.min(sel+1, items.length-1); draw(); e.preventDefault(); } else if (e.key==="ArrowUp"){ sel = Math.max(sel-1, 0); draw(); e.preventDefault(); } else if (e.key==="Enter"){ go(items[sel]); e.preventDefault(); } };
+}
+addEventListener("keydown", e => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k"){ e.preventDefault(); openPalette(); } });
+
+
+/* ============ DEVICE ADAPTATION ============ */
+let device = "laptop";
+function detectDevice(){
+  const w = innerWidth, ua = navigator.userAgent, coarse = matchMedia("(pointer: coarse)").matches;
+  const iPad = /iPad/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+  const androidTablet = /Android/.test(ua) && !/Mobile/.test(ua);
+  if (w < 600) return "phone";
+  if (iPad || androidTablet) return "tablet";
+  if (/iPhone|iPod|Android.+Mobile/.test(ua) && w < 950) return "phone";
+  if (coarse && w <= 1366) return "tablet";
+  return w < 1440 ? "laptop" : "desktop";
+}
+function applyDevice(){
+  const d = detectDevice(), root = document.documentElement;
+  root.dataset.orient = innerWidth > innerHeight ? "landscape" : "portrait";
+  if (d === device && root.dataset.device) return;
+  device = d; root.dataset.device = d;
+  if (d !== "desktop") document.body.classList.remove("ai-docked");
+  else if (aiOpen) document.body.classList.add("ai-docked");
+}
+addEventListener("resize", () => { clearTimeout(applyDevice.t); applyDevice.t = setTimeout(applyDevice, 150); });
+addEventListener("orientationchange", () => setTimeout(applyDevice, 200));
+
+/* ============ DATA PRIVACY STATEMENT ============ */
+const PRIVACY_HTML = `
+<h3>Data Privacy Statement</h3>
+<p><b>Who we are.</b> This course, <i>From Sensor to Insight</i>, is managed by [course owner or school name] as the personal information controller.</p>
+<p><b>What we collect.</b> Your last and given name, age, email address, role, grade level(s), and school or industry; your learning activity (visits, active time, device type, sections completed, quiz answers, self-ratings); the files you upload; and the questions you ask the AI assistant and its answers.</p>
+<p><b>Why we collect it.</b> To deliver the course, let your teacher monitor and support your learning, give feedback, keep the course safe, and improve it. Any research use will use only anonymized data and requires separate approval.</p>
+<p><b>Legal basis.</b> Your consent, and for learners below 18, the consent of a parent or guardian, under the Data Privacy Act of 2012 (Republic Act No. 10173) and its Implementing Rules and Regulations.</p>
+<p><b>Where it is stored and who can see it.</b> In the course owner's Google account (Google Sheets and Google Drive), accessible only to the course owner and your teacher(s). Questions you send to the AI assistant are processed by Google's Gemini API, or by Anthropic's Claude API as a backup, to generate answers. We do not sell your data or share it with anyone else unless required by law.</p>
+<p><b>How long we keep it.</b> Until [retention period, e.g., one year after the course ends], after which it is deleted.</p>
+<p><b>How we protect it.</b> Access is limited to authorized people, your uploaded files are kept in private folders, and only the data needed for the course is collected.</p>
+<p><b>Your rights.</b> You have the right to be informed, to access, to object, to correct (rectification), to erasure or blocking, to data portability, and to damages, and the right to file a complaint with the National Privacy Commission. You may withdraw your consent at any time.</p>
+<p><b>Contact.</b> [Data Protection Officer name, email address, and office].</p>`;
+
+/* ============ WELCOME, SIGN-UP, AND RETURNING USERS ============ */
+const GRADES = Array.from({length:12}, (_, i) => "Grade " + (i + 1));
+const INDUSTRIES = ["Education and training","Information technology","Engineering","Manufacturing","Electronics and semiconductors","Energy and utilities","Telecommunications","Agriculture and food","Healthcare","Government and public service","Finance and business","Research and academe","Other"];
+function viewWelcome(mode){
+  mode = mode || "new";
+  const words = "From Sensor to Insight".split(" ");
+  const traces = ["M-20 120 H220 V60 H420","M-20 320 H160 V420 H520","M1500 90 H1180 V200 H960","M1500 380 H1260 V300 H1040","M300 700 V560 H640","M1100 700 V540 H880"];
+  $("#view").innerHTML = `<section class="hero">
+    <svg class="beams" viewBox="0 0 1440 640" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="beamGrad" x1="0" x2="1"><stop offset="0" stop-color="#2A9D8F" stop-opacity="0"/><stop offset=".5" stop-color="#E9C46A"/><stop offset="1" stop-color="#E76F51" stop-opacity="0"/></linearGradient></defs>
+     ${traces.map(d=>`<path d="${d}"/>`).join("")}${traces.map(d=>`<path class="pulse" d="${d}"/>`).join("")}</svg>
+    <div class="hero-grid">
+     <div><h1 aria-label="From Sensor to Insight">${words.map(w=>`<span class="w">${w}</span>`).join(" ")}</h1>
+      <p class="lede">Build a real IoT system, collect your own data, and learn to clean it, analyze it, model it, and act on it, with AI as a partner you check, not a shortcut you trust.</p>
+      <div class="tickers">${[[4,"boards"],[10,"days"],[80,"hours"],[8,"competencies"]].map(t=>`<div class="ticker"><b data-to="${t[0]}">0</b><span>${t[1]}</span></div>`).join("")}</div>
+      <button class="btn shimmer" id="ctaStart">Start the course</button>
+      <div class="board-chips">${["Arduino Uno R4 WiFi","ESP32","ESP8266","Raspberry Pi Pico W"].map(b=>`<span class="board-chip">${b}</span>`).join("")}</div></div>
+     <div class="scope"><canvas id="scope" width="900" height="300" aria-label="Live light sensor trace. Move your finger or mouse over it to cast a shadow."></canvas>
+      <div class="readout"><span>LDR \u2022 light</span><span id="scopeVal">52.0 %</span></div>
+      <p class="hint">Move your finger or mouse over the trace: your hand is a shadow over a light sensor.</p></div></div>
+   </section>
+   <div class="reg-wrap">
+    <div class="how"><h2 style="margin-top:.4em">How the course works</h2>
+     ${[["Build","Wire sensors to a microcontroller and program it in C++ or MicroPython."],["Collect","Send live readings over Wi-Fi to Google Sheets through Apps Script."],["Analyze","Clean, summarize, and model your data in Sheets and Python."],["Act","Automate alerts, control devices, and present a data story."]].map((s,i)=>`<div class="how-step"><i>${i+1}</i><div><b>${s[0]}</b><br><span class="explain">${s[1]}</span></div></div>`).join("")}
+     <div class="note">Sensi, the course's AI learning assistant, can explain concepts and give hints as you learn. It is an AI, not a person, and it can make mistakes.</div></div>
+    <div class="card" id="regCard">
+     <div class="seg" role="tablist" aria-label="Sign-up options">
+      <button role="tab" id="tabNew" aria-selected="${mode==="new"}">I'm new here</button>
+      <button role="tab" id="tabBack" aria-selected="${mode==="back"}">I've been here before</button></div>
+     <div id="formArea"></div></div></div>`;
+  startScope();
+  document.querySelectorAll(".ticker b").forEach((b,i) => setTimeout(() => tick(b, +b.dataset.to), 250 + i*120));
+  A(document.querySelectorAll(".hero h1 .w"), {opacity:[0,1], y:[48,0], rotate:[4,0]}, {delay:stag(0.09), type:"spring", stiffness:260, damping:24});
+  A(document.querySelectorAll(".hero .lede, .tickers, #ctaStart, .board-chips"), {opacity:[0,1], y:[16,0]}, {delay:stag(0.08, 0.35), duration:.6});
+  A(".hero .scope", {opacity:[0,1], scale:[.94,1], rotate:[-1.5,0]}, {delay:.25, type:"spring", stiffness:180, damping:22});
+  reveal(document.querySelectorAll(".how-step, #regCard"));
+  $("#ctaStart").onclick = () => { $("#regCard").scrollIntoView({behavior: reduceMotion() ? "auto" : "smooth", block:"start"}); A("#regCard", {scale:[1,1.02,1]}, {duration:.5, delay:.35}); };
+  $("#tabNew").onclick = () => { setTab("new"); }; $("#tabBack").onclick = () => { setTab("back"); };
+  function setTab(m){ $("#tabNew").setAttribute("aria-selected", m==="new"); $("#tabBack").setAttribute("aria-selected", m==="back"); m === "new" ? newForm() : backForm(); A("#formArea", {opacity:[0,1], y:[8,0]}, {duration:.3}); }
+  setTab(mode);
+}
+
+function newForm(){
+  $("#formArea").innerHTML = `<form id="reg" novalidate>
+   <h2 style="margin:.2em 0 .1em">Create your learner profile</h2><p class="explain" style="margin-top:0">You only do this once. Next time, just enter your email.</p>
+   <div class="row2"><div class="field"><label for="rLast">Last name</label><input id="rLast" autocomplete="family-name" required></div>
+    <div class="field"><label for="rGiven">Given name</label><input id="rGiven" autocomplete="given-name" required></div></div>
+   <div class="row2"><div class="field"><label for="rAge">Age</label><input id="rAge" type="number" inputmode="numeric" min="5" max="100" required></div>
+    <div class="field"><label for="rEmail">Email / School email</label><input id="rEmail" type="email" autocomplete="email" inputmode="email" required></div></div>
+   <fieldset class="field roleset"><legend>I am a</legend><div class="seg seg-sm">${["Student","Teacher","Professional"].map((r,i)=>`<label><input type="radio" name="role" value="${r}" ${i===0?"checked":""}><span>${r}</span></label>`).join("")}</div></fieldset>
+   <div id="roleFields"></div>
+   <div class="privacy" tabindex="0" aria-label="Data Privacy Statement">${PRIVACY_HTML}</div>
+   <label class="consent"><input type="checkbox" id="rConsent"><span>I have read and agree to the Data Privacy Statement.</span></label>
+   <label class="consent" id="guardianRow" hidden><input type="checkbox" id="rGuardian"><span>Because I am below 18, my parent or guardian has read the Data Privacy Statement and agrees to my participation.</span></label>
+   <div class="err" id="rErr" role="alert"></div>
+   <button class="btn primary big" type="submit" id="rGo">Create profile and start</button></form>`;
+  const roleFields = () => {
+    const role = document.querySelector('input[name="role"]:checked').value;
+    $("#roleFields").innerHTML = role === "Student" ?
+      `<div class="row2"><div class="field"><label for="rGrade">Grade level</label><select id="rGrade"><option value="">Choose your grade</option>${GRADES.map(g=>`<option>${g}</option>`).join("")}</select></div>
+       <div class="field"><label for="rSchool">School</label><input id="rSchool" autocomplete="organization"></div></div>` :
+      role === "Teacher" ?
+      `<fieldset class="field"><legend>Grade levels I teach <span class="explain">(choose all that apply)</span></legend><div class="chips">${GRADES.concat(["University Instructor/Professor"]).map(g=>`<label class="chk"><input type="checkbox" name="tgrade" value="${g}"><span>${g}</span></label>`).join("")}</div></fieldset>
+       <div class="field"><label for="rSchool">School or university</label><input id="rSchool" autocomplete="organization"></div>` :
+      `<div class="row2"><div class="field"><label for="rIndustry">Industry</label><select id="rIndustry"><option value="">Choose your industry</option>${INDUSTRIES.map(g=>`<option>${g}</option>`).join("")}</select></div>
+       <div class="field" id="otherWrap" hidden><label for="rOther">Your industry</label><input id="rOther"></div></div>`;
+    const ind = $("#rIndustry"); if (ind) ind.onchange = () => { $("#otherWrap").hidden = ind.value !== "Other"; };
+    A("#roleFields", {opacity:[0,1], y:[6,0]}, {duration:.25});
+  };
+  document.querySelectorAll('input[name="role"]').forEach(r => r.onchange = roleFields); roleFields();
+  $("#rAge").oninput = () => { const a = +$("#rAge").value; $("#guardianRow").hidden = !(a && a < 18); };
+  $("#reg").onsubmit = async e => {
+    e.preventDefault();
+    const fail = msg => { $("#rErr").textContent = msg; A("#reg", {x:[0,-10,10,-6,6,0]}, {duration:.4}); };
+    const last = $("#rLast").value.trim(), given = $("#rGiven").value.trim(), age = Math.round(+$("#rAge").value), email = $("#rEmail").value.trim().toLowerCase();
+    const role = document.querySelector('input[name="role"]:checked').value;
+    if (last.length < 2 || given.length < 1) return fail("Enter your last name and given name.");
+    if (!(age >= 5 && age <= 100)) return fail("Enter your age as a number from 5 to 100.");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return fail("Enter a valid email address, like name@school.edu.ph.");
+    let gradeLevels = [], school = "", industry = "";
+    if (role === "Student"){ if (!$("#rGrade").value) return fail("Choose your grade level."); gradeLevels = [$("#rGrade").value]; school = $("#rSchool").value.trim(); }
+    if (role === "Teacher"){ gradeLevels = [...document.querySelectorAll('input[name="tgrade"]:checked')].map(x => x.value); if (!gradeLevels.length) return fail("Choose at least one grade level you teach."); school = $("#rSchool").value.trim(); }
+    if (role === "Professional"){ industry = $("#rIndustry").value === "Other" ? $("#rOther").value.trim() : $("#rIndustry").value; if (!industry) return fail("Choose or type your industry."); }
+    if ((role !== "Professional") && !school) return fail("Enter your school.");
+    if (!$("#rConsent").checked) return fail("Read the Data Privacy Statement and tick the box to agree.");
+    if (age < 18 && !$("#rGuardian").checked) return fail("Learners below 18 need a parent or guardian to agree. Ask them to read the statement with you.");
+    const profile = {email, lastName:last, givenName:given, name:given + " " + last, age, role, gradeLevels, school, industry, privacyConsent:true, guardianConsent: age < 18, device};
+    $("#rGo").disabled = true; $("#rGo").textContent = "Creating your profile\u2026";
+    user = {email, givenName:given, lastName:last, name:profile.name, role, gradeLevels, minor: age < 18, aiAllowed: age >= CONFIG.AI_MIN_AGE};
+    const r = await api("register", profile);
+    if (r.ok === false && !r.offline && r.error !== "network"){
+      user = null; $("#rGo").disabled = false; $("#rGo").textContent = "Create profile and start";
+      return fail(({invalid_email:"This email is not allowed for this course. Use your school email.", invalid_age:"Check your age.", guardian_consent_required:"A parent or guardian must agree for learners below 18.", consent_required:"Please agree to the Data Privacy Statement."})[r.error] || "We couldn't create your profile: " + r.error);
+    }
+    rememberUser(); prog = store.get(pkey(), {done:{}, quiz:{}, rating:{}, uploads:[], minutes:0});
+    api("access", {device, userAgent:navigator.userAgent.slice(0,140), page:"register"});
+    toast(r.ok ? `Welcome, ${given}! Your profile is ready.` : "Saved on this device. We'll sync when you're online.");
+    location.hash = "#/home"; route();
+  };
+}
+
+function backForm(){
+  $("#formArea").innerHTML = `<form id="back" novalidate><h2 style="margin:.2em 0 .1em">Welcome back</h2>
+   <p class="explain" style="margin-top:0">Enter the email you used when you signed up. We'll bring back your profile and progress.</p>
+   <div class="field"><label for="bEmail">Email / School email</label><input id="bEmail" type="email" autocomplete="email" inputmode="email" required></div>
+   <div class="err" id="bErr" role="alert"></div><button class="btn primary big" type="submit" id="bGo">Continue</button></form>`;
+  $("#back").onsubmit = async e => {
+    e.preventDefault();
+    const email = $("#bEmail").value.trim().toLowerCase(), err = $("#bErr");
+    const fail = msg => { err.textContent = msg; A("#back", {x:[0,-10,10,-6,6,0]}, {duration:.4}); };
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return fail("Enter a valid email address.");
+    $("#bGo").disabled = true; $("#bGo").textContent = "Finding your profile\u2026";
+    const local = store.get("sti_profiles", {})[email];
+    let found = null, serverProg = null;
+    if (apiReady()){
+      try { const r = await fetch(CONFIG.API_URL, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify({action:"lookup", email})}).then(x => x.json());
+        if (r.ok && r.found){ const p = r.profile; found = {email, givenName:p.givenName, lastName:(local && local.lastName) || "", name:p.givenName, role:p.role, gradeLevels:p.gradeLevels, minor:p.minor, aiAllowed:p.aiAllowed}; serverProg = r.progress; }
+        else if (r.ok && !r.found && !local){ $("#bGo").disabled = false; $("#bGo").textContent = "Continue"; return fail("We couldn't find that email. Check the spelling, or choose \u201cI'm new here\u201d to sign up."); }
+      } catch(e){ /* fall back to this device */ }
+    }
+    if (!found && local) found = local;
+    if (!found){ $("#bGo").disabled = false; $("#bGo").textContent = "Continue"; return fail(apiReady() ? "We couldn't reach the course server. Check your connection and try again." : "This device has no profile for that email. Choose \u201cI'm new here\u201d to sign up."); }
+    user = found; rememberUser();
+    prog = store.get(pkey(), {done:{}, quiz:{}, rating:{}, uploads:[], minutes:0});
+    if (serverProg){ prog.done = Object.assign({}, serverProg.done, prog.done); prog.quiz = Object.assign({}, serverProg.quiz, prog.quiz); prog.rating = Object.assign({}, serverProg.rating, prog.rating); saveProg(); }
+    api("access", {device, userAgent:navigator.userAgent.slice(0,140), page:"return"});
+    toast(`Welcome back, ${user.givenName || user.name}!`); location.hash = "#/home"; route();
+  };
+}
+function rememberUser(){ store.set("sti_user", user); const all = store.get("sti_profiles", {}); all[user.email] = user; store.set("sti_profiles", all); }
+
+/* ============ SENSI: AI LEARNING ASSISTANT ============ */
+let aiOpen = false, aiHistory = [], aiBusy = false;
+function mdLite(text){
+  const blocks = String(text).split(/```/); let html = "";
+  blocks.forEach((b, i) => {
+    if (i % 2 === 1){ const code = b.replace(/^[a-zA-Z0-9+#-]*\n/, ""); html += `<pre class="code">${esc(code.replace(/\n$/,""))}</pre>`; return; }
+    const lines = esc(b).split("\n"); let list = null;
+    const flush = () => { if (list){ html += `</${list}>`; list = null; } };
+    lines.forEach(l => {
+      const inline = s => s.replace(/`([^`]+)`/g, "<code>$1</code>").replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>");
+      let m;
+      if ((m = l.match(/^\s*[-*]\s+(.*)/))){ if (list !== "ul"){ flush(); html += "<ul>"; list = "ul"; } html += `<li>${inline(m[1])}</li>`; }
+      else if ((m = l.match(/^\s*\d+[.)]\s+(.*)/))){ if (list !== "ol"){ flush(); html += "<ol>"; list = "ol"; } html += `<li>${inline(m[1])}</li>`; }
+      else if (!l.trim()){ flush(); }
+      else if ((m = l.match(/^#{1,4}\s+(.*)/))){ flush(); html += `<p><b>${inline(m[1])}</b></p>`; }
+      else { flush(); html += `<p>${inline(l)}</p>`; }
+    });
+    flush();
+  });
+  return html;
+}
+function aiContext(){
+  const mm = location.hash.match(/^#\/m\/([^?]+)/); if (!mm || !MODULES[mm[1]]) return {};
+  const m = MODULES[mm[1]], sec = document.getElementById(currentSection) || document.querySelector(".section[id]");
+  const body = sec ? (sec.querySelector(".sec-body") || sec) : null;
+  return {moduleId:m.id, moduleTitle:m.title, objectives:m.objectives, sectionTitle: sec ? (sec.querySelector("h2") || {}).innerText || "" : "", sectionText: body ? body.innerText.slice(0, 3500) : ""};
+}
+function aiAdd(role, html, extra){
+  const box = $("#aiMsgs"), d = document.createElement("div"); d.className = "msg " + role; d.innerHTML = html; if (extra) d.appendChild(extra); box.appendChild(d);
+  A(d, {opacity:[0,1], y:[10,0]}, {duration:.3}); box.scrollTop = box.scrollHeight; return d;
+}
+function aiIntroHtml(){ return `<b>Hi${user ? ", " + esc(user.givenName || "") : ""}! I'm Sensi, an AI learning assistant.</b> I'm an AI, not a person, and I can make mistakes.
+  <ul><li>Try the problem first, then ask me for a hint.</li><li>Check my answers against the module, your teacher, or official documentation.</li><li>Never share personal details, passwords, or API keys with me.</li></ul>Your questions and my answers are saved for your teacher to review.`; }
+function openAI(){
+  if (!user) return; aiOpen = true; const p = $("#ai"); p.hidden = false; document.body.classList.toggle("ai-docked", device === "desktop");
+  A(p, device === "phone" ? {y:["100%","0%"]} : {opacity:[0,1], x:[30,0]}, SPRING);
+  const box = $("#aiMsgs");
+  if (!box.childElementCount){
+    if (!user.aiAllowed) aiAdd("sys", `Sensi is available to learners aged ${CONFIG.AI_MIN_AGE} and above (with parent or guardian consent if below 18). Your teacher is ready to help you with your questions.`);
+    else if (!apiReady()) aiAdd("sys", "Sensi needs the course server to answer questions. Ask your teacher to connect the app (preview mode is on).");
+    else aiAdd("bot", aiIntroHtml());
+  }
+  renderChips(); setTimeout(() => { const t = $("#aiInput"); if (t && device !== "phone") t.focus(); }, 200);
+}
+function closeAI(){ aiOpen = false; const p = $("#ai"); document.body.classList.remove("ai-docked"); const a = A(p, device === "phone" ? {y:["0%","100%"]} : {opacity:[1,0], x:[0,30]}, {duration:.22}); setTimeout(() => p.hidden = true, a ? 230 : 0); }
+function renderChips(){
+  const inModule = /^#\/m\//.test(location.hash);
+  const chips = inModule ? ["Explain this section simply","Give me a hint for the challenge","Quiz me on this section","What are common mistakes here?"] : ["What will I learn in Unit 1?","How do I set up my board?","What is the IoT data lifecycle?"];
+  $("#aiChips").innerHTML = chips.map(c => `<button class="chip" type="button">${c}</button>`).join("");
+  $("#aiChips").querySelectorAll(".chip").forEach(b => b.onclick = () => askAI(b.textContent));
+}
+async function askAI(q){
+  q = String(q || "").trim(); if (!q || aiBusy) return;
+  if (!user.aiAllowed || !apiReady()) return openAI();
+  aiBusy = true; $("#aiSend").disabled = true; $("#aiInput").value = "";
+  aiAdd("user", esc(q)); const typing = aiAdd("bot typing", `<span class="dots"><i></i><i></i><i></i></span>`);
+  const r = await api("ask", {question:q, history:aiHistory.slice(-8), context:aiContext()}, false);
+  typing.remove(); aiBusy = false; $("#aiSend").disabled = false;
+  if (r.ok){
+    aiHistory.push({role:"user", content:q}, {role:"assistant", content:r.answer});
+    const rep = document.createElement("div"); rep.className = "msg-tools";
+    rep.innerHTML = `<button type="button" class="linkbtn">Report this answer</button>${r.remaining != null ? `<span>${r.remaining} questions left today</span>` : ""}`;
+    rep.querySelector("button").onclick = () => reportAI(q, r.answer, rep);
+    aiAdd("bot", mdLite(r.answer), rep);
+  } else {
+    aiAdd("sys", ({ai_disabled:"Sensi is not switched on yet. Ask your teacher.", ai_age_restricted:`Sensi is available to learners aged ${CONFIG.AI_MIN_AGE} and above.`, guardian_consent_required:"Sensi needs parent or guardian consent for learners below 18.", ai_daily_limit:"You've reached today's question limit. Try again tomorrow, or ask your teacher.", not_registered:"Your profile isn't on the course server yet. Reconnect to the internet and reload the app.", network:"Sensi couldn't be reached. Check your connection and try again."})[r.error] || ("Sensi couldn't answer right now (" + (r.detail || r.error || "unknown error") + ")."));
+  }
+}
+function reportAI(q, a, el){
+  el.innerHTML = `<span>Why?</span>${["Wrong or misleading","Inappropriate","Not helpful","Other"].map(x => `<button type="button" class="chip small">${x}</button>`).join("")}`;
+  el.querySelectorAll(".chip").forEach(b => b.onclick = () => { api("report", {moduleId:currentModule, reason:b.textContent, question:q, answer:a}, false); el.innerHTML = "<span>Thanks. Your teacher will review this answer.</span>"; });
+}
+
+/* ============ ROUTER, NAV, AND SETTINGS ============ */
+function route(){
+  applyDevice();
+  $("#map").classList.remove("open"); if ("speechSynthesis" in window) speechSynthesis.cancel(); sendEvents();
+  const guest = !user;
+  $("#map").style.display = guest ? "none" : ""; $(".shell").classList.toggle("noside", guest); document.body.classList.toggle("guest", guest);
+  $("#searchBtn").style.display = guest ? "none" : ""; $("#aiFab").hidden = guest; $("#bottomNav").hidden = guest;
+  if (guest){ if (aiOpen) closeAI(); viewWelcome(location.hash === "#/back" ? "back" : "new"); return; }
+  renderWho();
+  const h = location.hash, mm = h.match(/^#\/m\/([^?]+)(?:\?s=(.+))?/);
+  if (mm){ pendingAnchor = mm[2] || null; viewModule(mm[1]); } else if (h === "#/progress") viewProgress(); else viewHome();
+  renderMap(); if (aiOpen) renderChips();
+  document.querySelectorAll("#bottomNav [data-nav]").forEach(b => b.classList.toggle("on", (b.dataset.nav === "home" && !mm && h !== "#/progress") || (b.dataset.nav === "progress" && h === "#/progress") || (b.dataset.nav === "modules" && !!mm)));
+  if (!mm || !mm[2]) { scrollTo({top:0}); A("#view", {opacity:[0,1], y:[10,0]}, {duration:.35, ease:[.22,1,.36,1]}); }
+}
+let lastRouteKey = "";
+addEventListener("hashchange", () => { const key = location.hash.split("?")[0]; const m = location.hash.match(/^#\/m\/([^?]+)\?s=(.+)/);
+  if (key === lastRouteKey && m){ const t = document.getElementById("s-" + m[2]); if (t){ t.scrollIntoView({behavior:"smooth"}); return; } }
+  lastRouteKey = key; route(); });
+function applySettings(){
+  const th = store.get("sti_theme","auto"); if (th==="auto") document.documentElement.removeAttribute("data-theme"); else document.documentElement.dataset.theme = th;
+  document.documentElement.style.setProperty("--fs", (1.0625*Number(store.get("sti_size",1)))+"rem");
+  document.documentElement.dataset.motion = store.get("sti_motion","full");
+  $("#setTheme").value = th; $("#setSize").value = String(store.get("sti_size",1)); $("#setMotion").value = store.get("sti_motion","full"); $("#setVoice").value = String(store.get("sti_voice",1));
+}
+$("#settingsBtn").onclick = () => { $("#settings").showModal(); A("#settings", {opacity:[0,1], scale:[.97,1]}, SPRING); };
+$("#searchBtn").onclick = openPalette;
+$("#closeSettings").onclick = () => $("#settings").close();
+$("#setTheme").onchange = e => { store.set("sti_theme", e.target.value); applySettings(); };
+$("#setSize").onchange = e => { store.set("sti_size", +e.target.value); applySettings(); };
+$("#setMotion").onchange = e => { store.set("sti_motion", e.target.value); applySettings(); };
+$("#setVoice").onchange = e => store.set("sti_voice", +e.target.value);
+$("#switchUser").onclick = () => { sendEvents(); store.del("sti_user"); user = null; aiHistory = []; $("#aiMsgs").innerHTML = ""; prog = {done:{},quiz:{},rating:{},uploads:[],minutes:0}; $("#settings").close(); renderWho(); location.hash = "#/back"; route(); };
+$("#menuBtn").onclick = () => $("#map").classList.toggle("open");
+$("#aiFab").onclick = () => aiOpen ? closeAI() : openAI();
+$("#aiClose").onclick = closeAI;
+$("#aiForm").onsubmit = e => { e.preventDefault(); askAI($("#aiInput").value); };
+$("#aiInput").onkeydown = e => { if (e.key === "Enter" && !e.shiftKey && device !== "phone"){ e.preventDefault(); askAI($("#aiInput").value); } };
+document.querySelectorAll("#bottomNav [data-nav]").forEach(b => b.onclick = () => {
+  const n = b.dataset.nav;
+  if (n === "home") location.hash = "#/home"; else if (n === "progress") location.hash = "#/progress";
+  else if (n === "modules") $("#map").classList.toggle("open"); else if (n === "search") openPalette(); else if (n === "ask") aiOpen ? closeAI() : openAI();
+});
+if (!apiReady()) $("#banner").innerHTML = `<div class="banner">Preview mode: progress is saved on this device only. Add the Apps Script web app URL in CONFIG.API_URL to enable tracking, uploads, and Sensi.</div>`;
+applyDevice(); applySettings();
+if (user) api("access", {device, userAgent:navigator.userAgent.slice(0,140), page:"open"});
+lastRouteKey = location.hash.split("?")[0];
+flushQueue(); route();
+</script>
+</body>
+</html>
