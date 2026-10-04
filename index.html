@@ -656,6 +656,21 @@ a.btn{text-decoration:none}
 .bbsvg .hole.ask{fill:#F59E0B;stroke:#B45309;stroke-width:1.5}
 .bbsvg .clip{fill:#E9C46A;opacity:.55}
 .chk input[type=checkbox]+span{display:inline-block}
+/* v8: sandbox attempts, choice, walkthrough, plan */
+.sb-plan{margin-top:8px}.sb-plan summary{cursor:pointer;font-weight:700;color:var(--teal)}.sb-plan ol{margin:.4em 0}
+.sb-choice{margin-top:10px;padding:12px 14px;border-radius:12px;border:2px solid var(--amber);background:color-mix(in srgb,var(--amber) 12%,var(--surface))}
+.sb-choice p{margin:.3em 0}
+.sb-sertools{margin:6px 0 0}
+.sb-walk{margin-top:16px;border:2px solid var(--teal);border-radius:14px;padding:14px 16px;background:var(--surface)}
+.walk-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:baseline}
+.walk-dots{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.walk-dots button{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;font-weight:700}
+.walk-dots button.past{background:color-mix(in srgb,var(--teal) 25%,var(--surface))}.walk-dots button.on{background:var(--teal);color:#fff;border-color:var(--teal)}
+.walk-body h3{margin:.2em 0 .4em}
+.edp{width:100%;max-width:360px;display:block;margin:auto}.edp .orbit{fill:none;stroke:var(--line);stroke-width:2;stroke-dasharray:4 6}
+.edp .stage{cursor:pointer;transform-box:fill-box;transform-origin:center;transition:opacity .25s}.edp .stage.dim{opacity:.4}.edp .stage:focus{outline:none}
+.dataflow{width:100%}
+.checklist{list-style:none;padding-left:0}.checklist li{margin:4px 0}
 </style>
 </head>
 <body>
@@ -871,6 +886,10 @@ const REF = {
   lme: ["Prabhu, A. (2026, January 20). Interfacing DHT11 and DHT22 sensors with Arduino. Last Minute Engineers.","https://lastminuteengineers.com/dht11-dht22-arduino-tutorial/"],
   am2302: ["Aosong Electronics. (n.d.). Digital-output relative humidity & temperature sensor/module AM2302 [Datasheet]. Adafruit.","https://cdn-shop.adafruit.com/datasheets/Digital+humidity+and+temperature+sensor+AM2302.pdf"],
   sparkfunBB: ["SparkFun Electronics. (n.d.). How to use a breadboard. SparkFun Learn.","https://learn.sparkfun.com/tutorials/how-to-use-a-breadboard"],
+  nasaEDP: ["NASA eClips. (n.d.). Engineering design educator implementation guide. National Aeronautics and Space Administration.","https://assets.science.nasa.gov/content/dam/science/cds/eclips/assets/documents/engineering-design-packet-implementation-guide-and-rubrics.pdf"],
+  jplEDP: ["NASA Jet Propulsion Laboratory. (n.d.). Engineering design process flow chart. NASA/JPL Edu.","https://www.jpl.nasa.gov/edu/resources/image/engineering-design-process-flow-chart/"],
+  polya: ["P\u00f3lya, G. (1945). How to solve it: A new aspect of mathematical method. Princeton University Press.",""],
+  wing: ["Wing, J. M. (2006). Computational thinking. Communications of the ACM, 49(3), 33\u201335.","https://doi.org/10.1145/1118178.1118215"],
   sheetsLimits: ["Google. (n.d.). Files you can store in Google Drive. Google Drive Help.","https://support.google.com/drive/answer/37603"],
   sheetsFn: ["Google. (n.d.). Google Sheets function list. Google Docs Editors Help.","https://support.google.com/docs/table/25273"]
 };
@@ -1066,6 +1085,27 @@ const COURSE = [
      <p>A <b>function</b> packages a job under a name so you can reuse it. It can take <b>parameters</b> (inputs) and <b>return</b> a value (output).</p>
      ${anat("A function with a parameter and a return value", [["float cToF(float c) {", "<code>float</code> before the name = the type of value it returns. <code>cToF</code> = its name. <code>(float c)</code> = one parameter named c."],["  return c * 9.0 / 5.0 + 32.0;", "<code>return</code> sends the answer back to whoever called the function."],["}", ""],["Serial.println(cToF(30.0));", "Calling the function with 30.0. It returns 86.0, which println prints as 86.00."]])}
      <p>Now practice predicting before running:</p>`, interactive:"primm"},
+    {id:"solve", title:"How to solve a challenge: the engineering design process", html:`
+     <p>Every challenge in this course, from blinking an LED to your Day 10 capstone, is a problem to solve. Beginners often jump straight to typing code, get stuck, and feel lost. Engineers use a <b>process</b> instead. This course uses NASA's <b>Engineering Design Process (EDP)</b>, an iterative cycle used in NASA's education programs: engineers <b>ask</b> questions, <b>imagine</b> solutions, <b>plan</b> designs, <b>create</b> and <b>test</b> models, <b>improve</b> them, and <b>share</b> their ideas.</p>
+     <table class="t"><tr><th>Step</th><th>Engineers ask…</th><th>In a coding challenge you…</th></tr>
+     <tr><td><b>1. Ask</b></td><td>What is the problem? What are the requirements and limits?</td><td>Restate the task in your own words. List what the program must do, how it will be checked, and any rules (e.g., “no delay()”).</td></tr>
+     <tr><td><b>2. Imagine</b></td><td>What are some possible solutions? What have others done?</td><td>Think of two ways to solve it. Look at similar code you have seen (P1, the drills) and pick the approach that best meets the requirements.</td></tr>
+     <tr><td><b>3. Plan</b></td><td>Which idea is best? Can I draw it?</td><td>Break the problem into small steps and write <b>pseudocode</b> (steps in plain words) or draw a timeline or flowchart.</td></tr>
+     <tr><td><b>4. Create</b></td><td>Build a prototype that meets the requirements.</td><td>Translate one pseudocode step at a time into code.</td></tr>
+     <tr><td><b>5. Test</b></td><td>Does it work? What does the data show?</td><td><b>Predict</b> what should happen, run it, and compare. Read error messages and check results.</td></tr>
+     <tr><td><b>6. Improve</b></td><td>What failed, and why? What should change?</td><td>Fix <b>one thing at a time</b>, then test again. Repeat until every check passes.</td></tr>
+     <tr><td><b>7. Share</b></td><td>How do we communicate the design?</td><td>Explain your code to a partner line by line; record what you learned.</td></tr></table>
+     <p>The process is a <b>cycle</b>, not a straight line: testing often sends you back to planning. That is normal, not failure.</p>
+     <h3>Thinking tools for the Plan step</h3>
+     <ul><li><b>Decomposition:</b> break a big problem into small jobs you can solve one by one (“print a header,” “make a timer,” “read sensors,” “print a row”).</li><li><b>Pattern recognition:</b> spot what repeats (“on, wait, off, wait” three times) so you can use a loop.</li><li><b>Pseudocode:</b> write the steps in plain words first. If the plan is right, the code is just translation.</li></ul>
+     <p>These thinking skills are part of <b>computational thinking</b>. The mathematician George Pólya described the same core idea for any problem in four steps: <i>understand the problem, devise a plan, carry out the plan, and look back</i>.</p>
+     ${ex("using the process on the Core challenge", `<p><b>Ask:</b> “3 quick blinks (150 ms on/off), then a 2 s pause, forever, with a for loop.” <b>Imagine:</b> copy the blink lines 3 times, or use a for loop; the loop is shorter and required. <b>Plan:</b></p><pre class="code">repeat forever:
+    repeat 3 times:  LED on, wait 150; LED off, wait 150
+    wait 2000</pre><p><b>Create:</b> type the for loop, then the pause after it. <b>Test:</b> predict 4 rounds in 13 s; run and count the groups. <b>Improve:</b> if a group has 4 blinks, check <code>i &lt; 3</code>. <b>Share:</b> explain why the pause is outside the loop.</p>`)}
+     <h3>How the sandbox supports the process</h3>
+     <ol><li>Open <b>Plan before you code</b> in each challenge and answer its questions.</li><li>You have <b>5 tries</b>. Each ✗ message tells you what to change; use <b>Hint</b> if you are stuck.</li><li>After 5 tries, choose <b>5 more tries</b> or the <b>explained solution</b>, which walks through Ask, Plan, Create, Test, and Improve step by step.</li><li>After you pass, open the explained solution anyway to compare it with your own approach.</li></ol>
+     ${tip("Where AI fits", `<p>Follow the human-in-the-loop rule <b>attempt first</b>: go through Ask and Plan yourself before asking Sensi. Then ask for a hint about one step, not the whole answer.</p>`)}
+     ${srcs([["NASA eClips: Engineering design process guide", REF.nasaEDP[1]],["NASA JPL: EDP flow chart", REF.jplEDP[1]],["Wing, 2006 (computational thinking)", REF.wing[1]]])}`, interactive:"solvecycle"},
     {id:"errors", title:"Three kinds of errors", html:`
      <p>Errors are a normal part of programming, not a sign of failure. Knowing which <b>kind</b> of error you have tells you where to look.</p>
      <table class="t"><tr><th>Kind</th><th>What happens</th><th>Example</th><th>How to find it</th></tr>
@@ -1091,7 +1131,7 @@ note: suggested alternative: 'Serial'</pre></div>
    ],
    rating:["I can upload P1, but I need help to change it.","I can change values in P1 and explain most lines with some help.","I can complete the Core challenge alone and explain setup, loop, variables, and loops.","I can complete the Extension and help a classmate fix an error."],
    checkpoint:{code:"U1-O2", task:"Complete the Core challenge and explain the code.", met:"Pattern repeats 5+ times; you point to setup, loop, a variable, and the loop structure.", upload:"Upload your code file (.ino or .py) and a short video or photo of the blinking pattern."},
-   refs:["arduinoR4","espressif","esp8266","pico","arduinoIDE","espArduino","thonny","micropython","arduinoRef","wokwi","primm","sweller"]
+   refs:["arduinoR4","espressif","esp8266","pico","arduinoIDE","espArduino","thonny","micropython","arduinoRef","wokwi","nasaEDP","jplEDP","polya","wing","primm","sweller"]
   }
   ,{id:"1.3", title:"Reading sensors", minutes:150,
    objectives:["Distinguish analog and digital signals and explain the voltage divider.","Explain how an ADC turns voltage into numbers and calculate readings for your board.","Wire an LDR and a DHT22 and convert raw readings to calibrated units (U1-O3).","Implement non-blocking timing and justify it over delay() (U1-O4).","Use a structured AI prompt and verify each claim against documentation (U1-O7)."],
@@ -1217,6 +1257,29 @@ note: suggested alternative: 'Serial'</pre></div>
      <p>The MicroPython version uses the same logic with <code>time.ticks_ms()</code>, <code>time.ticks_diff()</code>, and <code>try / except OSError</code> for failed readings.</p>
      <h3>Practice in the sandbox</h3>
      <p><b>Challenge 1:</b> print the CSV header and a row every 2 s. <b>Challenge 2 (Boss):</b> turn the LED on whenever light drops below 30 %, without any <code>delay()</code> over 1 s. The sandbox covers the light sensor with a "hand" from 4 to 7 s and shines a flashlight from 11 to 13 s.</p>`, interactive:"sandbox:sb_csv,sb_alarm"},
+    {id:"csvuse", title:"Using your CSV output: save it for Module 1.4", html:`
+     <p>When P2 runs on your board, the Serial Monitor (Arduino IDE) or Shell (Thonny) fills with CSV rows. This data is valuable: in <b>Module 1.4</b> you will analyze it in Google Sheets. So the question is: <b>how do we get it from the screen into a spreadsheet?</b></p>
+     <div class="callout mis"><b>Do not type the numbers by hand</b><p>Ten minutes of readings every 2 s is about <b>300 rows × 4 values = 1,200 numbers</b>. Typing them would take hours and introduce mistakes. Instead you will <b>copy and paste</b> the whole output at once. In Unit 2 this step disappears completely: the board will send each reading straight to Google Sheets over Wi-Fi.</p></div>
+     ${fig(`<svg class="dataflow" viewBox="0 0 640 140" role="img" aria-label="Where your data goes"><defs><marker id="ahd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#5B6B7F"/></marker></defs>${[["Module 1.3","Board prints CSV","#2A9D8F"],["You copy","Serial Monitor → copy","#5B6B7F"],["Module 1.4","Paste into Sheets","#C9A227"],["Unit 2","Sends to Sheets itself","#1F3A5F"]].map((b,i)=>`<rect x="${10+i*158}" y="30" width="140" height="64" rx="10" fill="${b[2]}"/><text x="${80+i*158}" y="56" text-anchor="middle" fill="#fff" font-weight="700" font-size="13">${b[0]}</text><text x="${80+i*158}" y="76" text-anchor="middle" fill="#fff" font-size="10">${b[1]}</text>${i<3?`<path d="M${152+i*158} 62 H${166+i*158}" stroke="#5B6B7F" stroke-width="2.5" marker-end="url(#ahd)"/>`:""}`).join("")}<text x="320" y="122" text-anchor="middle" font-size="11" fill="currentColor">Copying by hand is only needed in Unit 1. From Unit 2, logging is automatic.</text></svg>`, "Figure 3.4. Where your sensor data goes next.")}
+     <h3>Before you start: plan a 10-minute recording</h3>
+     <p>Your chart in Module 1.4 will be more interesting if something <b>happens</b> during the recording. Make three planned “events” and write down <b>when</b> you did each one, because you will label them on your chart later:</p>
+     <table class="t"><tr><th>Event</th><th>What to do</th><th>Time (from the first row's ms ÷ 1000)</th></tr><tr><td>1</td><td>Cover the LDR with your hand for 20 s</td><td>about ___ s</td></tr><tr><td>2</td><td>Shine a phone flashlight on the LDR for 20 s</td><td>about ___ s</td></tr><tr><td>3</td><td>Breathe gently on the DHT22 for 5 s</td><td>about ___ s</td></tr></table>
+     <h3>Option A: Arduino IDE 2 (Uno R4 WiFi, ESP32, ESP8266)</h3>
+     <ol><li>Upload P2, then open <b>Tools → Serial Monitor</b> and set the speed (bottom-right) to <b>115200 baud</b>. If you see strange symbols, the speed is wrong.</li>
+     <li>Press the board's <b>reset</b> button once so the output starts with the header line <code>ms,temp_C,hum_pct,light_pct</code>.</li>
+     <li>Let it run for about <b>10 minutes</b> (about 300 rows) while you do your three events.</li>
+     <li>Click inside the output area, press <b>Ctrl + A</b> (Mac: <b>Cmd + A</b>) to select everything, then <b>Ctrl + C</b> (Mac: <b>Cmd + C</b>) to copy. If select-all does not work, click at the start of the header and drag down to the last row.</li>
+     <li>Copy right after your session ends. If the output is very long, the monitor may not keep every line from the start, so check that the header and first rows are included.</li></ol>
+     <h3>Option B: Thonny (Pico W)</h3>
+     <ol><li>Press <b>Run</b>. The CSV rows appear in the <b>Shell</b> at the bottom.</li><li>Record for about 10 minutes with your three events, then press <b>Stop</b>.</li><li>Click in the Shell, select from the header line to the last row (drag, or Ctrl/Cmd + A), and copy with <b>Ctrl/Cmd + C</b>.</li></ol>
+     <h3>Option C: no hardware (sandbox)</h3>
+     <p>Run the <b>CSV logger</b> challenge in the sandbox above. When it passes, press <b>Copy output</b>, or <b>Download as .csv</b> to save a file. It is a short practice dataset (6 rows), so use the sample dataset in Module 1.4 for the full analysis.</p>
+     <h3>Save your data (do this right away)</h3>
+     <ol><li>Open <b>Google Sheets</b> (sheets.google.com) and create a blank spreadsheet in your course folder in Google Drive.</li><li>Name it clearly, for example <code>Team3_ESP32_P2_2026-10-05</code> (team, board, program, date).</li><li>Click cell <b>A1</b> and paste with <b>Ctrl/Cmd + V</b>. Each line lands in its own row, all in column A. That is expected: you will split it into columns in Module 1.4.</li><li>Also paste your event times into a cell to the right (e.g., H1) so you do not lose them.</li></ol>
+     <div class="callout tip"><b>Optional backup: a real .csv file</b><p>Paste the same text into Notepad (Windows) or TextEdit in plain-text mode (Mac), and save it as <code>Team3_P2_log.csv</code>. A .csv file opens in Google Sheets (<b>File → Import</b>), Excel, and Python, which you will use in Python Lab A.</p></div>
+     <h3>Check before you leave</h3>
+     <ul class="checklist"><li>☐ The first row is the header <code>ms,temp_C,hum_pct,light_pct</code>.</li><li>☐ There are roughly 300 data rows (10 minutes at one row per 2 s).</li><li>☐ Lines starting with <code>#</code> (failed readings) may appear; that is fine, you will remove them in Module 1.4.</li><li>☐ If the board was reset during recording, a second header may appear in the middle; note where.</li><li>☐ Your event times are written down.</li><li>☐ The Sheet is saved in your course Drive folder with a clear name.</li></ul>
+     ${mis(`<p><b>Pasting into Excel or Sheets and getting one long line:</b> you probably copied from a place that removed line breaks. Copy directly from the Serial Monitor or Shell. <b>Garbled characters:</b> the baud rate is not 115200. <b>Only the last few hundred rows:</b> copy sooner, or shorten the recording.</p>`)}`},
     {id:"aiverify", title:"AI activity: AI explains, you verify", html:`
      <p>AI can explain code quickly, but it can also produce fluent explanations that are wrong. In this activity AI is your assistant and <b>you</b> are the fact-checker.</p>
      <h3>Step 1: write a PARTS prompt</h3>
@@ -1274,7 +1337,7 @@ note: suggested alternative: 'Serial'</pre></div>
      ${mis(`<p>Choosing \u201cas fast as possible.\u201d Temperature in a room changes over minutes, so readings every second mostly repeat the same value, fill the Sheet quickly, and overload Apps Script when a whole class logs at once. Match the interval to how fast the thing you measure changes.</p>`)}
      ${srcs([["Google Drive file limits", REF.sheetsLimits[1]]])}`, interactive:"volume"},
     {id:"sheets", title:"Guided build: from Serial Monitor to Google Sheets", html:`
-     <h3>Step 1: collect and paste</h3><p>Run P2 for 10 minutes. Make three events: cover the LDR, shine a flashlight, breathe on the DHT22. Select all the text in the Serial Monitor, copy it, and paste it into cell A1 of a new Google Sheet. Everything lands in column A.</p>
+     <h3>Step 1: open the data you saved in Module 1.3</h3><p>Open the Google Sheet you created in Module 1.3, section “Using your CSV output” (for example <code>Team3_ESP32_P2_2026-10-05</code>). Your pasted output should be in column A, starting at A1. <b>No data yet?</b> Follow that section first to record 10 minutes of P2 output, or use the sample dataset at the end of this module.</p>
      ${sheet({headers:["ms,temp_C,hum_pct,light_pct"], rows:[["2001,29.4,70.8,52.3"],["4002,29.4,70.9,52.1"],["# DHT read failed"],["6003,29.5,70.8,12.4"]], sel:"A1", formula:"ms,temp_C,hum_pct,light_pct", note:"Right after pasting: each line sits in one cell of column A."})}
      <h3>Step 2: split into columns</h3><p>Select column A, then choose <b>Data \u2192 Split text to columns</b>. Google Sheets detects the commas and moves each value into its own column. Then delete any row that starts with <code>#</code> (failed readings).</p>
      ${sheet({headers:["ms","temp_C","hum_pct","light_pct"], rows:[[2001,29.4,70.8,52.3],[4002,29.4,70.9,52.1],[6003,29.5,70.8,12.4]], note:"After splitting and deleting the # row: tidy data."})}
@@ -1812,6 +1875,30 @@ INTERACTIVES.breadboard = function(el){
   $(".bbS", el).onchange = e => { split = e.target.checked; draw(); ask(); };
   $(".bbYes", el).onclick = () => answer(true); $(".bbNo", el).onclick = () => answer(false);
   draw(); ask();
+};
+
+INTERACTIVES.solvecycle = function(el){
+  const S = [["Ask","Define the problem, requirements, and limits.","Restate the task. What must happen? How is it checked? Any rules?","\u201c3 quick blinks, 2 s pause, forever, using a for loop.\u201d","#1F3A5F"],
+   ["Imagine","Brainstorm solutions; look at what others have done.","Think of 2 approaches; recall similar code (P1, drills).","Copy the lines 3 times, or use a for loop? The loop is shorter.","#2A9D8F"],
+   ["Plan","Choose the best idea; sketch or diagram it.","Decompose into small steps; write pseudocode or a timeline.","repeat 3 times: on, wait, off, wait \u2192 then wait 2000.","#3D8361"],
+   ["Create","Build a prototype that meets the requirements.","Translate one pseudocode step at a time into code.","Type the for loop, then the pause after its closing brace.","#C9A227"],
+   ["Test","Test, collect data, find strengths and weaknesses.","Predict, run, compare. Read errors and check results.","Predict 4 rounds in 13 s; run and count the groups.","#E76F51"],
+   ["Improve","Make changes based on the test results.","Fix one thing at a time, then test again.","Groups of 4? Change i <= 3 to i < 3, run again.","#C2410C"],
+   ["Share","Communicate the design and what you learned.","Explain your code line by line; note what you learned.","\u201cThe pause is outside the loop so it runs once per round.\u201d","#7C3AED"]];
+  const cx = 170, cy = 165, R = 118, pos = i => { const a = -Math.PI / 2 + i * 2 * Math.PI / 7; return [cx + R * Math.cos(a), cy + R * Math.sin(a)]; };
+  el.innerHTML = bench("Explore the engineering design process", `<div class="two"><div><svg class="edp" viewBox="0 0 340 330" role="group" aria-label="Engineering design process cycle"><circle cx="${cx}" cy="${cy}" r="${R}" class="orbit"/><circle class="edot" r="7" fill="#E9C46A"/>
+    ${S.map((s, i) => { const [x, y] = pos(i); return `<g transform="translate(${x},${y})"><g class="stage" data-i="${i}" tabindex="0" role="button" aria-label="${s[0]}"><circle r="34" fill="${s[4]}"/><text y="-5" text-anchor="middle" fill="#fff" font-weight="700" font-size="13">${i + 1}</text><text y="11" text-anchor="middle" fill="#fff" font-weight="700" font-size="11">${s[0]}</text></g></g>`; }).join("")}
+    <text x="${cx}" y="${cy - 4}" text-anchor="middle" font-weight="700" font-size="13" fill="currentColor">Engineering</text><text x="${cx}" y="${cy + 13}" text-anchor="middle" font-weight="700" font-size="13" fill="currentColor">design process</text></svg>
+    <div class="controls"><button class="btn primary edpPlay">Walk me through it</button></div></div>
+   <div class="panel edpInfo" aria-live="polite"><p>Tap a step to see what engineers do, what you do in a coding challenge, and an example from the Core challenge.</p></div></div>`);
+  const stages = [...el.querySelectorAll(".stage")], dot = $(".edot", el); let ang = -Math.PI / 2, target = null, timer = null;
+  (function orbit(){ if (!alive(el)) return; if (target != null){ const ta = -Math.PI / 2 + target * 2 * Math.PI / 7; let d = ta - ang; while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI; ang += d * .12; } else if (!reduceMotion()) ang += .006;
+    dot.setAttribute("cx", cx + R * Math.cos(ang)); dot.setAttribute("cy", cy + R * Math.sin(ang)); requestAnimationFrame(orbit); })();
+  const show = i => { target = i; stages.forEach((s, k) => s.classList.toggle("dim", k !== i)); pop(stages[i], 1.15);
+    $(".edpInfo", el).innerHTML = `<h3 style="margin-top:0">${i + 1}. ${S[i][0]}</h3><p><b>Engineers:</b> ${S[i][1]}</p><p><b>In a coding challenge:</b> ${S[i][2]}</p><p><b>Example (Core challenge):</b> <i>${esc(S[i][3])}</i></p>${i === 4 ? `<p class="explain">If the test fails, go back to Plan or Create. The cycle repeats until it works.</p>` : ""}`;
+    anim($(".edpInfo", el), {opacity:[0, 1], x:[10, 0]}, {duration:.3}); };
+  stages.forEach(g => { const f = () => { clearInterval(timer); timer = null; show(+g.dataset.i); }; g.onclick = f; g.onkeydown = e => { if (e.key === "Enter" || e.key === " ") f(); }; });
+  $(".edpPlay", el).onclick = () => { clearInterval(timer); let i = 0; show(0); timer = setInterval(() => { if (!alive(el)) return clearInterval(timer); i++; if (i >= 7){ clearInterval(timer); timer = null; target = null; stages.forEach(s => s.classList.remove("dim")); $(".edpInfo", el).innerHTML = "<p>Back to <b>Ask</b>: sharing often reveals a new problem to solve. Use this cycle in every sandbox challenge and in your capstone.</p>"; logEvent(currentModule, "edp_walk", "activity", "done"); return; } show(i); }, 3200); };
 };
 </script>
 <script>/* ============ v2 MOTION LAYER ============ */
@@ -2514,6 +2601,76 @@ function friendlyErr(err, lang){
   return "Your code stopped with an error: " + err;
 }
 
+/* ============ EXPLAINED SOLUTIONS (guided walkthroughs) ============ */
+const SB_WALK = {
+ sb_blink: {
+  plan:["What should the LED do, and for how long each time?","Which two commands turn the LED on and off?","Which command makes the board wait, and in what unit?","Where does code go if it must repeat forever?"],
+  steps:[
+   {t:"Ask: understand the problem", h:`<p>Before typing, restate the task in your own words: <i>\u201cThe LED should be on for half a second, then off for half a second, again and again.\u201d</i></p><table class="t"><tr><th>Question</th><th>Answer</th></tr><tr><td>What must happen?</td><td>LED on 0.5 s, off 0.5 s</td></tr><tr><td>How often?</td><td>Forever</td></tr><tr><td>How is it checked?</td><td>At least 5 blinks, each ON and OFF about 500 ms</td></tr></table><p>Notice: 0.5 s = <b>500 ms</b>. Arduino waits in milliseconds; Python waits in seconds.</p>`},
+   {t:"Plan: break it into small steps (pseudocode)", h:`<p><b>Pseudocode</b> is a plan written in plain words, before real code. It lets you think about the order of steps without worrying about syntax.</p><pre class="code">once at the start:
+    make the LED pin an output
+repeat forever:
+    turn LED on
+    wait 500 ms
+    turn LED off
+    wait 500 ms</pre><p>Each line of pseudocode will become one line of code. If the plan is right, the code is just translation.</p>`},
+   {t:"Create: translate the plan into code", h:`<p>The \u201conce at the start\u201d part goes in <code>setup()</code> (Python: before the loop). The \u201crepeat forever\u201d part goes in <code>loop()</code> (Python: inside <code>while True:</code>). The setup line is already in the starter code. Add the four steps:</p>`, code:{cpp:b=>`  digitalWrite(LED_PIN, HIGH);   // turn LED on\n  delay(500);                    // wait 500 ms\n  digitalWrite(LED_PIN, LOW);    // turn LED off\n  delay(500);                    // wait 500 ms`, py:b=>`    led.on()            # turn LED on\n    time.sleep(0.5)     # wait 0.5 s\n    led.off()           # turn LED off\n    time.sleep(0.5)     # wait 0.5 s`}},
+   {t:"Test: predict, run, compare", h:`<p>Predict first: in 8 seconds, how many blinks? Each blink takes 0.5 + 0.5 = 1 s, so about <b>8</b>. Press <b>Run and check</b> and compare the timeline with your prediction: you should see evenly spaced yellow blocks of equal width.</p>`},
+   {t:"Improve: common mistakes and how to fix them", h:`<table class="t"><tr><th>What you see</th><th>Why</th><th>Fix</th></tr><tr><td>LED stays on</td><td>Missing the LOW line, or the last delay is missing so loop() turns it on again instantly</td><td>Add <code>digitalWrite(LED_PIN, LOW);</code> and <code>delay(500);</code></td></tr><tr><td>Very fast or very slow blinking</td><td>Wrong unit: <code>delay(0.5)</code> or <code>time.sleep(500)</code></td><td>Arduino: milliseconds (500). Python: seconds (0.5)</td></tr><tr><td>\u201cnot declared\u201d error</td><td>Spelling or capitals: <code>digitalwrite</code></td><td>C++ is case-sensitive: <code>digitalWrite</code></td></tr><tr><td>Python IndentationError</td><td>Lines in the loop not indented the same</td><td>Indent every loop line by 4 spaces</td></tr></table>`}
+  ]},
+ sb_pattern: {
+  plan:["How long is each quick blink ON and OFF?","How many quick blinks before the pause, and how long is the pause?","Which part repeats 3 times, and which part happens once per round?","How does a for loop count to 3?"],
+  steps:[
+   {t:"Ask: understand the problem", h:`<p>Restate it: <i>\u201cBlink, blink, blink (fast), then rest 2 seconds, and repeat.\u201d</i> Draw the timeline on paper first:</p><pre class="code">ON  OFF ON  OFF ON  OFF  |------ pause 2 s ------|  ON  OFF ...
+150 150 150 150 150 150         2000 ms</pre><p>One round = 3 \u00d7 (150 + 150) + 2000 = <b>2900 ms</b>. In 13 seconds you should see 4 complete rounds.</p>`},
+   {t:"Imagine: two ways to do it", h:`<p><b>Option A:</b> write the on/off lines 3 times in a row. It works, but it is long, and changing \u201c3 blinks\u201d to \u201c5 blinks\u201d means copying more lines.</p><p><b>Option B:</b> write the on/off lines <b>once</b> inside a <b>for loop</b> that repeats 3 times. Shorter, easier to change, and it is what the challenge asks for. Engineers compare options against the requirements and choose the best one: here, Option B.</p>`},
+   {t:"Plan: pseudocode with a loop inside a loop", h:`<p>Spot the <b>pattern</b>: \u201con, wait, off, wait\u201d repeats 3 times. That repeated part becomes the body of a for loop. The pause happens once per round, so it goes <b>after</b> the for loop.</p><pre class="code">repeat forever:                 (loop() / while True)
+    repeat 3 times:             (for loop)
+        LED on,  wait 150 ms
+        LED off, wait 150 ms
+    wait 2000 ms                (after the for loop, once per round)</pre>`},
+   {t:"Create: build the for loop", h:`<p>A C++ for loop has three parts inside its parentheses: <b>start</b> (<code>int i = 0</code>), <b>condition</b> (<code>i &lt; 3</code>, checked before each repeat), and <b>step</b> (<code>i++</code>, adds 1 after each repeat). It runs for i = 0, 1, 2: exactly 3 times. In Python, <code>for i in range(3):</code> does the same.</p>`, code:{cpp:b=>`  for (int i = 0; i < 3; i++) {     // runs 3 times: i = 0, 1, 2\n    digitalWrite(LED_PIN, HIGH);\n    delay(150);\n    digitalWrite(LED_PIN, LOW);\n    delay(150);\n  }`, py:b=>`    for i in range(3):      # runs 3 times: i = 0, 1, 2\n        led.on()\n        time.sleep(0.15)\n        led.off()\n        time.sleep(0.15)`}},
+   {t:"Create: add the pause in the right place", h:`<p>The pause must run <b>after all 3 blinks</b>, so it goes after the for loop's closing brace <code>}</code>. In Python, it goes back at the <b>outer</b> indentation (4 spaces, not 8). If you put it inside the for loop, you would get a 2-second pause after every single blink.</p>`, code:{cpp:b=>`  }                 // end of the for loop\n  delay(2000);      // pause once per round`, py:b=>`        time.sleep(0.15)    # last line inside the for loop (8 spaces)\n    time.sleep(2)           # pause: back at 4 spaces, runs once per round`}},
+   {t:"Test and improve", h:`<p>Run it and read the timeline: groups of 3 narrow blocks separated by a wide gap. If a check fails, compare with this table:</p><table class="t"><tr><th>What you see</th><th>Cause</th><th>Fix</th></tr><tr><td>Groups of 4 blinks</td><td><code>i &lt;= 3</code> runs for 0, 1, 2, 3</td><td>Use <code>i &lt; 3</code></td></tr><tr><td>A 2 s pause after every blink</td><td>The pause is inside the for loop</td><td>Move it after the <code>}</code> (Python: un-indent it)</td></tr><tr><td>No pause at all</td><td>Missing the 2000 ms wait</td><td>Add <code>delay(2000)</code> after the loop</td></tr><tr><td>Blinks too slow</td><td>Used 500 instead of 150</td><td>Quick blinks are 150 ms</td></tr></table>`}
+  ]},
+ sb_csv: {
+  plan:["What is printed only once, and where should that code go?","How often must a row be printed, and how can you do that without delay()?","Which three readings go in each row, and in what order?","How do you turn a raw ADC number into a percentage?"],
+  steps:[
+   {t:"Ask: understand the problem", h:`<p>The output must look like this, with one new row every 2 seconds:</p><pre class="code">ms,temp_C,hum_pct,light_pct
+2000,29.4,70.8,55.0
+4000,29.4,70.9,55.1
+6000,29.5,70.8,8.2</pre><p>Requirements: (1) the header exactly once, first; (2) a row every 2000 ms; (3) 4 numbers per row separated by commas; (4) light as 0\u2013100 %. Constraint: <b>no delay()</b>, because the board must stay free for other jobs.</p>`},
+   {t:"Plan: decompose into four small jobs", h:`<p>Big problems feel hard; small ones feel easy. Break this one into four jobs and solve them one at a time:</p><ol><li><b>Header:</b> print once \u2192 belongs in <code>setup()</code> (Python: before the loop).</li><li><b>Timer:</b> act every 2000 ms without waiting \u2192 the millis() pattern from the Timing section.</li><li><b>Read:</b> temperature, humidity, light.</li><li><b>Print:</b> 4 values with commas, then end the line.</li></ol><pre class="code">once: print header
+repeat forever:
+    now = current time
+    if now - lastRead >= 2000:
+        lastRead = now
+        read temperature, humidity, light
+        convert light to %
+        print now, temp, hum, light  (with commas)</pre>`},
+   {t:"Create job 1: the header", h:`<p>Put it where code runs once. Use <code>println</code> so the header ends with a new line.</p>`, code:{cpp:b=>`void setup() {\n  Serial.begin(115200);\n  dht.begin();\n  Serial.println("ms,temp_C,hum_pct,light_pct");   // printed once\n}`, py:b=>`print("ms,temp_C,hum_pct,light_pct")    # before the while loop: printed once`}},
+   {t:"Create job 2: the non-blocking timer", h:`<p>Every pass through the loop, check the clock. Only when 2000 ms have passed since the last reading do we act, and then we restart the timer by saving the current time.</p>`, code:{cpp:b=>`  unsigned long now = millis();\n  if (now - lastRead >= 2000) {\n    lastRead = now;          // restart the timer\n    // jobs 3 and 4 go here\n  }`, py:b=>`    now = time.ticks_ms()\n    if time.ticks_diff(now, last) >= 2000:\n        last = now           # restart the timer\n        # jobs 3 and 4 go here`}},
+   {t:"Create job 3: read the sensors", h:`<p>Inside the timer block, read the DHT22 (it allows one reading every 2 s, which our timer respects) and the LDR. Then convert light: <b>raw \u00f7 maximum \u00d7 100</b>. Example on an ESP32: 2252 \u00f7 4095 \u00d7 100 \u2248 55 %.</p>`, code:{cpp:b=>`    float t = dht.readTemperature();\n    float h = dht.readHumidity();\n    float light = analogRead(LDR_PIN) / ADC_MAX * 100.0;`, py:b=>`        sensor.measure()\n        t = sensor.temperature()\n        h = sensor.humidity()\n        light = ldr.read_u16() / 65535 * 100`}},
+   {t:"Create job 4: print one CSV row", h:`<p>Print each value followed by a comma, and end with <code>println</code> on the last value so the row finishes with a new line. The <code>1</code> means one decimal place. In Python, <code>format</code> fills each <code>{}</code> in order; <code>{:.1f}</code> means one decimal.</p>`, code:{cpp:b=>`    Serial.print(now);    Serial.print(',');\n    Serial.print(t, 1);   Serial.print(',');\n    Serial.print(h, 1);   Serial.print(',');\n    Serial.println(light, 1);       // println ends the row`, py:b=>`        print("{},{:.1f},{:.1f},{:.1f}".format(now, t, h, light))`}},
+   {t:"Test and improve", h:`<p>Run it and read the Serial Monitor panel. Each row should arrive 2 s after the previous one, and the light value should drop to about 8 % while the \u201chand\u201d covers the sensor (4\u20137 s).</p><table class="t"><tr><th>What you see</th><th>Cause</th><th>Fix</th></tr><tr><td>Header printed many times</td><td>Header is inside loop()</td><td>Move it to setup() / before the loop</td></tr><tr><td>All values on one long line</td><td>Last value used print, not println</td><td>End each row with println</td></tr><tr><td>Rows every few milliseconds</td><td>lastRead is never updated</td><td>Add <code>lastRead = now;</code> inside the if</td></tr><tr><td>Light like 2252 instead of 55</td><td>Forgot to convert</td><td>Divide by ADC_MAX, multiply by 100</td></tr><tr><td>Light always 0 (C++)</td><td>Integer division: dividing two whole numbers drops the decimals</td><td>Use a decimal in ADC_MAX, e.g. 4095.0</td></tr></table>`}
+  ]},
+ sb_alarm: {
+  plan:["What decides whether the LED should be on?","How do you calculate light % from the raw reading?","How often must the program check the light?","What must happen when it is NOT dark?"],
+  steps:[
+   {t:"Ask: understand the problem", h:`<p>This is a <b>decision</b> problem: <i>\u201cIf it is dark (below 30 %), turn the LED on; otherwise, turn it off.\u201d</i> The sandbox covers the sensor from 4 to 7 s (dark) and shines a flashlight from 11 to 13 s (very bright). The LED must react within 0.3 s, and long delays are not allowed.</p>`},
+   {t:"Imagine: why not use delay()?", h:`<p>Suppose you checked the light, then waited 2 seconds. If the hand arrived just after a check, the LED would stay off for up to 2 seconds: too slow. The fastest, most responsive solution is to check the light on <b>every</b> pass through the loop. The board does this thousands of times per second, so the LED reacts almost instantly. This is the same idea as the millis() race in the Timing section.</p>`},
+   {t:"Plan: an if/else inside the loop", h:`<pre class="code">repeat forever:
+    light = raw reading \u00f7 maximum \u00d7 100
+    if light < 30:
+        LED on
+    else:
+        LED off</pre><p>The <b>else</b> is essential: without it, the LED would turn on in the dark and never turn off again.</p>`},
+   {t:"Create: read and convert", h:`<p>Calculate light % at the start of every loop. Use a decimal number type (float) so you keep the decimals.</p>`, code:{cpp:b=>`  float light = analogRead(LDR_PIN) / ADC_MAX * 100.0;`, py:b=>`    light = ldr.read_u16() / 65535 * 100`}},
+   {t:"Create: decide with if / else", h:`<p>The condition <code>light &lt; 30</code> is either true or false. When true, the first block runs; when false, the <code>else</code> block runs. Exactly one of them runs on every pass.</p>`, code:{cpp:b=>`  if (light < 30) {\n    digitalWrite(LED_PIN, HIGH);   // dark: LED on\n  } else {\n    digitalWrite(LED_PIN, LOW);    // bright enough: LED off\n  }`, py:b=>`    if light < 30:\n        led.on()          # dark: LED on\n    else:\n        led.off()         # bright enough: LED off\n    time.sleep_ms(10)     # tiny rest (10 ms), far below the 1 s limit`}},
+   {t:"Test and improve", h:`<p>On the timeline, the LED block should start right where the light line drops (4 s) and end where it rises (7 s), and stay off during the flashlight (11\u201313 s).</p><table class="t"><tr><th>What you see</th><th>Cause</th><th>Fix</th></tr><tr><td>LED on when bright, off when dark</td><td>Comparison reversed (<code>&gt;</code>)</td><td>Use <code>light &lt; 30</code></td></tr><tr><td>LED never turns off</td><td>No else branch</td><td>Add the else that turns it off</td></tr><tr><td>LED reacts late</td><td>A long delay in loop()</td><td>Remove it; check the light every pass</td></tr><tr><td>LED always on (Uno R4)</td><td>Light never reaches 30 % because of a calculation error</td><td>Check the formula and ADC_MAX = 1023.0</td></tr></table><p><b>Real-world link:</b> this is a <i>prescriptive</i> system (Module 1.1): it decides and acts by itself, like automatic street lights.</p>`}
+  ]}
+};
+
 /* ============ PRE / POST TEST ============ */
 const TEST_CFG = { MINUTES: 45, REQUIRE_PRETEST: true, POSTTEST_OPEN: false };   // set POSTTEST_OPEN to true on Day 10
 const COMP_NAMES = {C1:"Physical computing",C2:"IoT connectivity",C3:"Data engineering",C4:"Data cleaning",C5:"Analysis and communication",C6:"Data science",C7:"Automation and control",C8:"Human-centered AI"};
@@ -2641,60 +2798,89 @@ function initContent(root){
 
 /* ---------- Sandbox UI ---------- */
 INTERACTIVES.sandbox = function(el, arg){
-  const ids = (arg || "sb_blink").split(","); let cur = ids[0], fails = 0, bd = getBoard();
-  const key = () => `sti_sb_${user ? user.email : "guest"}_${cur}_${bd}`;
+  const ids = (arg || "sb_blink").split(","); let cur = ids[0], bd = getBoard();
+  const email = user ? user.email : "guest";
+  const key = () => `sti_sb_${email}_${cur}_${bd}`, tkey = () => `sti_sbt_${email}_${cur}`;
+  const st = () => store.get(tkey(), {tries:0, allow:5, passed:false, sol:false}), saveSt = s => store.set(tkey(), s);
   const langOk = (code, lang) => lang === "py" ? !/\bvoid\s+(setup|loop)\s*\(/.test(code) : !(/^\s*(import|from)\s+\w+/m.test(code) || /while\s+True\s*:/.test(code));
+  const tabName = i => ({sb_blink:"Warm-up", sb_pattern:"Core challenge", sb_csv:"CSV logger", sb_alarm:"Boss: light alarm"})[i] || SB[i].title;
   el.innerHTML = bench("Coding sandbox: write, run, and check", `
-   <div class="sb-top">${ids.length > 1 ? `<div class="seg seg-sm sb-tabs" role="tablist">${ids.map(i => `<button role="tab" data-id="${i}" aria-selected="${i === cur}">${({sb_blink:"Warm-up",sb_pattern:"Core challenge",sb_csv:"CSV logger",sb_alarm:"Boss: light alarm"})[i] || SB[i].title}</button>`).join("")}</div>` : ""}
+   <div class="sb-top">${ids.length > 1 ? `<div class="seg seg-sm sb-tabs" role="tablist">${ids.map(i => `<button role="tab" data-id="${i}" aria-selected="${i === cur}">${tabName(i)}</button>`).join("")}</div>` : ""}
     <label class="sb-board">Board <select class="sbBoard">${Object.keys(SB_BOARDS).map(b => `<option value="${b}" ${b === bd ? "selected" : ""}>${SB_BOARDS[b].name}${SB_BOARDS[b].lang === "py" ? " (MicroPython)" : " (C++)"}</option>`).join("")}</select></label></div>
    <div class="sb-task panel"></div>
-   <div class="sb-main"><div class="sb-edit"><div class="sb-edhead"><span class="sbLang"></span><span class="explain">Tab inserts spaces</span></div><textarea class="sb-code" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Your code"></textarea>
-     <div class="controls"><button class="btn primary sbRun">Run and check</button><button class="btn sbHint">Hint</button><button class="btn sbReset">Reset code</button><button class="btn sbSol" disabled>Show solution</button></div><div class="sb-msg" aria-live="polite"></div></div>
+   <div class="sb-main"><div class="sb-edit"><div class="sb-edhead"><span class="sbLang"></span><span class="explain sbTries"></span></div><textarea class="sb-code" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Your code"></textarea>
+     <div class="controls"><button class="btn primary sbRun">Run and check</button><button class="btn sbHint">Hint</button><button class="btn sbReset">Reset code</button><button class="btn sbSol" disabled>Explained solution</button></div><div class="sb-msg" aria-live="polite"></div><div class="sb-choice" hidden></div></div>
     <div class="sb-vis"><div class="sb-board-viz"><svg viewBox="0 0 300 150" class="sbviz" aria-label="Virtual board"><rect x="10" y="20" width="170" height="110" rx="12" class="sbb"/><text x="95" y="146" text-anchor="middle" font-size="11" fill="currentColor" class="sbbname"></text>
       <circle cx="140" cy="50" r="14" class="sbled"/><text x="140" y="80" text-anchor="middle" font-size="10" fill="#fff">LED</text><rect x="40" y="45" width="50" height="50" rx="6" fill="#0B1220"/><text x="65" y="74" text-anchor="middle" font-size="9" fill="#9FB0C4">MCU</text>
       <g transform="translate(240,70)"><circle r="18" class="sbldr"/><text y="34" text-anchor="middle" font-size="10" fill="currentColor">light</text><text y="4" text-anchor="middle" font-size="11" font-weight="700" class="sblv" fill="#14213D">55%</text><g class="sbhand" opacity="0"><ellipse rx="26" ry="18" fill="#C68E6A" opacity=".9"/><text y="4" text-anchor="middle" font-size="9" fill="#fff">hand</text></g></g>
       <text x="200" y="20" font-size="11" fill="currentColor" class="sbclock">t = 0.0 s</text></svg></div>
-     <canvas class="sb-timeline" aria-label="LED and light timeline"></canvas><div class="serial sb-serial" aria-label="Serial Monitor"></div></div></div>
-   <ol class="sb-results"></ol>`);
-  const ta = $(".sb-code", el), msg = $(".sb-msg", el), res = $(".sb-results", el);
-  function load(){ const C = SB[cur], B = SB_BOARDS[bd]; $(".sbBoard", el).value = bd;
-    $(".sb-task", el).innerHTML = `<b>${C.title}</b><p>${C.task}</p><p class="explain"><b>The sandbox checks that:</b> ${C.criteria.join(" \u2022 ")}</p>`;
+     <canvas class="sb-timeline" aria-label="LED and light timeline"></canvas><div class="serial sb-serial" aria-label="Serial Monitor"></div>
+     <div class="controls sb-sertools"><button class="btn small sbCopy" disabled>Copy output</button><button class="btn small sbDl" disabled>Download as .csv</button></div></div></div>
+   <ol class="sb-results"></ol><div class="sb-walk" hidden></div>`);
+  const ta = $(".sb-code", el), msg = $(".sb-msg", el), res = $(".sb-results", el), walk = $(".sb-walk", el), choice = $(".sb-choice", el);
+  function triesLabel(){ const s = st(); $(".sbTries", el).textContent = s.passed ? "Passed \u2713" : s.sol ? "Solution viewed: keep practicing" : `Attempt ${Math.min(s.tries + 1, s.allow)} of ${s.allow}`; $(".sbSol", el).disabled = !(s.passed || s.sol || s.tries >= s.allow); }
+  function load(){ const C = SB[cur], B = SB_BOARDS[bd], W = SB_WALK[cur]; $(".sbBoard", el).value = bd;
+    $(".sb-task", el).innerHTML = `<b>${C.title}</b><p>${C.task}</p><p class="explain"><b>The sandbox checks that:</b> ${C.criteria.join(" \u2022 ")}</p>
+      ${W ? `<details class="sb-plan"><summary>Plan before you code (Ask \u2192 Plan)</summary><p class="explain">Answer these in your head or on paper first. Then write pseudocode: the steps in plain words.</p><ol>${W.plan.map(q => `<li>${q}</li>`).join("")}</ol></details>` : ""}`;
     $(".sbLang", el).textContent = B.lang === "py" ? "MicroPython" : "Arduino C++"; $(".sbbname", el).textContent = B.name;
-    const saved = store.get(key(), null); ta.value = (saved && langOk(saved, B.lang)) ? saved : C.starter[B.lang](B); if (saved && !langOk(saved, B.lang)) store.del(key()); fails = 0; $(".sbSol", el).disabled = true; msg.textContent = ""; res.innerHTML = ""; $(".sb-serial", el).textContent = ""; drawTL(null, 0); setViz(0, 55, 0); el._hint = 0; }
+    const saved = store.get(key(), null); ta.value = (saved && langOk(saved, B.lang)) ? saved : C.starter[B.lang](B); if (saved && !langOk(saved, B.lang)) store.del(key());
+    msg.textContent = ""; msg.className = "sb-msg"; res.innerHTML = ""; $(".sb-serial", el).textContent = ""; walk.hidden = true; choice.hidden = true; el._hint = 0; el._ser = [];
+    $(".sbCopy", el).disabled = $(".sbDl", el).disabled = true; drawTL(null, 0); setViz(0, 55, 0); triesLabel(); }
   function setViz(led, light, t){ $(".sbled", el).classList.toggle("on", !!led); $(".sblv", el).textContent = Math.round(light) + "%"; $(".sbldr", el).style.fill = `hsl(48, 90%, ${25 + light * .5}%)`; $(".sbhand", el).setAttribute("opacity", light < 20 ? 1 : 0); $(".sbclock", el).textContent = `t = ${(t / 1000).toFixed(1)} s`; }
   function drawTL(r, upto){ const cv = $(".sb-timeline", el), {g, W, H} = hiDPI(cv), sim = SB[cur].sim, X = t => 30 + t / sim * (W - 40); g.clearRect(0, 0, W, H);
     g.fillStyle = cssv("--muted") || "#5B6B7F"; g.font = "10px sans-serif"; g.fillText("LED", 2, H * .35); g.fillText("light", 2, H * .82);
     g.strokeStyle = "rgba(127,140,160,.3)"; g.beginPath(); g.moveTo(30, H * .5); g.lineTo(W - 10, H * .5); g.stroke();
     g.strokeStyle = "#C9A227"; g.lineWidth = 1.5; g.beginPath(); for (let t = 0; t <= sim; t += 50){ const y = H - 4 - sbLight(t) / 100 * (H * .42); t ? g.lineTo(X(t), y) : g.moveTo(X(t), y); } g.stroke();
-    if (r){ const p = mainPin(r); let v = 0, t0 = 0; const evs = r.ev.filter(e => e.pin === p); const segsL = []; evs.forEach(e => { segsL.push([t0, e.t, v]); v = e.v; t0 = e.t; }); segsL.push([t0, r.end, v]);
-      segsL.forEach(([a, b, val]) => { if (val){ g.fillStyle = a < upto ? "#E9C46A" : "rgba(233,196,106,.35)"; g.fillRect(X(a), H * .12, Math.max(1, X(Math.min(b, sim)) - X(a)), H * .3); } }); }
+    if (r){ const p = mainPin(r); let v = 0, t0 = 0; const evs = r.ev.filter(e => e.pin === p), sl = []; evs.forEach(e => { sl.push([t0, e.t, v]); v = e.v; t0 = e.t; }); sl.push([t0, r.end, v]);
+      sl.forEach(([a, b, val]) => { if (val){ g.fillStyle = a < upto ? "#E9C46A" : "rgba(233,196,106,.35)"; g.fillRect(X(a), H * .12, Math.max(1, X(Math.min(b, sim)) - X(a)), H * .3); } }); }
     if (upto){ g.strokeStyle = "#E76F51"; g.lineWidth = 2; g.beginPath(); g.moveTo(X(upto), 4); g.lineTo(X(upto), H - 2); g.stroke(); } g.lineWidth = 1; }
-  async function run(){ const C = SB[cur], B = SB_BOARDS[bd], src = ta.value; store.set(key(), src);
-    res.innerHTML = ""; $(".sb-serial", el).textContent = ""; msg.className = "sb-msg"; msg.textContent = "Running on the virtual board\u2026";
-    const lint = B.lang === "cpp" ? cppLint(src) : [];
-    const tr = B.lang === "cpp" ? cppToJs(src) : pyToJs(src); const pre = (tr.errs || []).concat(lint);
-    try { new Function(tr.js); } catch(e){ msg.className = "sb-msg no"; msg.innerHTML = "<b>Your code has a syntax error.</b> " + esc(friendlyErr(e.message, B.lang)) + (pre.length ? "<ul>" + pre.map(x => `<li>${esc(x)}</li>`).join("") + "</ul>" : ""); fails++; afterFail(); return; }
+  function failed(){ const s = st(); s.tries++; saveSt(s); triesLabel(); logEvent(currentModule, cur, "sandbox_try", "fail " + s.tries + "/" + s.allow); if (s.tries >= s.allow && !s.sol) showChoice(); }
+  function showChoice(){ const s = st();
+    choice.hidden = false; choice.innerHTML = `<b>You have used ${s.allow} tries on this challenge.</b><p>Struggling is part of learning, and you have already learned from each try. What would you like to do?</p><div class="controls"><button class="btn sbMore">Give me 5 more tries</button><button class="btn primary sbSee">Show me the explained solution</button></div><p class="explain">Tip: before choosing, read the \u2717 messages again and open \u201cPlan before you code.\u201d</p>`;
+    anim(choice, {opacity:[0, 1], y:[8, 0]}, {duration:.3});
+    $(".sbMore", el).onclick = () => { const x = st(); x.allow += 5; saveSt(x); choice.hidden = true; triesLabel(); msg.className = "sb-msg"; msg.textContent = "5 more tries added. Change one thing at a time, then run again."; logEvent(currentModule, cur, "sandbox_more", String(x.allow)); };
+    $(".sbSee", el).onclick = () => { const x = st(); x.sol = true; saveSt(x); choice.hidden = true; triesLabel(); openWalk(0); logEvent(currentModule, cur, "sandbox_solution", "after " + x.tries + " tries"); }; }
+  function openWalk(i){ const W = SB_WALK[cur], B = SB_BOARDS[bd], C = SB[cur]; if (!W) return; const steps = W.steps.concat([{t:"The complete solution", full:true}]); i = Math.max(0, Math.min(steps.length - 1, i)); const S = steps[i];
+    walk.hidden = false;
+    walk.innerHTML = `<div class="walk-head"><b>Explained solution: ${esc(C.title)}</b><span class="explain">${B.lang === "py" ? "MicroPython" : "Arduino C++"} \u2022 ${B.name}</span></div>
+     <div class="walk-dots">${steps.map((s, k) => `<button class="${k === i ? "on" : k < i ? "past" : ""}" data-k="${k}" aria-label="Step ${k + 1}: ${esc(s.t)}">${k + 1}</button>`).join("")}</div>
+     <div class="walk-body"><p class="crumb">Step ${i + 1} of ${steps.length}</p><h3>${S.t}</h3>${S.full ? `<p>Here is the whole program. Read it from top to bottom and match each part to the steps you just followed. Then load it into the editor, run it, and change one value to see what happens.</p><div class="codebox"><div class="codehead"><span>${B.lang === "py" ? "MicroPython" : "Arduino C++"}</span><button class="btn small walkLoad" type="button">Load into the editor</button></div><pre class="code"><code>${esc(C.solution[B.lang](B))}</code></pre></div><p class="explain"><b>Reflect:</b> which step was hardest for you, and what will you do differently next time?</p>` : S.h + (S.code ? `<div class="codebox"><div class="codehead"><span>${B.lang === "py" ? "MicroPython" : "Arduino C++"}</span></div><pre class="code"><code>${esc(S.code[B.lang](B))}</code></pre></div>` : "")}</div>
+     <div class="controls"><button class="btn walkPrev" ${i === 0 ? "disabled" : ""}>Back</button><button class="btn primary walkNext">${i === steps.length - 1 ? "Close" : "Next step"}</button></div>`;
+    anim(walk.querySelector(".walk-body"), {opacity:[0, 1], x:[12, 0]}, {duration:.3});
+    walk.querySelectorAll(".walk-dots button").forEach(b => b.onclick = () => openWalk(+b.dataset.k));
+    $(".walkPrev", walk).onclick = () => openWalk(i - 1);
+    $(".walkNext", walk).onclick = () => { if (i === steps.length - 1){ walk.hidden = true; ta.scrollIntoView({behavior:"smooth", block:"center"}); } else openWalk(i + 1); };
+    const ld = $(".walkLoad", walk); if (ld) ld.onclick = () => { ta.value = C.solution[B.lang](B); store.set(key(), ta.value); msg.className = "sb-msg"; msg.textContent = "Solution loaded. Press Run and check, then try changing one value."; ta.scrollIntoView({behavior:"smooth", block:"center"}); };
+    if (i === 0) walk.scrollIntoView({behavior:"smooth", block:"start"}); }
+  async function run(){ const C = SB[cur], B = SB_BOARDS[bd], src = ta.value, s0 = st();
+    if (!s0.passed && !s0.sol && s0.tries >= s0.allow){ showChoice(); return; }
+    if (langOk(src, B.lang)) store.set(key(), src);
+    res.innerHTML = ""; $(".sb-serial", el).textContent = ""; msg.className = "sb-msg"; msg.textContent = "Running on the virtual board\u2026"; choice.hidden = true;
+    const lint = B.lang === "cpp" ? cppLint(src) : [], tr = B.lang === "cpp" ? cppToJs(src) : pyToJs(src), pre = (tr.errs || []).concat(lint);
+    try { new Function(tr.js); } catch(e){ msg.className = "sb-msg no"; msg.innerHTML = "<b>Your code has a syntax error.</b> " + esc(friendlyErr(e.message, B.lang)) + (pre.length ? "<ul>" + pre.map(x => `<li>${esc(x)}</li>`).join("") + "</ul>" : ""); failed(); return; }
     const r = await runSim(tr.js, B.lang, C.sim, B.adcSim);
-    if (r.err){ msg.className = "sb-msg no"; msg.innerHTML = "<b>Your program stopped.</b> " + esc(friendlyErr(r.err, B.lang)) + (pre.length ? "<ul>" + pre.map(x => `<li>${esc(x)}</li>`).join("") + "</ul>" : ""); fails++; afterFail(); return; }
+    if (r.err){ msg.className = "sb-msg no"; msg.innerHTML = "<b>Your program stopped.</b> " + esc(friendlyErr(r.err, B.lang)) + (pre.length ? "<ul>" + pre.map(x => `<li>${esc(x)}</li>`).join("") + "</ul>" : ""); failed(); return; }
     msg.textContent = pre.length ? "Note: " + pre[0] : (tr.notes && tr.notes[0]) || "";
+    el._ser = r.ser.map(x => x.text); $(".sbCopy", el).disabled = $(".sbDl", el).disabled = !el._ser.length;
     await playback(r); const checks = C.check(r), ok = checks.every(x => x.ok);
     res.innerHTML = checks.map(x => `<li class="${x.ok ? "ok" : "no"}"><b>${x.ok ? "\u2713" : "\u2717"}</b> ${esc(x.msg)}${x.hint ? `<div class="explain">${esc(x.hint)}</div>` : ""}</li>`).join("");
     A(res.querySelectorAll("li"), {opacity:[0, 1], x:[-10, 0]}, {delay:stag(0.08), duration:.3});
-    if (ok){ msg.className = "sb-msg ok"; msg.textContent = "All checks passed. Well done! Can you explain each line to a partner?"; confetti(); logEvent(currentModule, cur, "activity", "pass"); }
-    else { fails++; msg.className = "sb-msg no"; msg.textContent = "Not yet. Read the \u2717 items below: each one explains what to change."; logEvent(currentModule, cur, "sandbox_try", "fail"); afterFail(); } }
-  function afterFail(){ if (fails >= 2) $(".sbSol", el).disabled = false; }
+    if (ok){ const s = st(); s.passed = true; saveSt(s); triesLabel(); msg.className = "sb-msg ok"; msg.innerHTML = `All checks passed. Well done! <button class="btn small sbWalkNow" type="button">See the explained solution</button>`; $(".sbWalkNow", el).onclick = () => openWalk(0); confetti(); logEvent(currentModule, cur, "activity", "pass"); }
+    else { msg.className = "sb-msg no"; msg.textContent = "Not yet. Read the \u2717 items below: each one explains what to change."; failed(); } }
   function playback(r){ return new Promise(done => { const sim = SB[cur].sim, speed = reduceMotion() ? 50 : 2, t0 = performance.now(), ser = $(".sb-serial", el); let si = 0, skip = false;
     const sk = document.createElement("button"); sk.className = "btn small"; sk.textContent = "Skip to results"; sk.onclick = () => skip = true; msg.appendChild(document.createTextNode(" ")); msg.appendChild(sk);
     (function step(){ const t = skip ? sim : Math.min(sim, (performance.now() - t0) * speed);
       while (si < r.ser.length && r.ser[si].t <= t){ ser.textContent += r.ser[si].text + "\n"; si++; } ser.scrollTop = ser.scrollHeight;
       setViz(ledAt(r, t), sbLight(t), t); drawTL(r, t);
       if (t >= sim || !alive(el)){ sk.remove(); done(); } else requestAnimationFrame(step); })(); }); }
-  ta.addEventListener("keydown", e => { if (e.key === "Tab"){ e.preventDefault(); const s = ta.selectionStart; ta.value = ta.value.slice(0, s) + (SB_BOARDS[bd].lang === "py" ? "    " : "  ") + ta.value.slice(ta.selectionEnd); ta.selectionStart = ta.selectionEnd = s + (SB_BOARDS[bd].lang === "py" ? 4 : 2); } });
+  ta.addEventListener("keydown", e => { if (e.key === "Tab"){ e.preventDefault(); const sp = SB_BOARDS[bd].lang === "py" ? "    " : "  ", s = ta.selectionStart; ta.value = ta.value.slice(0, s) + sp + ta.value.slice(ta.selectionEnd); ta.selectionStart = ta.selectionEnd = s + sp.length; } });
   ta.addEventListener("input", () => { if (langOk(ta.value, SB_BOARDS[bd].lang)) store.set(key(), ta.value); });
   $(".sbRun", el).onclick = run;
-  $(".sbHint", el).onclick = () => { const h = SB[cur].hints; const i = Math.min(el._hint || 0, h.length - 1); el._hint = (el._hint || 0) + 1; msg.className = "sb-msg"; msg.innerHTML = `<b>Hint ${i + 1} of ${h.length}:</b> ${esc(h[i])}`; };
-  $(".sbReset", el).onclick = () => { store.del(key()); load(); };
-  $(".sbSol", el).onclick = () => { const B = SB_BOARDS[bd]; ta.value = SB[cur].solution[B.lang](B); msg.className = "sb-msg"; msg.textContent = "This is one possible solution. Read it line by line, compare it with yours, then press Run and check."; };
+  $(".sbHint", el).onclick = () => { const h = SB[cur].hints, i = Math.min(el._hint || 0, h.length - 1); el._hint = (el._hint || 0) + 1; msg.className = "sb-msg"; msg.innerHTML = `<b>Hint ${i + 1} of ${h.length}:</b> ${esc(h[i])}`; logEvent(currentModule, cur, "sandbox_hint", String(i + 1)); };
+  $(".sbReset", el).onclick = () => { store.del(key()); const keep = st(); load(); saveSt(keep); triesLabel(); };
+  $(".sbSol", el).onclick = () => openWalk(0);
+  $(".sbCopy", el).onclick = () => { const t = (el._ser || []).join("\n"); (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => toast("Output copied. Paste it into cell A1 of a Google Sheet.")).catch(() => toast("Select the output text and copy it manually.", "warn")); };
+  $(".sbDl", el).onclick = () => { const lines = (el._ser || []).filter(l => l.trim() && !l.trim().startsWith("#")); const blob = new Blob([lines.join("\n") + "\n"], {type:"text/csv"}); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `sandbox_${cur}_${bd}.csv`; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500); toast("CSV file downloaded."); };
   $(".sbBoard", el).onchange = e => { bd = e.target.value; setBoard(bd); load(); dispatchEvent(new CustomEvent("sti-board", {detail:{b:bd, from:el}})); };
   const onBoard = e => { if (!alive(el)){ removeEventListener("sti-board", onBoard); return; } if (e.detail.from !== el && e.detail.b !== bd){ bd = e.detail.b; load(); } }; addEventListener("sti-board", onBoard);
   el.querySelectorAll(".sb-tabs button").forEach(b => b.onclick = () => { cur = b.dataset.id; el.querySelectorAll(".sb-tabs button").forEach(x => x.setAttribute("aria-selected", x === b)); load(); });
@@ -2966,6 +3152,9 @@ function viewOverview(){
    <h3>3. How you use AI: human in the loop</h3>
    <div class="rules">${["Attempt first","Prompt with a framework","Verify","Protect secrets","Disclose","Decide"].map((r, i) => `<div class="rule"><b>${i + 1}</b><span>${r}</span></div>`).join("")}</div>
    <p>AI is built into every unit as a partner you direct, check, and take responsibility for, following UNESCO's emphasis on human agency and accountability.</p>
+   <h3>4. How you solve problems: the engineering design process</h3>
+   <div class="lc-row">${["Ask","Imagine","Plan","Create","Test","Improve","Share"].map((s, i) => `<span class="lc-chip" style="--d:${i};background:#1F3A5F">${s}</span>`).join('<span class="lc-arr">\u2192</span>')}</div>
+   <p>Every challenge, from your first blinking LED to the capstone, follows NASA's engineering design process. You learn it in Module 1.2 and use it in every sandbox challenge, where the explained solutions walk through the same steps.</p>
    <h2 id="ov-assess">How you are assessed</h2>
    <table class="t"><tr><th>Assessment</th><th>When</th><th>What it shows</th></tr><tr><td>Pre-test and post-test (40 items, 45 minutes, no AI)</td><td>Day 1 before Unit 1, and Day 10</td><td>Your growth in each of the 8 competencies</td></tr><tr><td>Quizzes with explanations</td><td>Every module</td><td>Whether you understood the key ideas</td></tr><tr><td>Self-ratings</td><td>Every module</td><td>How confident you feel (compared with your results)</td></tr><tr><td>Competency checkpoints and uploads</td><td>Every module</td><td>Evidence your teacher reviews: Met or Not yet</td></tr><tr><td>Badges</td><td>When you meet a competency</td><td>A visible record of what you can do</td></tr><tr><td>Capstone rubric (7 criteria, 28 points)</td><td>Day 10</td><td>Hardware, logging, pipeline, analysis, automation, AI literacy, and data story</td></tr></table>
    <h2>What you need</h2><p>One board per team with a USB data cable, a breadboard, jumper wires, a DHT22 sensor, an LDR with a 10 k\u03a9 resistor, an LED with a 220 \u03a9 resistor, a laptop with Arduino IDE 2 or Thonny, and a Google account. iPad users can practice in the coding sandbox and the Wokwi simulator.</p>
