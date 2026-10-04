@@ -735,6 +735,39 @@ section.panel{margin:0 0 14px}section.panel h2{margin-top:0;font-size:1.15rem}
 .sb-review.ok{border-color:var(--teal)}.sb-review.warn{border-color:var(--amber)}.sb-review.no{border-color:var(--bad)}
 .rv-head{display:flex;flex-direction:column;gap:2px;margin-bottom:6px}
 .rv-list{list-style:none;padding-left:0;margin:6px 0}.rv-list li{margin:4px 0}.rv-list li.ok b{color:var(--teal)}.rv-list li.no b{color:var(--bad)}
+/* v13: module progress and badge guidance */
+.mprog{position:sticky;top:58px;z-index:11;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:0 0 14px;box-shadow:0 8px 18px -16px rgba(0,0,0,.45)}
+.mp-top{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center}.mp-top .mp-next{margin-left:auto}
+.mp-seg{display:flex;gap:3px;margin-top:8px}.seg-i{flex:1;height:9px;border:0;border-radius:5px;background:var(--line);cursor:pointer;padding:0;min-width:6px}.seg-i.on{background:var(--teal)}.seg-i:hover{outline:2px solid var(--amber)}
+.mbadges{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:0 0 14px;background:var(--surface)}
+.mb-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-top:8px}
+.mb-card{display:flex;gap:10px;align-items:flex-start;border:1px dashed var(--line);border-radius:10px;padding:8px 10px}.mb-card.earned{border-style:solid;border-color:var(--teal)}
+.req-list{list-style:none;padding:0;margin:4px 0 0;font-size:.88rem}.req-list li{display:flex;gap:6px;align-items:baseline;margin:3px 0;flex-wrap:wrap}.req-list li.ok{color:var(--muted)}
+.req-ic{font-weight:700;width:14px;flex:none}.req-list li.ok .req-ic{color:var(--teal)}.req-go{font-weight:600;font-size:.82rem}.req-v{color:var(--navy)}
+.sec-chips{display:flex;flex-wrap:wrap;gap:6px;margin:-4px 0 10px}.badge-chip{display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+.toc a.t-done::before{content:"\2713 ";color:var(--teal);font-weight:700}.toc a.t-todo::before{content:"\25CB ";color:var(--muted)}
+.mleft{margin-top:18px;border-left:4px solid var(--amber)}.left-list{margin:.3em 0 .3em 1.2em}
+.nudge{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom));z-index:70;display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:var(--surface);border:2px solid var(--teal);border-radius:14px;padding:10px 14px;box-shadow:0 14px 30px -14px rgba(0,0,0,.5);max-width:calc(100vw - 24px)}
+body.device-phone .nudge{bottom:calc(76px + env(safe-area-inset-bottom))}
+.pulse-hl{animation:pulsehl 1.5s ease}@keyframes pulsehl{0%,100%{box-shadow:none}30%{box-shadow:0 0 0 4px color-mix(in srgb,var(--amber) 70%,transparent)}}
+.leave-pop{max-width:520px}.leave-pop h2{margin-top:0}
+@media print{.mprog,.mbadges,.nudge,.mleft{display:none!important}}
+.mod-layout .section{scroll-margin-top:150px}
+/* v14: beta feedback + release notes */
+.fb-btn{display:inline-flex;align-items:center;gap:6px;border-color:var(--amber)}
+.fb-dot{width:8px;height:8px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 3px color-mix(in srgb,var(--amber) 30%,transparent)}
+.fb-short{display:none}.fb-head .chip{white-space:nowrap}
+@media (max-width:640px){.fb-txt{display:none}.fb-short{display:inline}.fb-btn{padding:6px 9px;font-size:.82rem}}
+.fb-pop{max-width:540px}.fb-head{display:flex;justify-content:space-between;align-items:center;gap:8px}.fb-head h2{margin:0}
+.fb-types{border:0;padding:0;margin:8px 0 12px;display:flex;flex-wrap:wrap;gap:6px}.fb-types legend{font-weight:700;margin-bottom:6px;padding:0}
+.fb-type{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:5px 12px;cursor:pointer;background:var(--surface)}
+.fb-type:has(input:checked){border-color:var(--teal);background:color-mix(in srgb,var(--teal) 12%,var(--surface))}
+#fbMsg{width:100%;box-sizing:border-box;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit;margin:6px 0}
+.sec-fb{opacity:.75}.sec-fb:hover{opacity:1}
+.rn-card{border:2px solid var(--teal)!important}.rn-card.seen{border:1px solid var(--line)!important}
+.rn-head{display:flex;justify-content:space-between;align-items:center;gap:8px}.chip.new{background:var(--amber);color:#14213D;border-color:var(--amber);font-weight:700}
+.rn-list{margin:.4em 0 .4em 1.1em;padding:0}.rn-list li{margin:3px 0}
+@media print{.fb-btn,.sec-fb{display:none!important}}
 </style>
 </head>
 <body>
@@ -788,7 +821,8 @@ section.panel{margin:0 0 14px}section.panel h2{margin-top:0;font-size:1.15rem}
   <button data-nav="progress"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Progress</button>
 </nav>
 
-<script>
+<script>const COURSE_CONTACT = "morris.bana@dlsu.edu.ph";   // course, privacy, and research contact: change this one line to use another email
+
 /* ============ CONFIG ============ */
 const CONFIG = {
   API_URL: "https://script.google.com/macros/s/AKfycbz2UHq4LJScfjOKPIyygvtdF4sgerboY5WfYtGFrx0DnP9JdaogMXwOysUoDO5ERtYp/exec",   // ends with /exec
@@ -974,6 +1008,7 @@ const REF = {
   originic: ["Origin-IC. (2026). Photoresistor explained for beginners: How it works and uses [Blog post].","https://www.origin-ic.com/blog/photoresistor-explained-beginners-2026-how-it-works-uses/49305"],
   ytLdr1: ["Recommended video on LDRs, part 1 [Video]. (n.d.). YouTube.","https://www.youtube.com/watch?v=XwJQJnY6iUs"],
   ytLdr2: ["Recommended video on LDRs, part 2 [Video]. (n.d.). YouTube.","https://www.youtube.com/watch?v=u9Riurh4y9U"],
+  ytHeat: ["Video on the heat index [Video]. (n.d.). YouTube.","https://www.youtube.com/watch?v=ozeSr29iN0k"],
   sheetsLimits: ["Google. (n.d.). Files you can store in Google Drive. Google Drive Help.","https://support.google.com/drive/answer/37603"],
   sheetsFn: ["Google. (n.d.). Google Sheets function list. Google Docs Editors Help.","https://support.google.com/docs/table/25273"]
 };
@@ -990,9 +1025,9 @@ const COURSE = [
      <p>In April 2024, extreme heat disrupted classes across the Philippines. On April 5, <b>5,288 public schools</b> suspended in-person classes, affecting about <b>3.6 million students</b>; by April 11 the number had risen to <b>5,844 of 47,678 public schools</b>. On April 29\u201330, DepEd moved <b>all public schools</b> nationwide to asynchronous or distance learning because of the heat index forecast and a transport strike.</p>
      <p>These decisions were based on <b>data</b>: PAGASA's heat index forecasts, which combine air temperature and humidity into one "feels like" number. Some local governments even set rules such as "suspend in-person classes automatically when the forecast heat index reaches 40 \u00b0C." That is exactly the kind of system you will learn to build: measure \u2192 decide \u2192 act.</p>
      <div class="newscard"><div><b>News report</b><p>Watch Bloomberg's video report on the April 2024 Philippine heat wave, or read the DepEd suspension report.</p></div><div class="controls"><a class="btn" href="${REF.bloomberg[1]}" target="_blank" rel="noopener">Watch the report</a><a class="btn" href="${REF.rappler[1]}" target="_blank" rel="noopener">Read the article</a></div></div>
-     <div data-video></div>
+     <div data-video></div><p class="explain">Video on the heat index, recommended by the course author. If it does not load on your school network, the written explanation above covers the key ideas.</p>
      ${tryit(`<p>The heat index uses <b>two</b> measurements. Which two sensors in your kit could you use to estimate a heat index for your own classroom? (Answer: temperature and humidity, both measured by the DHT22.)</p>`)}
-     ${srcs([["Philstar, Apr 12, 2024", REF.philstar[1]],["Rappler, Apr 28, 2024", REF.rappler[1]],["Inquirer, Apr 4, 2024", REF.inquirer[1]],["PAGASA heat index", REF.pagasa[1]]])}`},
+     ${srcs([["Heat index video (YouTube)", REF.ytHeat[1]],["Philstar, Apr 12, 2024", REF.philstar[1]],["Rappler, Apr 28, 2024", REF.rappler[1]],["Inquirer, Apr 4, 2024", REF.inquirer[1]],["PAGASA heat index", REF.pagasa[1]]])}`},
     {id:"iot", title:"What is the Internet of Things?", html:`
      <p>The <b>Internet of Things (IoT)</b> is a network of physical objects that <b>sense</b> the world, <b>process</b> the measurements, and <b>exchange</b> data over the internet so that people or machines can act on it. In plain words: a <i>thing</i> measures something, sends the data somewhere useful, and something or someone responds.</p>
      <p>You already live with IoT: a smart electric meter that reports usage, a weather station that uploads readings every few minutes, a delivery app that tracks a rider's GPS, or a water-level sensor that warns a barangay when a river rises.</p>
@@ -1050,7 +1085,7 @@ const COURSE = [
    ],
    rating:["I can name the lifecycle stages only when I look at the diagram.","I can explain most stages and analytics types with some help.","I can explain all six stages and classify questions by analytics type on my own.","I can do level 3 and help a classmate write a strong data question."],
    checkpoint:{code:"U1-O1", task:"Label the 6 lifecycle stages and classify 4 questions by analytics type.", met:"6 of 6 stages and 4 of 4 questions correct.", upload:"Upload a photo of your team question card."},
-   refs:["alfuqaha","philstar","rappler","inquirer","bloomberg","pagasa","petropoulos","davenport","pearce","bastani","unesco"]
+   refs:["alfuqaha","philstar","rappler","inquirer","bloomberg","pagasa","ytHeat","petropoulos","davenport","pearce","bastani","unesco"]
   },
   {id:"1.2", title:"Board setup and programming basics", minutes:180,
    objectives:["Describe what a microcontroller is and compare the four course boards.","Set up the tools and upload a program to your board (U1-O2).","Identify the structure of an Arduino sketch and a MicroPython script (U1-O2).","Use variables and constants, conditionals, loops, operators, and functions in C++ and MicroPython (U1-O2).","Control timing with delay() and sleep(), and explain why they block the program.","Print values and CSV rows to the Serial Monitor or Shell.","Apply the engineering design process to plan, test, and improve a solution to a coding challenge.","Classify and fix syntax, runtime, and logic errors."],
@@ -1087,7 +1122,7 @@ const COURSE = [
      ${mis(`<p>"No port appears." Most often the USB cable is <b>charge-only</b>. Try another cable before assuming the board is broken.</p>`)}
      ${tip("No hardware or using an iPad?", `<p>Use the coding sandbox later in this module, or the <a href="${REF.wokwi[1]}" target="_blank" rel="noopener">Wokwi simulator</a> for ESP32 and Pico W projects.</p>`)}
      ${srcs([["Arduino IDE 2", REF.arduinoIDE[1]],["Arduino-ESP32", REF.espArduino[1]],["ESP8266 core", REF.esp8266[1]],["Thonny", REF.thonny[1]],["MicroPython RP2", REF.micropython[1]]])}`},
-    {id:"wokwi", title:"Optional: practicing with the Wokwi simulator", html:`
+    {id:"wokwi", title:"Optional: practicing with the Wokwi simulator", optional:true, html:`
      <p><b>Wokwi</b> is a free online simulator where you can wire a virtual board and run real code in your browser. It is useful when you do not have your kit with you, when you are on an iPad, or when you want to try a wiring idea safely. In this course, the <b>coding sandbox</b> inside each module is still where your challenges are checked; Wokwi is for extra practice.</p>
      <h3>Which Wokwi project to start from</h3>
      <table class="t"><tr><th>Your course board</th><th>Start Wokwi from</th><th>Language in Wokwi</th></tr>
@@ -2575,15 +2610,15 @@ addEventListener("orientationchange", () => setTimeout(applyDevice, 200));
 /* ============ DATA PRIVACY STATEMENT ============ */
 const PRIVACY_HTML = `
 <h3>Data Privacy Statement</h3>
-<p><b>Who we are.</b> This course, <i>From Sensor to Insight</i>, is managed by [course owner or school name] as the personal information controller.</p>
+<p><b>Who we are.</b> This course, <i>From Sensor to Insight</i>, is managed by <b>Morris C. Bana, LPT</b>, an independent course creator, as the personal information controller. It is a personal project and is not run by any school or university.</p>
 <p><b>What we collect.</b> Your last and given name, age, email address, role, grade level(s), and school or industry; your learning activity (visits, active time, device type, sections completed, quiz answers, self-ratings, sandbox attempts); the files you upload; and the questions you ask the AI assistant, any code you send it for review, and its answers.</p>
 <p><b>Why we collect it.</b> To deliver the course, let your teacher monitor and support your learning, give feedback, keep the course safe, and improve it. Use of your data for research is optional and needs your separate agreement (see Research use below).</p>
 <p><b>Legal basis.</b> Your consent, and for learners below 18, the consent of a parent or guardian, under the Data Privacy Act of 2012 (Republic Act No. 10173) and its Implementing Rules and Regulations.</p>
-<p><b>Where it is stored and who can see it.</b> In the course owner's Google account (Google Sheets and Google Drive), accessible only to the course owner and your teacher(s). Questions you send to the AI assistant are processed by Google's Gemini API, or by Anthropic's Claude API as a backup, to generate answers. We do not sell your data or share it with anyone else unless required by law.</p>
-<p><b>How long we keep it.</b> Until [retention period, e.g., one year after the course ends], after which it is deleted.</p>
+<p><b>Where it is stored and who can see it.</b> In the course owner's personal Google account (Google Sheets and Google Drive), accessible only to the course owner and your teacher(s). Questions you send to the AI assistant are processed by Google's Gemini API, or by Anthropic's Claude API as a backup, to generate answers. We do not sell your data or share it with anyone else unless required by law.</p>
+<p><b>How long we keep it.</b> Your account and learning data are kept until <b>two years after your last activity</b> in the course, then deleted. Uploaded files are deleted <b>one year after the course ends</b>. If you agree to research use, de-identified data (with no name, email, or school) may be kept for up to <b>five years after any publication</b>. You can ask for your data to be deleted earlier at any time.</p>
 <p><b>How we protect it.</b> Access is limited to authorized people, your uploaded files are kept in private folders, and only the data needed for the course is collected.</p>
 <p><b>Your rights.</b> You have the right to be informed, to access, to object, to correct (rectification), to erasure or blocking, to data portability, and to damages, and the right to file a complaint with the National Privacy Commission. You may withdraw your consent at any time.</p>
-<p><b>Contact.</b> [Data Protection Officer name, email address, and office].</p>`;
+<p><b>Contact.</b> For questions, requests about your data, or to withdraw consent, contact the Data Protection Officer, Morris C. Bana, at <a href="mailto:${COURSE_CONTACT}">${COURSE_CONTACT}</a>.</p>`;
 const RESEARCH_SHORT = `<h3>Research use (optional)</h3><p>If you agree, your <b>de-identified</b> course data (activity, scores, and survey ratings, with your name, email, and school replaced by a code) may be used to improve the course and for possible research. Results are reported only as group summaries. Saying no does not affect your access, and you can change your choice any time on the Privacy and research page. Learners below 18 need a parent or guardian to agree as well.</p>`;
 
 /* ============ WELCOME, SIGN-UP, AND RETURNING USERS ============ */
@@ -3262,6 +3297,7 @@ function admRender(){
    <section class="panel"><div class="adm-head"><h2>Learners</h2><span class="explain" id="admCount"></span></div>
     <div class="controls"><input id="admQ" class="dinput" placeholder="Search name, email, or school" aria-label="Search learners" value="${esc(admQuery)}"><select id="admF" aria-label="Filter learners">${[["all","All learners"],["attention","Needs attention"],["nopre","No pre-test yet"],["done","Finished Unit 1"],["Student","Students"],["Teacher","Teachers"],["Professional","Professionals"]].map(o => `<option value="${o[0]}" ${admFilter === o[0] ? "selected" : ""}>${o[1]}</option>`).join("")}</select></div>
     <div id="admTable" class="adm-tablewrap"></div></section>
+   <section class="panel"><h2>Beta feedback (${(ADM.feedback || []).length}${(ADM.feedback || []).length >= 60 ? "+" : ""})</h2>${(ADM.feedback || []).length ? `<div class="controls">${FB_TYPES.map(t => { const n = ADM.feedback.filter(f => f.type === t[0]).length; return n ? `<span class="chip">${t[1]}: ${n}</span>` : ""; }).join("")}</div>${ADM.feedback.slice(0, 25).map(f => `<div class="adm-quote"><b>${esc((FB_TYPES.find(t => t[0] === f.type) || [0, f.type])[1])}</b> \u2022 ${esc(f.module ? "Module " + f.module + (f.section ? " \u203a " + f.section : "") : f.page)} \u2022 ${esc(f.device)} \u2022 ${new Date(f.at).toLocaleString()}<p>${esc(f.message)}</p><p class="explain">${esc(f.email)}</p></div>`).join("")}<p class="explain">All feedback is in the Feedback tab of your Google Sheet; use its status column (new, seen, fixed) to track fixes.</p>` : `<p class="explain">No feedback yet.</p>`}</section>
    ${ADM.reports.length ? `<section class="panel"><h2>Reported Sensi answers</h2>${ADM.reports.map(r => `<div class="adm-quote"><b>${esc(r.email)}</b> \u2022 Module ${esc(r.module)} \u2022 ${new Date(r.at).toLocaleDateString()}<p><i>Reason:</i> ${esc(r.reason)}</p><p><i>Question:</i> ${esc(r.question)}</p></div>`).join("")}<p class="explain">Full answers are in the AI_Reports tab of your Google Sheet.</p></section>` : ""}
    <div id="admDrawer"></div>`;
   admRenderTable();
@@ -3380,7 +3416,7 @@ const RESEARCH_HTML = `<h3>Research use (optional)</h3>
 <p>The course team may study how learners use this course in order to improve it and, possibly, to publish what we learn. If you agree, we may use your <b>de-identified</b> course data for this research: your activity in the app (sections completed, time spent, quiz, drill, and sandbox results), your pre-test and post-test scores, and your survey ratings.</p>
 <p><b>How you are protected.</b> Before analysis, your name, email, and school are removed and replaced with a code. Results are reported only as group summaries; nothing that identifies you will be published. Your written survey answers are not included in research exports. Any publication will follow the review process of a research ethics committee.</p>
 <p><b>Your choice.</b> Saying yes is optional. Saying no does not affect your access to any part of the course, your progress, or your badges. You can change your choice at any time on the Privacy and research page. For learners below 18, a parent or guardian must also agree.</p>
-<p><b>Questions.</b> Contact [researcher name and email].</p>`;
+<p><b>Questions.</b> Contact the researcher, Morris C. Bana, at <a href="mailto:${COURSE_CONTACT}">${COURSE_CONTACT}</a>.</p>`;
 const consentStatus = () => (user && user.researchConsent) || "";
 async function setResearchConsent(yes, guardian){
   const r = await api("consent", {researchConsent:!!yes, researchGuardian:!!guardian}, false);
@@ -3412,6 +3448,75 @@ function viewPrivacy(){
    <div class="privacy-page">${RESEARCH_HTML}${PRIVACY_HTML}</div>`;
   $("#pvYes").onclick = async () => { const g = $("#pvGuardian"); if (user.minor && !(g && g.checked)){ toast("Please have a parent or guardian agree first.", "warn"); return; } if (await setResearchConsent(true, g && g.checked)){ toast("Saved: yes."); viewPrivacy(); } };
   $("#pvNo").onclick = async () => { if (await setResearchConsent(false)){ toast("Saved: no. Nothing changes about your access."); viewPrivacy(); } };
+}
+
+/* ============ BETA FEEDBACK + RELEASE NOTES ============ */
+const APP_VERSION = "Beta 1 (Unit 1)";
+const RELEASE_NOTES = [
+ {v:"Beta 1", date:"2026-10-05", title:"Unit 1 is open", items:[
+  "Unit 1: Sensors and programming foundations (Modules 1.1 to 1.4) is now open.",
+  "Pre-test before Unit 1: 40 questions, about 45 minutes, not graded.",
+  "Coding sandbox with four challenges, hints, explained solutions, and an AI review if you solved a challenge your own way.",
+  "Interactive explainers and drills for variables, decisions, loops, delay, and printing.",
+  "Study guide, plus a printable one-page guide for every module.",
+  "Progress bar inside each module, badge checklists, and reminders to mark sections as done.",
+  "Beta feedback button: tell us what is broken, confusing, or could be better."],
+  next:"Coming next: Unit 2, Connecting to the cloud."}
+];
+const FB_TYPES = [["broken","Something is broken"],["confusing","Something is confusing"],["content","Wrong fact or typo"],["suggestion","Suggestion"],["other","Other"]];
+function fbContext(sectionId){
+  const h = location.hash || "#/home", mm = h.match(/^#\/m\/([^?]+)/), mid = mm ? decodeURIComponent(mm[1]) : "";
+  const m = mid && MODULES[mid], sid = sectionId || (currentSection || "").replace(/^s-/, ""), sec = m && m.sections.find(s => s.id === sid);
+  const label = m ? `Module ${mid}${sec ? " \u203a " + sec.title : ""}` : ({"#/home":"Home","#/overview":"Course overview","#/guide":"Study guide","#/badges":"My badges","#/progress":"My progress","#/privacy":"Privacy and research","#/test/pre":"Pre-test","#/admin":"Teacher dashboard"})[h.split("?")[0]] || h;
+  return {moduleId:mid, section:sec ? sec.title : "", page:h.slice(0, 200), label};
+}
+function openFeedback(sectionId){
+  if (!user){ toast("Sign in first so we can follow up on your feedback.", "warn"); return; }
+  if (typeof testActive !== "undefined" && testActive){ toast("Feedback is paused during the test.", "warn"); return; }
+  const ctx = fbContext(sectionId);
+  let d = $("#fbDlg"); if (!d){ d = document.createElement("dialog"); d.id = "fbDlg"; document.body.appendChild(d); }
+  d.innerHTML = `<form class="fb-pop" method="dialog"><div class="fb-head"><h2>Beta feedback</h2><span class="chip">${esc(APP_VERSION)}</span></div>
+   <p class="explain">This course is in beta. Tell us what is broken, confusing, or could be better. Short notes are perfect.</p>
+   <fieldset class="fb-types"><legend>What kind of feedback?</legend>${FB_TYPES.map((t, i) => `<label class="fb-type"><input type="radio" name="fbt" value="${t[0]}" ${i === 0 ? "checked" : ""}><span>${t[1]}</span></label>`).join("")}</fieldset>
+   <label for="fbMsg"><b>Your feedback</b></label><textarea id="fbMsg" rows="5" maxlength="2000" placeholder="What happened, or what would make this better? If something broke, what did you click just before?"></textarea>
+   <p class="explain">Sent with: <b>${esc(ctx.label)}</b> \u2022 ${esc(device)} \u2022 your name and email, so your teacher can follow up. Please do not include passwords or other personal information.</p>
+   <div class="err" id="fbErr" role="alert"></div>
+   <div class="controls"><button class="btn primary" id="fbSend" type="button">Send feedback</button><button class="btn" id="fbCancel" type="button">Cancel</button></div></form>`;
+  d.showModal(); $("#fbMsg").focus();
+  $("#fbCancel").onclick = () => d.close();
+  $("#fbSend").onclick = async () => { const msg = $("#fbMsg").value.trim(), type = (d.querySelector('input[name="fbt"]:checked') || {}).value || "other";
+    if (msg.length < 5){ $("#fbErr").textContent = "Please write a few words so we understand the problem."; return; }
+    $("#fbSend").disabled = true; $("#fbErr").textContent = "";
+    const r = await api("feedback", Object.assign({type, message:msg, device, browser:navigator.userAgent.slice(0, 200), appVersion:APP_VERSION}, ctx));
+    $("#fbSend").disabled = false;
+    if (r.ok){ d.close(); toast("Thank you! Your feedback was sent."); logEvent(ctx.moduleId || "app", "feedback", "feedback_sent", type); return; }
+    if (r.queued || r.offline || r.error === "network"){ d.close(); toast("You are offline. Your feedback is saved and will be sent when you reconnect."); return; }
+    $("#fbErr").textContent = ({too_short:"Please write a few more words.", feedback_limit:"You have sent a lot of feedback today. Thank you! Please try again tomorrow.", not_registered:"Please sign in again first."})[r.error] || ("Could not send (" + (r.error || "error") + "). Please try again."); };
+}
+function addFeedbackButton(){
+  if ($("#fbBtn")) { $("#fbBtn").hidden = !user; return; }
+  const sb = $("#searchBtn"); if (!sb) return;
+  const b = document.createElement("button"); b.className = "btn small fb-btn"; b.id = "fbBtn"; b.type = "button"; b.setAttribute("aria-label", "Send beta feedback");
+  b.innerHTML = `<span class="fb-dot" aria-hidden="true"></span><span class="fb-txt">Beta feedback</span><span class="fb-short">Feedback</span>`; b.onclick = () => openFeedback(); b.hidden = !user;
+  sb.parentNode.insertBefore(b, sb);
+}
+/* section-level feedback buttons */
+const _viewModuleFb = viewModule;
+viewModule = function(id){ _viewModuleFb(id);
+  document.querySelectorAll("#view .section .sec-actions").forEach(a => { if (a.querySelector(".sec-fb")) return; const sid = (a.closest(".section").id || "").replace(/^s-/, "");
+    const b = document.createElement("button"); b.className = "btn small sec-fb"; b.type = "button"; b.textContent = "Feedback"; b.title = "Report a problem or idea about this section"; b.onclick = () => openFeedback(sid); a.insertBefore(b, a.firstChild); }); };
+/* release notes */
+function releaseCardHTML(){
+  const r = RELEASE_NOTES[0], seen = store.get("sti_rn_seen", "") === r.v, d = new Date(r.date + "T00:00:00");
+  return `<div class="spot span6 rn-card ${seen ? "seen" : ""}" id="rnCard"><div class="rn-head"><span class="lbl">What's new \u2022 ${esc(r.v)} \u2022 ${d.toLocaleDateString(undefined, {month:"short", day:"numeric", year:"numeric"})}</span>${seen ? "" : `<span class="chip new">NEW</span>`}</div>
+   <h3>${esc(r.title)}</h3>${seen ? `<p class="explain">${esc(r.items[0])} <a href="#/whatsnew">See all release notes</a></p>` : `<ul class="rn-list">${r.items.map(i => `<li>${esc(i)}</li>`).join("")}</ul>${r.next ? `<p class="explain"><b>${esc(r.next)}</b></p>` : ""}<div class="controls"><button class="btn small primary" id="rnOk">Got it</button><a class="btn small" href="#/whatsnew">All release notes</a><button class="btn small" id="rnFb">Send feedback</button></div>`}</div>`;
+}
+function wireReleaseCard(){ const ok = $("#rnOk"); if (ok) ok.onclick = () => { store.set("sti_rn_seen", RELEASE_NOTES[0].v); const c = $("#rnCard"); if (c){ c.outerHTML = releaseCardHTML(); } }; const f = $("#rnFb"); if (f) f.onclick = () => openFeedback(); }
+function viewWhatsNew(){
+  $("#view").innerHTML = `<p class="crumb">Release notes</p><h1>What's new</h1><p>This course is in beta, with a new unit each week. Here is what changed in each release. Spotted a problem? Use <b>Beta feedback</b> at the top of the page.</p>
+   ${RELEASE_NOTES.map(r => `<section class="panel"><h2>${esc(r.v)}: ${esc(r.title)}</h2><p class="explain">${new Date(r.date + "T00:00:00").toLocaleDateString(undefined, {dateStyle:"long"})}</p><ul>${r.items.map(i => `<li>${esc(i)}</li>`).join("")}</ul>${r.next ? `<p><b>${esc(r.next)}</b></p>` : ""}</section>`).join("")}
+   <div class="controls"><button class="btn primary" id="wnFb">Send beta feedback</button></div>`;
+  $("#wnFb").onclick = () => openFeedback(); store.set("sti_rn_seen", RELEASE_NOTES[0].v);
 }
 
 /* ============ v5 FEATURES ============ */
@@ -3765,7 +3870,7 @@ function viewHome(){
   const earned = BADGES.filter(b => (prog.badges || {})[b.id]);
   const surveyDue = done === mods.length && !(prog.survey && prog.survey.u1);
   $("#view").innerHTML = `<p class="crumb">Course home</p><h1>Welcome, ${esc(user.givenName || (user.name || "").split(" ")[0])}</h1>
-   <div class="bento">${researchPromptHTML()}${store.get("sti_guide_seen", false) ? "" : `<a class="spot span6 guide-ask" href="#/guide"><span class="lbl">Start here</span><h3>How to study this course</h3><span class="lbl">How modules work, a weekly plan, study habits that work, and what to do when you are stuck (5-minute read).</span></a>`}${preGate() ? `<a class="spot continue span6" href="#/test/pre"><span class="lbl">Step 1 before Unit 1</span><h3>Take the pre-test (40 questions, 45 minutes)</h3><span class="lbl">It is not graded. It shows your starting point so you can see your growth by the end of the course.</span></a>` : ""}
+   <div class="bento">${releaseCardHTML()}${researchPromptHTML()}${store.get("sti_guide_seen", false) ? "" : `<a class="spot span6 guide-ask" href="#/guide"><span class="lbl">Start here</span><h3>How to study this course</h3><span class="lbl">How modules work, a weekly plan, study habits that work, and what to do when you are stuck (5-minute read).</span></a>`}${preGate() ? `<a class="spot continue span6" href="#/test/pre"><span class="lbl">Step 1 before Unit 1</span><h3>Take the pre-test (40 questions, 45 minutes)</h3><span class="lbl">It is not graded. It shows your starting point so you can see your growth by the end of the course.</span></a>` : ""}
     <a class="spot continue span4" href="#/m/${next.id}"><span class="lbl">${modulePct(next) ? "Continue where you left off" : "Start here"}</span><h3>Module ${next.id}: ${esc(next.title)}</h3><span class="lbl">${next.minutes} minutes \u2022 ${Math.round(modulePct(next) * 100)}% done</span></a>
     <a class="spot span2" href="#/overview"><div class="lbl">New here?</div><h3>Course overview</h3><div class="lbl">What you will learn, the framework, and how you are assessed</div></a>
     <div class="spot span2"><div class="big" data-tick="${done}">0</div><div class="lbl">of ${mods.length} Unit 1 modules complete</div></div>
@@ -3778,7 +3883,7 @@ function viewHome(){
   document.querySelectorAll("[data-tick]").forEach(el => tick(el, +el.dataset.tick, +(el.dataset.dec || 0), el.dataset.suf || ""));
   document.querySelectorAll(".mod-card .bar i").forEach(i => { if (canAnim()) A(i, {width:["0%", i.dataset.w + "%"]}, {duration:1, delay:.3, ease:[.22,1,.36,1]}); i.style.width = i.dataset.w + "%"; });
   A(document.querySelectorAll(".bento .spot"), {opacity:[0, 1], y:[20, 0], scale:[.98, 1]}, {delay:stag(0.05), type:"spring", stiffness:260, damping:26});
-  spotify($("#view")); wireResearchPrompt();
+  spotify($("#view")); wireResearchPrompt(); wireReleaseCard();
 }
 
 /* ---------- Badges page ---------- */
@@ -3884,6 +3989,7 @@ function route(){
   else if (h === "#/guide") viewGuide();
   else if (gm) viewModuleGuide(decodeURIComponent(gm[1]));
   else if (h === "#/privacy") viewPrivacy();
+  else if (h === "#/whatsnew") viewWhatsNew();
   else if (tm) viewTest(tm[1]);
   else if (mm && preGate()) viewPreGate();
   else if (mm){ pendingAnchor = mm[2] || null; viewModule(mm[1]); }
@@ -3894,7 +4000,7 @@ function route(){
 }
 function buildIndex(){ const out = [{t:"Course overview", sub:"Page", h:"#/overview"}];
   Object.values(MODULES).forEach(m => { out.push({t:`Module ${m.id}: ${m.title}`, sub:"Module", h:`#/m/${m.id}`}); m.sections.forEach(s => out.push({t:s.title, sub:`Module ${m.id}`, h:`#/m/${m.id}?s=${s.id}`})); });
-  out.push({t:"Coding sandbox (Module 1.2)", sub:"Practice", h:"#/m/1.2?s=errors"}, {t:"Coding sandbox (Module 1.3)", sub:"Practice", h:"#/m/1.3?s=p2"}, {t:"Wiring guide", sub:"Module 1.3", h:"#/m/1.3?s=wiring"}, ...(isAdminEmail() ? [{t:"Teacher dashboard", sub:"Admin", h:"#/admin"}] : []), {t:"Study guide", sub:"Page", h:"#/guide"}, {t:"Privacy and research", sub:"Page", h:"#/privacy"}, {t:"Pre-test", sub:"Assessment", h:"#/test/pre"}, {t:"Post-test", sub:"Assessment", h:"#/test/post"}, {t:"My badges", sub:"Page", h:"#/badges"}, {t:"Unit 1 survey", sub:"Page", h:"#/survey/u1"}, {t:"My progress", sub:"Page", h:"#/progress"}, {t:"Course home", sub:"Page", h:"#/home"}, {t:"Settings", sub:"Page", h:"settings"});
+  out.push({t:"Coding sandbox (Module 1.2)", sub:"Practice", h:"#/m/1.2?s=errors"}, {t:"Coding sandbox (Module 1.3)", sub:"Practice", h:"#/m/1.3?s=p2"}, {t:"Wiring guide", sub:"Module 1.3", h:"#/m/1.3?s=wiring"}, ...(isAdminEmail() ? [{t:"Teacher dashboard", sub:"Admin", h:"#/admin"}] : []), {t:"What's new", sub:"Release notes", h:"#/whatsnew"}, {t:"Study guide", sub:"Page", h:"#/guide"}, {t:"Privacy and research", sub:"Page", h:"#/privacy"}, {t:"Pre-test", sub:"Assessment", h:"#/test/pre"}, {t:"Post-test", sub:"Assessment", h:"#/test/post"}, {t:"My badges", sub:"Page", h:"#/badges"}, {t:"Unit 1 survey", sub:"Page", h:"#/survey/u1"}, {t:"My progress", sub:"Page", h:"#/progress"}, {t:"Course home", sub:"Page", h:"#/home"}, {t:"Settings", sub:"Page", h:"settings"});
   return out; }
 
 /* ---------- one-time UI wiring for v5 ---------- */
@@ -3903,6 +4009,126 @@ function buildIndex(){ const out = [{t:"Course overview", sub:"Page", h:"#/overv
     tb.insertBefore(b, tb.firstChild.nextSibling); b.onclick = () => { store.set("sti_side", !store.get("sti_side", false)); applySide(); pillTop = null; setTimeout(renderMap, 50); }; }
   const pend = store.get("sti_pending_survey", null); if (pend && user && apiReady()) api("survey", Object.assign({device}, pend), false).then(r => { if (r.ok) store.del("sti_pending_survey"); });
 })();
+
+/* ============ MODULE PROGRESS + BADGE GUIDANCE ============ */
+const passed = id => act(id) === "pass" || act(id) === "pass_ai";            // AI-verified passes count too
+const isOpt = s => !!s.optional;
+modulePct = function(m){ if (!m.sections) return 0; const req = m.sections.filter(s => !isOpt(s)), total = req.length + 1;
+  let d = req.filter(s => prog.done[m.id + ":" + s.id]).length; if (prog.rating[m.id]) d++; return d / total; };
+/* Badge requirements, matching each badge's test, with where to find each one */
+const BADGE_REQS = {
+ "U1-O1":[{t:"Score at least 4/5 on the Module 1.1 quiz", ok:() => qc("1.1") >= 4, v:() => qc("1.1") + "/5", at:["1.1","quiz"]},
+          {t:"Finish the lifecycle ordering game (6/6), or score 6+ in the analytics sorter", ok:() => act("lifecycle_order") === "6/6" || parseInt(act("analytics_sort")) >= 6, at:["1.1","lifecycle"], also:["1.1","analytics"]}],
+ "U1-O2":[{t:"Score at least 4/5 on the Module 1.2 quiz", ok:() => qc("1.2") >= 4, v:() => qc("1.2") + "/5", at:["1.2","quiz"]},
+          {t:"Pass the Core challenge in the sandbox", ok:() => passed("sb_pattern"), at:["1.2","errors"]}],
+ "U1-O3":[{t:"Finish the animated wiring guide", ok:() => act("wiring") === "done", at:["1.3","wiring"]},
+          {t:"Answer the voltage divider and calibration quiz items (2 and 4) correctly", ok:() => qok("1.3", 1) && qok("1.3", 3), at:["1.3","quiz"]},
+          {t:"Pass the CSV logger challenge in the sandbox", ok:() => passed("sb_csv"), at:["1.3","p2"]}],
+ "U1-O4":[{t:"Run the delay() vs millis() race", ok:() => !!act("timing"), at:["1.3","timing"]},
+          {t:"Pass the Boss challenge (light alarm) in the sandbox", ok:() => passed("sb_alarm"), at:["1.3","p2"]}],
+ "U1-O5":[{t:"Sort every variable in the levels of measurement activity", ok:() => act("levels") === "complete", at:["1.4","levels"]},
+          {t:"Answer the level-of-measurement and error quiz items (2 and 3) correctly", ok:() => qok("1.4", 1) && qok("1.4", 2), at:["1.4","quiz"]}],
+ "U1-O6":[{t:"Use the data volume calculator", ok:() => !!act("volume"), at:["1.4","volume"]},
+          {t:"Answer the rows-per-day quiz item (4) correctly", ok:() => qok("1.4", 3), at:["1.4","quiz"]}],
+ "U1-O7":[{t:"Verify 5 AI claims with sources in the AI activity", ok:() => !!act("ai_verify"), at:["1.3","aiverify"]}],
+ "U1-DONE":Object.keys(MODULES).map(id => ({t:`Finish Module ${id} (100%)`, ok:() => modulePct(MODULES[id]) === 1, v:() => Math.round(modulePct(MODULES[id]) * 100) + "%", at:[id,"top"]})),
+ "U1-VOICE":[{t:"Answer the Unit 1 survey", ok:() => !!(prog.survey && prog.survey.u1), href:"#/survey/u1"}]
+};
+const reqHref = r => r.href || (r.at[1] === "top" ? `#/m/${r.at[0]}` : `#/m/${r.at[0]}?s=${r.at[1]}`);
+BADGES.forEach(b => { const R = BADGE_REQS[b.id]; if (R) b.test = () => R.every(r => r.ok()); });
+const badgeOf = id => BADGES.find(b => b.id === id);
+function badgesForSection(mid, sid){ return BADGES.filter(b => (BADGE_REQS[b.id] || []).some(r => r.at && ((r.at[0] === mid && r.at[1] === sid) || (r.also && r.also[0] === mid && r.also[1] === sid)))); }
+function badgesForModule(mid){ return BADGES.filter(b => b.id !== "U1-DONE" && (BADGE_REQS[b.id] || []).some(r => r.at && r.at[0] === mid)); }
+function reqList(b, mid){ return `<ul class="req-list">${BADGE_REQS[b.id].map(r => { const ok = r.ok(); return `<li class="${ok ? "ok" : ""}"><span class="req-ic">${ok ? "\u2713" : "\u25cb"}</span><span>${esc(r.t)}${r.v ? ` <b class="req-v">(${r.v()})</b>` : ""}</span>${!ok ? ` <a class="req-go" href="${reqHref(r)}">${r.at && r.at[0] === mid ? "Go" : r.at ? "Open " + r.at[0] : "Open"}</a>` : ""}</li>`; }).join("")}</ul>`; }
+
+/* Parts that count toward the module percentage */
+function moduleParts(m){ return m.sections.filter(s => !isOpt(s)).map(s => ({key:s.id, title:s.title, done:!!prog.done[m.id + ":" + s.id], anchor:"s-" + s.id}))
+  .concat([{key:"rating", title:"Self-rating", done:!!prog.rating[m.id], anchor:"s-rating"}]); }
+function quizState(m){ const n = m.quiz ? m.quiz.length : 0, ans = m.quiz ? m.quiz.filter((q, i) => prog.quiz[m.id + ":" + i] != null).length : 0; return {n, ans}; }
+
+const _viewModule = viewModule;
+viewModule = function(id){
+  _viewModule(id); const m = MODULES[id]; if (!m) return;
+  const v = $("#view"), first = v.querySelector(".mod-layout > div");
+  // 1. sticky progress bar
+  const bar = document.createElement("div"); bar.className = "mprog"; bar.id = "mprog"; first.insertBefore(bar, first.querySelector(".objectives"));
+  // 2. badges in this module
+  const bl = badgesForModule(id);
+  if (bl.length){ const box = document.createElement("div"); box.className = "mbadges"; box.id = "mbadges"; first.insertBefore(box, first.querySelector(".objectives").nextSibling); }
+  // 3. section chips + optional marker
+  m.sections.forEach(s => { const head = v.querySelector(`#s-${s.id} .sec-head`); if (!head) return;
+    const bs = badgesForSection(id, s.id); const wrap = document.createElement("div"); wrap.className = "sec-chips";
+    if (isOpt(s)) wrap.innerHTML += `<span class="chip">Optional: not counted in your progress</span>`;
+    bs.forEach(b => wrap.innerHTML += `<a class="chip badge-chip" href="#/badges" title="${esc(b.how)}"><svg viewBox="-30 -32 60 64" width="16" height="16" aria-hidden="true"><path d="M0 -28 L24 -14 V14 L0 28 L-24 14 V-14Z" fill="${b.color}"/></svg>Counts toward badge: ${esc(b.name)}</a>`);
+    if (wrap.innerHTML) head.insertAdjacentElement("afterend", wrap);
+    if (isOpt(s)){ const db = head.querySelector("[data-done]"); if (db && !prog.done[id + ":" + s.id]) db.textContent = "Mark as done (optional)"; } });
+  const qs = v.querySelector("#s-quiz h2"); if (qs){ const bq = BADGES.filter(b => (BADGE_REQS[b.id] || []).some(r => r.at && r.at[0] === id && r.at[1] === "quiz")); if (bq.length){ const w = document.createElement("div"); w.className = "sec-chips"; w.innerHTML = bq.map(b => `<a class="chip badge-chip" href="#/badges"><svg viewBox="-30 -32 60 64" width="16" height="16" aria-hidden="true"><path d="M0 -28 L24 -14 V14 L0 28 L-24 14 V-14Z" fill="${b.color}"/></svg>Counts toward badge: ${esc(b.name)}</a>`).join(""); qs.insertAdjacentElement("afterend", w); } }
+  // 4. what's left card before prev/next
+  const ctr = first.querySelector(":scope > .controls:last-child"); if (ctr){ const left = document.createElement("div"); left.className = "panel mleft"; left.id = "mleft"; first.insertBefore(left, ctr);
+    ctr.querySelectorAll('a[href^="#/m/"], a[href="#/progress"]').forEach(a => { if (a.textContent.indexOf("Next") < 0 && a.getAttribute("href") !== "#/progress") return; a.addEventListener("click", e => leaveGuard(e, m, a.getAttribute("href"))); }); }
+  refreshMprog(); setupNudge(m);
+};
+function refreshMprog(){
+  const id = currentModule, m = MODULES[id], bar = $("#mprog"); if (!m || !bar) return;
+  const parts = moduleParts(m), done = parts.filter(p => p.done).length, pct = Math.round(done / parts.length * 100), q = quizState(m), next = parts.find(p => !p.done);
+  bar.innerHTML = `<div class="mp-top"><b>Module ${id}: ${pct}% done</b><span class="explain">${done} of ${parts.length} parts \u2022 quiz ${q.ans}/${q.n} answered</span>${next ? `<button class="btn small primary mp-next">Next unfinished: ${esc(next.title.length > 34 ? next.title.slice(0, 32) + "\u2026" : next.title)}</button>` : `<span class="chip ok">All parts done</span>`}</div>
+   <div class="mp-seg" role="list" aria-label="Parts of this module">${parts.map(p => `<button role="listitem" class="seg-i ${p.done ? "on" : ""}" data-a="${p.anchor}" title="${esc(p.title)}${p.done ? " (done)" : " (not done yet)"}" aria-label="${esc(p.title)}${p.done ? ", done" : ", not done"}"></button>`).join("")}</div>`;
+  bar.querySelectorAll(".seg-i").forEach(b => b.onclick = () => jumpTo(b.dataset.a));
+  const nb = bar.querySelector(".mp-next"); if (nb) nb.onclick = () => jumpTo(next.anchor);
+  document.querySelectorAll(".toc a[data-toc]").forEach(a => { const k = a.dataset.toc.replace(/^s-/, ""); const sec = m.sections.find(s => s.id === k); const d = sec ? !!prog.done[id + ":" + k] : k === "rating" ? !!prog.rating[id] : k === "quiz" ? q.ans === q.n && q.n > 0 : null;
+    a.classList.toggle("t-done", d === true); a.classList.toggle("t-todo", d === false && !(sec && isOpt(sec))); });
+  const mb = $("#mbadges"); if (mb){ const bl = badgesForModule(id), got = prog.badges || {};
+    mb.innerHTML = `<b>Badges you can earn in this module</b><div class="mb-grid">${bl.map(b => `<div class="mb-card ${got[b.id] ? "earned" : ""}">${badgeSVG(b, !!got[b.id], 54)}<div><span class="crumb">${b.id}${got[b.id] ? " \u2022 earned" : ""}</span><b>${esc(b.name)}</b>${reqList(b, id)}</div></div>`).join("")}</div>`; }
+  const left = $("#mleft"); if (left){ const todo = parts.filter(p => !p.done), bl = badgesForModule(id).filter(b => !(prog.badges || {})[b.id]);
+    left.innerHTML = todo.length || q.ans < q.n || bl.length ? `<b>Before you move on</b>${todo.length ? `<p>You have <b>${todo.length}</b> part${todo.length > 1 ? "s" : ""} not marked as done:</p><ul class="left-list">${todo.map(p => `<li><a href="#" data-a="${p.anchor}">${esc(p.title)}</a></li>`).join("")}</ul>` : ""}${q.ans < q.n ? `<p>Quiz: ${q.n - q.ans} question${q.n - q.ans > 1 ? "s" : ""} not answered yet. <a href="#" data-a="s-quiz">Go to the quiz</a></p>` : ""}${bl.length ? `<p>Badges still open here: ${bl.map(b => `<b>${esc(b.name)}</b>`).join(", ")} (see the list near the top of this module).</p>` : ""}` : `<b>Module ${id} complete.</b> <span class="explain">Every part is done. Well done!</span>`;
+    left.querySelectorAll("[data-a]").forEach(a => a.onclick = e => { e.preventDefault(); jumpTo(a.dataset.a); }); }
+}
+function jumpTo(anchor){ const t = document.getElementById(anchor); if (!t) return; t.style.opacity = ""; t.style.transform = ""; t.scrollIntoView({behavior:reduceMotion() ? "auto" : "smooth", block:"start"}); pulse(t); }
+function pulse(el){ el.classList.remove("pulse-hl"); void el.offsetWidth; el.classList.add("pulse-hl"); setTimeout(() => el.classList.remove("pulse-hl"), 1600); }
+const _ump = updateModuleProgress; updateModuleProgress = function(m){ _ump(m); refreshMprog(); };
+const _le2 = logEvent; let _rf = null;
+logEvent = function(mid, item, type, value){ _le2(mid, item, type, value);
+  if (/^drill_/.test(String(item)) && type === "activity" && currentModule && MODULES[currentModule]){   // finishing a drill marks its section done
+    const sec = MODULES[currentModule].sections.find(s => s.interactive === "drill:" + String(item).slice(6));
+    if (sec && !prog.done[currentModule + ":" + sec.id]){ const b = document.querySelector(`[data-done="${sec.id}"]`); if (b){ b.click(); toast(`\u201c${sec.title}\u201d marked as done.`); } } }
+  clearTimeout(_rf); _rf = setTimeout(refreshMprog, 120); };
+/* Nudge: after time in a section and scrolling past it, offer "Mark as done" */
+let nudgeState = null;
+function setupNudge(m){
+  if (nudgeState) nudgeState.stop(); const seen = {}, asked = {}; let el = null;
+  const check = () => { if (currentModule !== m.id || !$("#mprog")){ stop(); return; }
+    const H = innerHeight;
+    m.sections.forEach(s => { const sec = document.getElementById("s-" + s.id); if (!sec) return; const r = sec.getBoundingClientRect();
+      if (r.top < H * .6 && r.bottom > H * .3) seen[s.id] = (seen[s.id] || 0) + 1;
+      if (!prog.done[m.id + ":" + s.id] && !isOpt(s) && !asked[s.id] && (seen[s.id] || 0) >= 20 && r.bottom < H * .35 && r.bottom > -H * 1.5) show(s); }); };
+  const show = s => { if (el) return; asked[s.id] = 1; el = document.createElement("div"); el.className = "nudge"; el.setAttribute("role", "status");
+    el.innerHTML = `<span>Finished <b>\u201c${esc(s.title.length > 40 ? s.title.slice(0, 38) + "\u2026" : s.title)}\u201d</b>?</span><button class="btn small primary">Mark as done</button><button class="btn small">Not yet</button>`;
+    document.body.appendChild(el); anim(el, {opacity:[0, 1], y:[20, 0]}, {duration:.3});
+    const [yes, no] = el.querySelectorAll("button"); yes.onclick = () => { const b = document.querySelector(`[data-done="${s.id}"]`); if (b) b.click(); hide(); }; no.onclick = hide;
+    setTimeout(hide, 12000); };
+  const hide = () => { if (el){ el.remove(); el = null; } };
+  const t = setInterval(check, 1000); const stop = () => { clearInterval(t); hide(); };
+  nudgeState = {stop};
+}
+function leaveGuard(e, m, href){
+  const todo = moduleParts(m).filter(p => !p.done), key = "sti_leave_" + m.id;
+  if (!todo.length || sessionStorage.getItem(key)) return;
+  e.preventDefault();
+  let d = $("#leaveDlg"); if (!d){ d = document.createElement("dialog"); d.id = "leaveDlg"; document.body.appendChild(d); }
+  d.innerHTML = `<div class="leave-pop"><h2>Before you leave Module ${m.id}</h2><p>You have <b>${todo.length}</b> part${todo.length > 1 ? "s" : ""} not marked as done. Did you skip ${todo.length > 1 ? "them" : "it"}, or forget to click <b>Mark as done</b>?</p><ul class="left-list">${todo.slice(0, 8).map(p => `<li><a href="#" data-a="${p.anchor}">${esc(p.title)}</a></li>`).join("")}${todo.length > 8 ? `<li>\u2026and ${todo.length - 8} more</li>` : ""}</ul>
+   <div class="controls"><button class="btn primary" id="lvGo">Go to the first one</button><button class="btn" id="lvOn">Continue anyway</button></div></div>`;
+  d.showModal();
+  d.querySelectorAll("[data-a]").forEach(a => a.onclick = ev => { ev.preventDefault(); d.close(); jumpTo(a.dataset.a); });
+  $("#lvGo").onclick = () => { d.close(); jumpTo(todo[0].anchor); };
+  $("#lvOn").onclick = () => { sessionStorage.setItem(key, "1"); d.close(); location.hash = href; };
+}
+/* Badges page: show each requirement with its status */
+const _viewBadges = viewBadges;
+viewBadges = function(){ _viewBadges();
+  document.querySelectorAll(".badge-card").forEach((card, i) => { const b = BADGES[i]; if (!b || !BADGE_REQS[b.id]) return; const d = document.createElement("div"); d.innerHTML = reqList(b, ""); card.querySelector("div:last-child").appendChild(d.firstChild); });
+  const intro = $("#view p"); if (intro) intro.insertAdjacentHTML("afterend", `<p class="explain">Each badge lists what you still need. Tap <b>Open</b> to jump to that activity or quiz.</p>`); };
+
+const _renderMapFb = renderMap; renderMap = function(){ _renderMapFb.apply(this, arguments); try { addFeedbackButton(); } catch(e){} };
 
 if (!apiReady()) $("#banner").innerHTML = `<div class="banner">Preview mode: progress is saved on this device only. Add the Apps Script web app URL in CONFIG.API_URL to enable tracking, uploads, and Sensi.</div>`;
 applyDevice(); applySettings();
