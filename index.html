@@ -671,6 +671,28 @@ a.btn{text-decoration:none}
 .edp .stage{cursor:pointer;transform-box:fill-box;transform-origin:center;transition:opacity .25s}.edp .stage.dim{opacity:.4}.edp .stage:focus{outline:none}
 .dataflow{width:100%}
 .checklist{list-style:none;padding-left:0}.checklist li{margin:4px 0}
+/* v9: programming explainers and drills */
+.vtmem{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.vbox{display:flex;flex-direction:column;align-items:center;min-width:76px;border:2px solid var(--line);border-radius:10px;padding:6px 10px;background:var(--bg)}
+.vbox.const{border-style:dashed;border-color:var(--navy)}.vbox.chg{border-color:var(--amber);background:color-mix(in srgb,var(--amber) 18%,var(--surface))}
+.vname{font-size:.75rem;color:var(--muted);font-family:"JetBrains Mono",monospace}.vval{font-size:1.15rem;font-weight:700;font-family:"JetBrains Mono",monospace}
+.vval.ledon{color:#B45309}.vval.ledoff{color:var(--muted)}
+.hlbar.warn{background:#FCA5A5}
+.dq{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:0 0 10px;background:var(--surface)}
+.dq pre.code{margin:8px 0}
+.dinput{padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);min-width:160px}
+.parsons .sort-item{font-weight:400}.parsons .sort-item code{white-space:pre;font-size:.85rem}
+.clcode{overflow-x:auto}
+.clcode div{font-family:"JetBrains Mono",monospace;font-size:.85rem;padding:2px 8px;border-radius:4px;white-space:pre;transition:background .2s,opacity .2s}
+.clcode div.act{background:color-mix(in srgb,var(--amber) 40%,transparent)}.clcode div.skip{opacity:.45}
+.lmchips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.lmbox{min-width:90px}
+.plrow{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin:4px 0}.plrow select{padding:2px 4px}
+.ldrart,.ldrin{width:100%;height:auto;display:block}
+.ldrin .pl{animation:fall 1s linear infinite}@keyframes fall{0%{transform:translateY(0);opacity:1}100%{transform:translateY(26px);opacity:0}}
+.ldrin .el{animation:jig .9s ease-in-out infinite alternate}@keyframes jig{to{transform:translateX(8px)}}
+.video2{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media (max-width:760px){.video2{grid-template-columns:1fr}}
+.vtl,.cll{margin-bottom:8px}.vtl button,.cll button{white-space:normal}
 </style>
 </head>
 <body>
@@ -890,6 +912,24 @@ const REF = {
   jplEDP: ["NASA Jet Propulsion Laboratory. (n.d.). Engineering design process flow chart. NASA/JPL Edu.","https://www.jpl.nasa.gov/edu/resources/image/engineering-design-process-flow-chart/"],
   polya: ["P\u00f3lya, G. (1945). How to solve it: A new aspect of mathematical method. Princeton University Press.",""],
   wing: ["Wing, J. M. (2006). Computational thinking. Communications of the ACM, 49(3), 33\u201335.","https://doi.org/10.1145/1118178.1118215"],
+  arduinoConst: ["Arduino. (n.d.). const. Arduino Language Reference.","https://docs.arduino.cc/language-reference/en/variables/variable-scope-qualifiers/const/"],
+  arduinoIf: ["Arduino. (n.d.). if. Arduino Language Reference.","https://docs.arduino.cc/language-reference/en/structure/control-structure/if/"],
+  arduinoFor: ["Arduino. (n.d.). for. Arduino Language Reference.","https://docs.arduino.cc/language-reference/en/structure/control-structure/for/"],
+  arduinoWhile: ["Arduino. (n.d.). while. Arduino Language Reference.","https://docs.arduino.cc/language-reference/en/structure/control-structure/while/"],
+  arduinoDelay: ["Arduino. (n.d.). delay(). Arduino Language Reference.","https://docs.arduino.cc/language-reference/en/functions/time/delay/"],
+  arduinoPrint: ["Arduino. (n.d.). Serial.print(). Arduino Language Reference.","https://docs.arduino.cc/language-reference/en/functions/communication/serial/print/"],
+  pyTutorial: ["Python Software Foundation. (n.d.). An informal introduction to Python. The Python Tutorial.","https://docs.python.org/3/tutorial/introduction.html"],
+  pyControl: ["Python Software Foundation. (n.d.). More control flow tools. The Python Tutorial.","https://docs.python.org/3/tutorial/controlflow.html"],
+  pyIO: ["Python Software Foundation. (n.d.). Input and output. The Python Tutorial.","https://docs.python.org/3/tutorial/inputoutput.html"],
+  mpTime: ["MicroPython. (n.d.). time \u2013 time related functions. MicroPython documentation.","https://docs.micropython.org/en/latest/library/time.html"],
+  parsons: ["Parsons, D., & Haden, P. (2006). Parson\u2019s programming puzzles: A fun and effective learning tool for first programming courses. In Proceedings of the 8th Australasian Conference on Computing Education (Vol. 52, pp. 157\u2013163). Australian Computer Society.",""],
+  duboulay: ["du Boulay, B. (1986). Some difficulties of learning to program. Journal of Educational Computing Research, 2(1), 57\u201373.","https://doi.org/10.2190/3LFX-9RRF-67T8-UVK9"],
+  gl5528: ["CdS photoconductive cells GL5528 [Datasheet]. (n.d.).","https://pi.gate.ac.uk/pages/airpi-files/PD0001.pdf"],
+  handson: ["Handson Technology. (n.d.). GL55 series photo resistor (LDR) [User guide].","https://www.handsontec.com/dataspecs/sensor/GL55-LDR.pdf"],
+  enotes: ["Electronics Notes. (n.d.). Light dependent resistor LDR: Photoresistor.","https://www.electronics-notes.com/articles/electronic_components/resistors/light-dependent-resistor-ldr.php"],
+  originic: ["Origin-IC. (2026). Photoresistor explained for beginners: How it works and uses [Blog post].","https://www.origin-ic.com/blog/photoresistor-explained-beginners-2026-how-it-works-uses/49305"],
+  ytLdr1: ["Recommended video on LDRs, part 1 [Video]. (n.d.). YouTube.","https://www.youtube.com/watch?v=XwJQJnY6iUs"],
+  ytLdr2: ["Recommended video on LDRs, part 2 [Video]. (n.d.). YouTube.","https://www.youtube.com/watch?v=u9Riurh4y9U"],
   sheetsLimits: ["Google. (n.d.). Files you can store in Google Drive. Google Drive Help.","https://support.google.com/drive/answer/37603"],
   sheetsFn: ["Google. (n.d.). Google Sheets function list. Google Docs Editors Help.","https://support.google.com/docs/table/25273"]
 };
@@ -968,7 +1008,7 @@ const COURSE = [
    checkpoint:{code:"U1-O1", task:"Label the 6 lifecycle stages and classify 4 questions by analytics type.", met:"6 of 6 stages and 4 of 4 questions correct.", upload:"Upload a photo of your team question card."},
    refs:["alfuqaha","philstar","rappler","inquirer","bloomberg","pagasa","petropoulos","davenport","pearce","bastani","unesco"]
   },
-  {id:"1.2", title:"Board setup and programming basics", minutes:120,
+  {id:"1.2", title:"Board setup and programming basics", minutes:180,
    objectives:["Describe what a microcontroller is and compare the four course boards.","Set up the tools and upload a program to your board (U1-O2).","Identify the structure of an Arduino sketch and a MicroPython script (U1-O2).","Use variables, data types, operators, conditionals, loops, and functions (U1-O2).","Classify and fix syntax, runtime, and logic errors."],
    sections:[
     {id:"mcu", title:"What is a microcontroller?", html:`
@@ -1057,30 +1097,106 @@ const COURSE = [
       ["    count += 1", "Short for <code>count = count + 1</code>."],
       ["    print(\"Toggle #\", count)", "Prints both values with a space between them."]])}
      <p>Step through P1 below and watch which line runs, what the LED does, and what the Serial Monitor prints.</p>`, interactive:"tracer"},
-    {id:"blocks", title:"Programming building blocks", html:`
-     <h3>Variables and data types</h3>
-     <p>A <b>variable</b> is a named storage box for a value that can change. In C++ you must say what <b>type</b> of value the box holds when you create it; Python figures it out.</p>
-     <table class="t"><tr><th>Stores</th><th>C++</th><th>Python</th><th>Sensor example</th></tr>
-     <tr><td>Whole number</td><td><code>int count = 0;</code></td><td><code>count = 0</code></td><td>number of readings, raw ADC value</td></tr>
-     <tr><td>Decimal number</td><td><code>float temp = 29.4;</code></td><td><code>temp = 29.4</code></td><td>temperature, humidity</td></tr>
-     <tr><td>True / false</td><td><code>bool isDark = false;</code></td><td><code>is_dark = False</code></td><td>is the LED on? is it too hot?</td></tr>
-     <tr><td>Text</td><td><code>String id = "team1";</code></td><td><code>id = "team1"</code></td><td>device name, labels</td></tr>
-     <tr><td>Big time value</td><td><code>unsigned long t = millis();</code></td><td><code>t = time.ticks_ms()</code></td><td>milliseconds since start</td></tr></table>
-     <p><b>Naming rules:</b> letters, digits, and underscores only; no spaces; cannot start with a digit. Choose names that explain the value: <code>lightPct</code> is clearer than <code>x</code>.</p>
-     <h3>Operators</h3>
-     <table class="t"><tr><th>Kind</th><th>Operators</th><th>Example \u2192 result</th></tr>
-     <tr><td>Arithmetic</td><td><code>+ - * / %</code></td><td><code>7 % 2</code> \u2192 1 (remainder)</td></tr>
-     <tr><td>Comparison</td><td><code>== != &lt; &gt; &lt;= &gt;=</code></td><td><code>light &lt; 30</code> \u2192 true or false</td></tr>
-     <tr><td>Logical</td><td>C++ <code>&amp;&amp; || !</code> \u2022 Python <code>and or not</code></td><td><code>temp &gt; 31 &amp;&amp; isDay</code></td></tr></table>
-     ${mis(`<p><b>Integer division.</b> In C++, <code>7 / 2</code> gives <b>3</b> because both numbers are integers, so the decimal is thrown away. Write <code>7.0 / 2</code> to get 3.5. In Python, <code>7 / 2</code> gives 3.5 and <code>7 // 2</code> gives 3.</p><p><b>= vs ==.</b> <code>x = 5</code> stores 5; <code>x == 5</code> asks \u201cis x equal to 5?\u201d</p>`)}
-     <h3>Decisions: if / else</h3>
-     <p>An <b>if</b> statement runs code only when a condition is true. <b>else if</b> checks another condition; <b>else</b> catches everything left. Conditions are checked from top to bottom, and only the first true branch runs.</p>
-     ${code("cpp", "int light = 25;              // pretend sensor value in %\nif (light < 30) {\n  Serial.println(\"Dark: turn LED on\");\n} else if (light < 70) {\n  Serial.println(\"Dim\");\n} else {\n  Serial.println(\"Bright\");\n}", "if / else in C++ (Python: if light < 30: ... elif ...: ... else: ...)")}
-     ${ex("tracing an if/else", `<p>With <code>light = 25</code>: is 25 &lt; 30? Yes \u2192 prints \u201cDark\u201d and skips the rest. With <code>light = 30</code>: is 30 &lt; 30? No. Is 30 &lt; 70? Yes \u2192 \u201cDim\u201d. With 70: both false \u2192 \u201cBright\u201d. Boundary values (exactly 30, exactly 70) are where bugs hide, so always test them.</p>`)}
-     <h3>Repetition: for loops</h3>
-     <p>A <b>for</b> loop repeats a block a set number of times using a counter with three parts: <b>start</b>; <b>condition</b> (checked before each repeat); <b>step</b> (done after each repeat).</p>
-     ${code("cpp", "for (int i = 1; i <= 3; i++) {   // start at 1; repeat while i <= 3; add 1 each time\n  Serial.print(\"Reading #\");\n  Serial.println(i);\n}", "for loop in C++ (Python: for i in range(1, 4):)")}
-     <table class="t"><tr><th>Pass</th><th>i before</th><th>i &lt;= 3?</th><th>Prints</th></tr><tr><td>1</td><td>1</td><td>yes</td><td>Reading #1</td></tr><tr><td>2</td><td>2</td><td>yes</td><td>Reading #2</td></tr><tr><td>3</td><td>3</td><td>yes</td><td>Reading #3</td></tr><tr><td>\u2014</td><td>4</td><td>no \u2192 stop</td><td>\u2014</td></tr></table>
+    {id:"vars", title:"Variables and constants: giving names to values", html:`
+     <p>Look at the first line of P1: <code>const int LED_PIN = 2;</code>. What is <code>LED_PIN</code>, and why not just write <code>2</code>? This section answers that.</p>
+     <h3>What is a variable?</h3>
+     <p>A <b>variable</b> is a <b>named storage box</b> in the board's memory. The name lets you find the box; the value is what is inside. You can look inside (use the value) or put a new value in (change it). Think of a labeled jar: the label is the name (<code>count</code>), the contents are the value (<code>3</code>).</p>
+     <p>Every variable goes through three actions:</p>
+     <table class="t"><tr><th>Action</th><th>Meaning</th><th>C++</th><th>Python</th></tr>
+     <tr><td><b>Create</b> (declare)</td><td>Make a new box with a name (and, in C++, a type)</td><td><code>int count = 0;</code></td><td><code>count = 0</code></td></tr>
+     <tr><td><b>Change</b> (assign)</td><td>Put a new value in the box</td><td><code>count = count + 1;</code></td><td><code>count = count + 1</code></td></tr>
+     <tr><td><b>Use</b> (read)</td><td>Take a copy of the value to use somewhere</td><td><code>Serial.println(count);</code></td><td><code>print(count)</code></td></tr></table>
+     <h3>Creating variables in C++</h3>
+     <p>C++ needs three parts: the <b>type</b> (what kind of value), the <b>name</b>, and usually a starting <b>value</b>.</p>
+     ${anat("Anatomy of a C++ variable", [["int count = 0;", "<code>int</code> = type (a whole number) \u2022 <code>count</code> = name \u2022 <code>=</code> = store \u2022 <code>0</code> = starting value \u2022 <code>;</code> = end of statement."],["float temp = 29.4;", "<code>float</code> stores decimal numbers, such as temperatures."],["bool isDark = false;", "<code>bool</code> stores only <code>true</code> or <code>false</code>."],["String deviceId = \"team3\";", "<code>String</code> stores text, written inside double quotes."],["unsigned long lastRead = 0;", "<code>unsigned long</code> stores large whole numbers that are never negative, like time in milliseconds."]])}
+     <h3>Creating variables in Python</h3>
+     <p>Python is simpler: write the name, <code>=</code>, and the value. Python works out the type from the value, and no semicolon is needed.</p>
+     ${code("python", "count = 0          # a whole number (int)\ntemp = 29.4        # a decimal number (float)\nis_dark = False    # True or False (bool), capital T/F in Python\ndevice_id = \"team3\" # text (str)", "Variables in Python")}
+     <h3>Constants: values that never change</h3>
+     <p>Some values should <b>never</b> change while the program runs, such as the pin your LED is wired to. These are <b>constants</b>.</p>
+     <ul><li><b>C++:</b> add <code>const</code> in front: <code>const int LED_PIN = 2;</code>. If any later line tries to change it, the compiler stops with an error, which protects you from accidents.</li>
+     <li><b>Python:</b> there is no <code>const</code> keyword. Programmers use a <b>convention</b>: names in ALL CAPITALS mean \u201cdo not change this”: <code>LED_PIN = 25</code>.</li></ul>
+     ${ex("why name the pin instead of writing 2?", `<p>Imagine a program that uses pin 2 in five places: <code>pinMode(2, OUTPUT)</code>, <code>digitalWrite(2, HIGH)</code>, and so on. Now you move the LED to pin 25. Without a constant you must find and change all five 2s (and not miss one!). With <code>const int LED_PIN = 2;</code> you change <b>one line</b> to <code>25</code>, and every use updates automatically. Names also make code readable: <code>digitalWrite(LED_PIN, HIGH)</code> says what it does; <code>digitalWrite(2, HIGH)</code> does not. A bare number with no explanation is sometimes called a \u201cmagic number.\u201d</p>`)}
+     <h3>Naming rules and good habits</h3>
+     <table class="t"><tr><th>Rule</th><th>OK</th><th>Not OK</th></tr><tr><td>Letters, digits, underscores only</td><td><code>light_pct</code></td><td><code>light-pct</code>, <code>light pct</code></td></tr><tr><td>Cannot start with a digit</td><td><code>sensor2</code></td><td><code>2sensor</code></td></tr><tr><td>Case-sensitive</td><td><code>count</code> and <code>Count</code> are <i>different</i> boxes</td><td>\u2014</td></tr><tr><td>Not a reserved word</td><td><code>myLoop</code></td><td><code>int</code>, <code>for</code>, <code>while</code></td></tr></table>
+     <p><b>Style conventions:</b> Arduino code often uses <code>camelCase</code> (<code>lightPct</code>), Python uses <code>snake_case</code> (<code>light_pct</code>), and constants use <code>UPPER_CASE</code> (<code>LED_PIN</code>) in both.</p>
+     <h3>Where you create a variable matters (scope)</h3>
+     <p>A variable created <b>outside</b> all functions (at the top of the sketch) is <b>global</b>: it exists the whole time and keeps its value. A variable created <b>inside</b> <code>loop()</code> is <b>local</b>: it is created fresh, with its starting value, every time loop() runs.</p>
+     ${mis(`<p>Putting a counter inside <code>loop()</code>:</p><pre class="code">void loop() {\n  int count = 0;      // re-created as 0 on EVERY pass\n  count = count + 1;  // so count is always 1\n  Serial.println(count);\n}</pre><p>It prints 1, 1, 1\u2026 forever. Move <code>int count = 0;</code> above <code>setup()</code> so it is created once and keeps counting.</p>`)}
+     ${mis(`<p><b>= is not \u201cequals.\u201d</b> <code>count = count + 1</code> means \u201ctake the value in count, add 1, and store the result back in count.\u201d To <i>compare</i> two values, use <code>==</code> (next section).</p>`)}
+     <p>Step through the program below and watch the memory boxes change.</p>
+     ${srcs([["Arduino: const", REF.arduinoConst[1]],["Arduino language reference", REF.arduinoRef[1]],["Python tutorial", REF.pyTutorial[1]]])}`, interactive:"vartrace:vars"},
+    {id:"varsdrill", title:"Drill: variables and constants", html:`<p>Check your understanding before moving on. Each answer explains why.</p>`, interactive:"drill:vars"},
+    {id:"ifelse", title:"Making decisions: if, else if, and else", html:`
+     <p>Programs often need to choose: <i>if it is dark, turn the LED on; otherwise, turn it off</i>. That is an <b>if statement</b>.</p>
+     ${anat("Anatomy of an if / else (C++)", [["if (light < 30) {", "<code>if</code> + a <b>condition</b> in parentheses. A condition is a question whose answer is true or false. <code>{</code> starts the block that runs when it is true."],["  digitalWrite(LED_PIN, HIGH);", "Runs only when light &lt; 30 is true. Indenting the inside lines makes the structure easy to see."],["} else {", "<code>else</code> = \u201cotherwise.\u201d Its block runs only when the condition is false."],["  digitalWrite(LED_PIN, LOW);", ""],["}", "Closes the else block. Exactly one of the two blocks runs every time."]])}
+     ${code("python", "if light < 30:\n    led.on()       # runs when the condition is True\nelse:\n    led.off()      # runs when it is False", "The same decision in Python: a colon, then an indented block")}
+     <h3>Comparison operators</h3>
+     <table class="t"><tr><th>Operator</th><th>Question</th><th>Example (light = 25)</th><th>Result</th></tr><tr><td><code>&lt;</code></td><td>less than?</td><td><code>light &lt; 30</code></td><td>true</td></tr><tr><td><code>&gt;</code></td><td>greater than?</td><td><code>light &gt; 30</code></td><td>false</td></tr><tr><td><code>&lt;=</code></td><td>less than or equal?</td><td><code>light &lt;= 25</code></td><td>true</td></tr><tr><td><code>&gt;=</code></td><td>greater than or equal?</td><td><code>light &gt;= 30</code></td><td>false</td></tr><tr><td><code>==</code></td><td>equal?</td><td><code>light == 25</code></td><td>true</td></tr><tr><td><code>!=</code></td><td>not equal?</td><td><code>light != 25</code></td><td>false</td></tr></table>
+     <h3>More than two choices: else if</h3>
+     <p>Conditions are checked <b>from top to bottom</b>, and only the <b>first</b> true one runs. Order matters.</p>
+     ${code("cpp", "if (light < 30) {\n  Serial.println(\"Dark\");\n} else if (light < 70) {   // only checked if light is NOT < 30\n  Serial.println(\"Dim\");\n} else {\n  Serial.println(\"Bright\");\n}", "Three choices (Python writes else if as elif)")}
+     <h3>Combining conditions</h3>
+     <p>Use <b>AND</b> when both must be true and <b>OR</b> when either is enough. C++: <code>&amp;&amp;</code> and <code>||</code>; Python: <code>and</code> and <code>or</code>. Example: <code>if (temp &gt; 31 &amp;&amp; light &gt; 50)</code> \u2192 hot <i>and</i> bright.</p>
+     ${mis(`<ul><li><code>if (light = 30)</code> uses <b>=</b> (store) instead of <b>==</b> (compare). Use <code>==</code>.</li><li>Missing <code>else</code>: the LED turns on in the dark but never turns off again.</li><li>Python: forgetting the colon <code>:</code> or the indentation after <code>if</code>.</li><li>Not testing <b>boundary values</b>: with <code>light &lt; 30</code>, what happens at exactly 30? (It counts as not dark.)</li></ul>`)}
+     <p>Try it: move the light slider and watch which branch runs.</p>
+     ${srcs([["Arduino: if", REF.arduinoIf[1]],["Python tutorial: control flow", REF.pyControl[1]]])}`, interactive:"condlab"},
+    {id:"ifdrill", title:"Drill: decisions", html:`<p>Predict which branch runs, then check.</p>`, interactive:"drill:ifelse"},
+    {id:"loops", title:"Loops: making code repeat", html:`
+     <p>Microcontrollers repeat jobs constantly: read, decide, act, again. A <b>loop</b> repeats a block of code so you do not have to write it many times.</p>
+     <h3>Loop 1: the main loop you already know</h3>
+     <p><code>loop()</code> in Arduino and <code>while True:</code> in MicroPython repeat <b>forever</b> while the board has power. Everything inside runs, then starts again from the top.</p>
+     <h3>Loop 2: while \u2014 repeat while a condition is true</h3>
+     <p>A <b>while loop</b> checks its condition <b>before</b> each repeat. If true, the block runs; if false, the loop ends and the program continues below it.</p>
+     ${code("cpp", "int n = 3;\nwhile (n > 0) {          // keep going while n is above 0\n  Serial.println(n);\n  n = n - 1;              // n gets smaller each time, so the loop ends\n}\nSerial.println(\"Go!\");    // prints 3, 2, 1, Go!", "while loop in C++ (Python: while n > 0:)")}
+     <p><code>while (true)</code> (Python: <code>while True:</code>) never ends. That is exactly what we want for the main loop, but inside <code>setup()</code> or before your main code it would freeze the program forever.</p>
+     <h3>Loop 3: for \u2014 repeat a set number of times</h3>
+     <p>Use a <b>for loop</b> when you know how many times to repeat, like \u201cblink 3 times.\u201d In C++ it has three parts, separated by semicolons:</p>
+     ${anat("Anatomy of a C++ for loop", [["for (int i = 0; i < 3; i++) {", "<b>Start:</b> <code>int i = 0</code> creates a counter named i (runs once). <b>Condition:</b> <code>i &lt; 3</code> is checked before each repeat. <b>Step:</b> <code>i++</code> adds 1 to i after each repeat (same as <code>i = i + 1</code>)."],["  digitalWrite(LED_PIN, HIGH);", "The <b>body</b>: runs once per repeat."],["  delay(150);", ""],["  digitalWrite(LED_PIN, LOW);", ""],["  delay(150);", ""],["}", "Back to the step, then the condition. When i reaches 3, <code>3 &lt; 3</code> is false and the loop ends."]])}
+     <table class="t"><tr><th>Pass</th><th>i at the start</th><th>i &lt; 3?</th><th>What happens</th></tr><tr><td>1</td><td>0</td><td>yes</td><td>blink, then i becomes 1</td></tr><tr><td>2</td><td>1</td><td>yes</td><td>blink, then i becomes 2</td></tr><tr><td>3</td><td>2</td><td>yes</td><td>blink, then i becomes 3</td></tr><tr><td>\u2014</td><td>3</td><td>no</td><td>loop ends: exactly 3 blinks</td></tr></table>
+     <h3>for loops in Python: range()</h3>
+     <p>Python's for loop walks through a sequence of numbers made by <code>range()</code>. The <b>stop</b> value is <b>not included</b>.</p>
+     <table class="t"><tr><th>Python</th><th>Values of i</th><th>C++ equivalent</th></tr><tr><td><code>for i in range(3):</code></td><td>0, 1, 2</td><td><code>for (int i = 0; i &lt; 3; i++)</code></td></tr><tr><td><code>for i in range(1, 6):</code></td><td>1, 2, 3, 4, 5</td><td><code>for (int i = 1; i &lt; 6; i++)</code></td></tr><tr><td><code>for i in range(10, 0, -2):</code></td><td>10, 8, 6, 4, 2</td><td><code>for (int i = 10; i &gt; 0; i -= 2)</code></td></tr></table>
+     <h3>A loop inside a loop</h3>
+     <p>The Core challenge puts a for loop <b>inside</b> the main loop. Each time the main loop runs once, the for loop runs all 3 of its repeats, then the pause happens, then the main loop starts again. Where you put a line (inside or outside the for loop's braces or indentation) decides how often it runs.</p>
+     <table class="t"><tr><th>Use\u2026</th><th>When\u2026</th><th>Example</th></tr><tr><td><code>loop()</code> / <code>while True</code></td><td>the job repeats as long as the board is on</td><td>reading sensors every 2 s</td></tr><tr><td><code>for</code></td><td>you know how many times</td><td>blink 3 times; read 10 samples</td></tr><tr><td><code>while (condition)</code></td><td>you repeat until something changes</td><td>wait until Wi-Fi connects (Unit 2)</td></tr></table>
+     ${mis(`<ul><li><b>Off by one:</b> <code>i &lt;= 3</code> starting at 0 runs 4 times (0, 1, 2, 3). Count the values to check.</li><li><b>A semicolon after the for line:</b> <code>for (int i = 0; i &lt; 3; i++);</code> makes an empty loop; the block below then runs only once.</li><li><b>A while loop that never ends:</b> nothing inside changes the condition (forgetting <code>n = n - 1</code>).</li><li><b>Python indentation:</b> lines meant to be inside the loop must be indented further than the <code>for</code> line.</li></ul>`)}
+     <p>Build your own for loop below and watch the counter, then trace the Core challenge pattern.</p>
+     ${srcs([["Arduino: for", REF.arduinoFor[1]],["Arduino: while", REF.arduinoWhile[1]],["Python tutorial: control flow", REF.pyControl[1]]])}`, interactive:"loopmachine"},
+    {id:"looptrace", title:"Trace it: the Core challenge loop", html:`<p>Step through the nested loop and watch <code>i</code>, the LED, and the clock. Notice when the 2-second pause happens.</p>`, interactive:"vartrace:loop"},
+    {id:"loopdrill", title:"Drill: loops", html:`<p>Includes a Parsons puzzle: put the lines of code in the right order.</p>`, interactive:"drill:loops"},
+    {id:"delay", title:"Waiting: delay() and sleep()", html:`
+     <p>A microcontroller runs millions of instructions per second. Without a pause, an LED would switch on and off so fast that it would look permanently on. <code>delay()</code> tells the board to <b>wait</b>.</p>
+     <h3>How it works</h3>
+     <table class="t"><tr><th>Language</th><th>Command</th><th>Unit</th><th>Half a second</th></tr><tr><td>Arduino C++</td><td><code>delay(ms)</code></td><td>milliseconds (1 s = 1000 ms)</td><td><code>delay(500);</code></td></tr><tr><td>MicroPython</td><td><code>time.sleep(s)</code></td><td>seconds (decimals allowed)</td><td><code>time.sleep(0.5)</code></td></tr><tr><td>MicroPython</td><td><code>time.sleep_ms(ms)</code></td><td>milliseconds</td><td><code>time.sleep_ms(500)</code></td></tr></table>
+     ${ex("calculating a blink", `<p>LED on with <code>delay(300)</code>, off with <code>delay(700)</code>. One blink = 300 + 700 = <b>1000 ms = 1 s</b>, so it blinks <b>once per second</b> (1 Hz). In 10 seconds: 10 blinks. The LED is on 300 \u00f7 1000 = 30 % of the time.</p>`)}
+     <h3>delay() blocks everything</h3>
+     <p>During <code>delay(2000)</code> the board does <b>nothing else</b> for 2 seconds: it cannot read a sensor, check a button, or update an LED. This is called <b>blocking</b>. It is fine for simple jobs, but not when the board must react quickly.</p>
+     <table class="t"><tr><th>delay() is fine for\u2026</th><th>Avoid delay() when\u2026</th></tr><tr><td>a simple blink (P1)</td><td>the board must react to changes, like a light alarm</td></tr><tr><td>a short pause in setup()</td><td>you do several jobs at different speeds</td></tr><tr><td>practice programs</td><td>long waits (seconds) in a sensor program</td></tr></table>
+     <p>In Module 1.3 you will learn the professional alternative, <code>millis()</code>, which checks the clock instead of waiting.</p>
+     ${mis(`<ul><li><code>delay(0.5)</code> in C++ is not half a second: delay takes <b>whole milliseconds</b>, so it waits about 0 ms. Write <code>delay(500)</code>.</li><li><code>time.sleep(500)</code> in Python waits <b>500 seconds</b> (over 8 minutes)! Write <code>time.sleep(0.5)</code> or <code>time.sleep_ms(500)</code>.</li><li>Forgetting the delay after turning the LED off: <code>loop()</code> immediately turns it on again, so it looks always on.</li></ul>`)}
+     <p>Change the on and off times below and watch the timeline, the code, and the board's \u201cbusy\u201d time.</p>
+     ${srcs([["Arduino: delay()", REF.arduinoDelay[1]],["MicroPython: time", REF.mpTime[1]]])}`, interactive:"delaylab"},
+    {id:"delaydrill", title:"Drill: delay and timing", html:`<p>Calculate and predict, then check.</p>`, interactive:"drill:delay"},
+    {id:"print", title:"Printing to the Serial Monitor", html:`
+     <p>The board has no screen. To see values, it sends text over the USB cable to your computer's <b>Serial Monitor</b> (Arduino IDE) or <b>Shell</b> (Thonny). Printing is how you check that your program works, and in Module 1.3 it is how you create your dataset.</p>
+     <h3>In C++: Serial.begin, print, and println</h3>
+     <table class="t"><tr><th>Command</th><th>What it does</th></tr><tr><td><code>Serial.begin(115200);</code></td><td>Opens the connection once, in <code>setup()</code>. 115200 is the speed (baud); the Serial Monitor must match.</td></tr><tr><td><code>Serial.print(x);</code></td><td>Prints x and <b>stays on the same line</b>.</td></tr><tr><td><code>Serial.println(x);</code></td><td>Prints x, then <b>starts a new line</b> (\u201cprint line\u201d).</td></tr><tr><td><code>Serial.print(t, 1);</code></td><td>Prints a decimal number with <b>1 decimal place</b>. Without the second value, floats print with 2 decimals.</td></tr></table>
+     ${ex("building one line from pieces", `<pre class="code">Serial.print("Temp: ");      // Temp: \nSerial.print(29.45, 1);      // Temp: 29.5   (rounded to 1 decimal)\nSerial.println(" C");        // Temp: 29.5 C   then a new line</pre><p>Three print commands make one line, because only the last one is <code>println</code>.</p>`)}
+     <h3>In Python: print()</h3>
+     <p>Python's <code>print()</code> always starts a new line at the end. Give it several values separated by commas and it puts a <b>space</b> between them.</p>
+     ${code("python", "t = 29.45\nprint(\"Temp:\", t)               # Temp: 29.45\nprint(\"Temp:\", round(t, 1), \"C\")  # Temp: 29.5 C\nprint(\"a\", \"b\", sep=\",\")          # a,b      (sep changes the space to a comma)\nprint(\"{:.1f}\".format(t))          # 29.5     (format with 1 decimal place)", "print() in MicroPython")}
+     <h3>Printing CSV</h3>
+     <p>A CSV row is values separated by <b>commas</b> with a new line at the end. In C++: print each value, print a comma between them, and use <code>println</code> on the last value. In Python, <code>format</code> builds the whole row in one go: each <code>{}</code> is filled with the next value, and <code>{:.1f}</code> means one decimal.</p>
+     ${code("cpp", "Serial.print(now);     Serial.print(',');\nSerial.print(t, 1);    Serial.print(',');\nSerial.println(h, 1);  // 4002,29.4,70.9", "One CSV row in C++ (Python: print(\"{},{:.1f},{:.1f}\".format(now, t, h)))")}
+     ${mis(`<ul><li>Garbled symbols: the Serial Monitor speed is not 115200.</li><li>Everything on one endless line: the row never ends with <code>println</code>.</li><li><code>Serial.print("count")</code> prints the <i>word</i> count; <code>Serial.print(count)</code> prints the <i>value</i> of the variable. Quotes make text.</li><li>Printing a header inside <code>loop()</code> repeats it every time.</li></ul>`)}
+     <p>Experiment with print and println below.</p>
+     ${srcs([["Arduino: Serial.print()", REF.arduinoPrint[1]],["Python: input and output", REF.pyIO[1]]])}`, interactive:"printlab"},
+    {id:"printdrill", title:"Drill: printing", html:`<p>Predict exactly what appears in the Serial Monitor.</p>`, interactive:"drill:print"},
+    {id:"blocks", title:"Math and functions", html:`
+     <h3>Arithmetic operators</h3>
+     <table class="t"><tr><th>Operator</th><th>Meaning</th><th>Example \u2192 result</th></tr><tr><td><code>+ - *</code></td><td>add, subtract, multiply</td><td><code>3 * 4</code> \u2192 12</td></tr><tr><td><code>/</code></td><td>divide</td><td><code>7.0 / 2</code> \u2192 3.5</td></tr><tr><td><code>%</code></td><td>remainder</td><td><code>7 % 2</code> \u2192 1</td></tr></table>
+     ${mis(`<p><b>Integer division.</b> In C++, <code>7 / 2</code> gives <b>3</b> because both numbers are whole numbers, so the decimal is thrown away. Write <code>7.0 / 2</code> to get 3.5. This matters for light %: <code>raw / 4095 * 100</code> gives 0 for almost every reading, but <code>raw / 4095.0 * 100</code> works. In Python, <code>7 / 2</code> gives 3.5 and <code>7 // 2</code> gives 3.</p>`)}
      <h3>Functions</h3>
      <p>A <b>function</b> packages a job under a name so you can reuse it. It can take <b>parameters</b> (inputs) and <b>return</b> a value (output).</p>
      ${anat("A function with a parameter and a return value", [["float cToF(float c) {", "<code>float</code> before the name = the type of value it returns. <code>cToF</code> = its name. <code>(float c)</code> = one parameter named c."],["  return c * 9.0 / 5.0 + 32.0;", "<code>return</code> sends the answer back to whoever called the function."],["}", ""],["Serial.println(cToF(30.0));", "Calling the function with 30.0. It returns 86.0, which println prints as 86.00."]])}
@@ -1131,7 +1247,7 @@ note: suggested alternative: 'Serial'</pre></div>
    ],
    rating:["I can upload P1, but I need help to change it.","I can change values in P1 and explain most lines with some help.","I can complete the Core challenge alone and explain setup, loop, variables, and loops.","I can complete the Extension and help a classmate fix an error."],
    checkpoint:{code:"U1-O2", task:"Complete the Core challenge and explain the code.", met:"Pattern repeats 5+ times; you point to setup, loop, a variable, and the loop structure.", upload:"Upload your code file (.ino or .py) and a short video or photo of the blinking pattern."},
-   refs:["arduinoR4","espressif","esp8266","pico","arduinoIDE","espArduino","thonny","micropython","arduinoRef","wokwi","nasaEDP","jplEDP","polya","wing","primm","sweller"]
+   refs:["arduinoR4","espressif","esp8266","pico","arduinoIDE","espArduino","thonny","micropython","arduinoRef","arduinoConst","arduinoIf","arduinoFor","arduinoWhile","arduinoDelay","arduinoPrint","pyTutorial","pyControl","pyIO","mpTime","duboulay","parsons","wokwi","nasaEDP","jplEDP","polya","wing","primm","sweller"]
   }
   ,{id:"1.3", title:"Reading sensors", minutes:150,
    objectives:["Distinguish analog and digital signals and explain the voltage divider.","Explain how an ADC turns voltage into numbers and calculate readings for your board.","Wire an LDR and a DHT22 and convert raw readings to calibrated units (U1-O3).","Implement non-blocking timing and justify it over delay() (U1-O4).","Use a structured AI prompt and verify each claim against documentation (U1-O7)."],
@@ -1142,8 +1258,37 @@ note: suggested alternative: 'Serial'</pre></div>
       <text x="340" y="20" font-weight="700" fill="currentColor">Digital</text><path class="wave" d="M340 150 H380 V60 H430 V150 H470 V60 H540 V150 H620" fill="none" stroke="#E76F51" stroke-width="4"/><text x="340" y="190" font-size="12" fill="currentColor">only HIGH or LOW (DHT22 data line, LED pin)</text></svg>`, "Figure 3.1. Analog signals vary smoothly; digital signals jump between two levels.")}
      <ul><li>An <b>analog</b> signal can be any value in a range, like a dimmer switch. Our <b>LDR</b> (light sensor) gives an analog voltage.</li><li>A <b>digital</b> signal has only two levels, HIGH and LOW, like a light switch. The <b>DHT22</b> contains its own tiny chip that measures the air and sends the result as a coded pattern of HIGH/LOW pulses.</li></ul>
      ${ex("which is which?", `<p>A push button gives a digital signal (pressed or not). A potentiometer (a turning knob) gives an analog voltage. A thermometer chip that sends numbers over a wire is digital, even though temperature itself varies smoothly.</p>`)}`},
+    {id:"ldr", title:"Meet the LDR: a light-dependent resistor", html:`
+     <p>The <b>LDR</b> (light-dependent resistor), also called a <b>photoresistor</b>, <b>photocell</b>, or <b>photoconductive cell</b>, is a resistor whose resistance changes with light. It is one of the simplest and cheapest light sensors, used in automatic street lights, night lights, and old camera light meters.</p>
+     <h3>What it looks like</h3>
+     ${fig(`<svg class="ldrart" viewBox="0 0 520 200" role="img" aria-label="LDR top view and side view"><g transform="translate(110,100)"><circle r="72" fill="#F1E3C1" stroke="#9A7B4F" stroke-width="3"/><rect x="-56" y="-48" width="10" height="96" rx="3" fill="#B8BDC6"/><rect x="46" y="-48" width="10" height="96" rx="3" fill="#B8BDC6"/><path d="M-46 -40 H36 V-24 H-36 V-8 H36 V8 H-36 V24 H36 V40 H-46" fill="none" stroke="#C2410C" stroke-width="7" stroke-linejoin="round"/><text y="94" text-anchor="middle" font-size="12" fill="currentColor">top view: zig-zag CdS track</text></g>
+      <g transform="translate(360,30)"><path d="M-36 40 a36 22 0 0 1 72 0 v18 h-72z" fill="#F1E3C1" stroke="#9A7B4F" stroke-width="2"/><line x1="-14" y1="58" x2="-14" y2="150" stroke="#9CA3AF" stroke-width="5"/><line x1="14" y1="58" x2="14" y2="150" stroke="#9CA3AF" stroke-width="5"/><text x="0" y="168" text-anchor="middle" font-size="12" fill="currentColor">side view: 2 legs, no polarity</text>${[[-50,0],[-20,-8],[10,-6],[40,2]].map(p=>`<path d="M${p[0]} ${p[1]-20} l8 14" stroke="#EAB308" stroke-width="3" marker-end="url(#ray)"/>`).join("")}</g>
+      <defs><marker id="ray" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#EAB308"/></marker></defs></svg>`, "Figure 3.1a. A typical 5 mm LDR (simplified illustration). The orange zig-zag is the light-sensitive cadmium sulfide (CdS) track between two metal electrodes.", "Original illustration based on manufacturer descriptions.")}
+     <p>A common LDR is a small disc about 5 mm across with <b>two legs</b>. Through its clear coating you can see a <b>zig-zag track</b>. The track is a light-sensitive material, usually <b>cadmium sulfide (CdS)</b>, laid between two metal electrodes (the silver areas). The zig-zag shape makes the track long and narrow so that the area touching the electrodes is large, which makes the sensor more responsive.</p>
+     <h3>How it senses light: photoconductivity</h3>
+     <ol><li>In the <b>dark</b>, almost all electrons in the cadmium sulfide are held tightly in place. With very few free charge carriers, little current can flow, so resistance is <b>very high</b> (about 1 M\u03a9 or more).</li>
+     <li>When <b>light</b> hits the track, each light particle (<b>photon</b>) with enough energy can knock an electron free. Freed electrons (and the \u201choles\u201d they leave behind) can carry current.</li>
+     <li><b>More light</b> \u2192 more freed charge carriers \u2192 current flows more easily \u2192 <b>lower resistance</b> (a few k\u03a9 in bright light).</li></ol>
+     <p>This effect is called <b>photoconductivity</b>: the material conducts better when light falls on it. Unlike a solar cell, an LDR does not <i>produce</i> electricity; it only changes how easily current passes through it. That is why we put it in a voltage divider (next section) to turn its changing resistance into a voltage the board can read.</p>
+     <h3>Key specifications (GL5528, a common 5 mm LDR)</h3>
+     <table class="t"><tr><th>Property</th><th>Typical value</th><th>What it means for you</th></tr>
+     <tr><td>Resistance at 10 lux (dim room)</td><td>8\u201320 k\u03a9</td><td>That is why we pair it with a 10 k\u03a9 fixed resistor</td></tr>
+     <tr><td>Dark resistance</td><td>1 M\u03a9 or more</td><td>Covered by a hand, V<sub>out</sub> drops close to 0 V</td></tr>
+     <tr><td>Peak sensitivity</td><td>540 nm (green light)</td><td>Similar to the human eye, so it reacts to visible light</td></tr>
+     <tr><td>Response time</td><td>tens of milliseconds</td><td>Fast enough for room light, too slow for very fast flickers</td></tr>
+     <tr><td>Gamma (\u03b3)</td><td>about 0.6\u20130.7</td><td>Resistance changes on a <b>logarithmic</b> scale, not a straight line</td></tr>
+     <tr><td>Polarity</td><td>none</td><td>Either leg can go either way</td></tr></table>
+     <p>Each LDR is slightly different (the datasheet allows 8 to 20 k\u03a9 for the same model), which is another reason we <b>calibrate</b> every sensor.</p>
+     <h3>Bare LDR vs. LDR module</h3>
+     <div class="two"><div><b>Bare LDR (2 legs)</b><p>What we use. It needs a fixed resistor to form a voltage divider and gives a smooth <b>analog</b> reading of how bright it is.</p></div>
+     <div><b>LDR module (3 or 4 pins)</b><p>The LDR on a small board with a comparator chip (often an LM393), a <b>sensitivity knob</b>, and pins labeled <b>VCC</b>, <b>GND</b>, <b>AO</b> (analog out) and/or <b>DO</b> (digital out). DO only says bright or dark, switching at the level set by the knob; on many modules DO goes LOW in bright light. Always check your module's labels.</p></div></div>
+     ${tip("Strengths and limits", `<ul><li><b>Strengths:</b> very cheap, simple, robust, and works with any analog pin.</li><li><b>Limits:</b> not precise enough to measure light in exact lux without careful calibration; slow compared with photodiodes; readings drift with temperature.</li><li><b>Environment:</b> cadmium is a toxic heavy metal. Do not break LDRs open, and dispose of them as electronic waste. Some regions restrict CdS parts in new products.</li></ul>`)}
+     <p>Explore the inside of the LDR below, then watch the recommended videos.</p>
+     <div class="video2"><div class="video"><iframe src="https://www.youtube-nocookie.com/embed/XwJQJnY6iUs" title="Recommended video 1 about LDRs" allowfullscreen loading="lazy"></iframe></div><div class="video"><iframe src="https://www.youtube-nocookie.com/embed/u9Riurh4y9U?start=2" title="Recommended video 2 about LDRs" allowfullscreen loading="lazy"></iframe></div></div>
+     <p class="explain">Videos recommended by the course author. If they do not load on your school network, use the written explanation above.</p>
+     ${srcs([["GL5528 datasheet", REF.gl5528[1]],["Handson Technology: GL55 series guide", REF.handson[1]],["Electronics Notes: LDR", REF.enotes[1]],["Origin-IC: photoresistor explained", REF.originic[1]]])}`, interactive:"ldrlab"},
     {id:"divider", title:"From light to voltage: the voltage divider", html:`
-     <p>An <b>LDR</b> (light-dependent resistor) is a resistor whose resistance changes with light: <b>high in the dark</b> (around 100 k\u03a9) and <b>low in bright light</b> (around 1 k\u03a9). The board cannot measure resistance, but it can measure <b>voltage</b>. So we connect the LDR in series with a fixed 10 k\u03a9 resistor between 3.3 V and ground. The voltage at the middle point depends on the ratio of the two resistances:</p>
+     <p>As you just saw, the LDR\u2019s resistance is <b>high in the dark</b> and <b>low in bright light</b>. (The values below are rounded examples to keep the math simple.) The board cannot measure resistance, but it can measure <b>voltage</b>. So we connect the LDR in series with a fixed 10 k\u03a9 resistor between 3.3 V and ground. The voltage at the middle point depends on the ratio of the two resistances:</p>
      <div class="formula">V<sub>out</sub> = V<sub>in</sub> \u00d7 R<sub>fixed</sub> \u00f7 (R<sub>LDR</sub> + R<sub>fixed</sub>)</div>
      <p>Think of it as sharing 3.3 V between two resistors: the bigger resistor gets the bigger share. When light hits the LDR, its resistance falls, so the fixed resistor gets a bigger share and V<sub>out</sub> rises.</p>
      ${ex("three light conditions", `<table class="t"><tr><th>Condition</th><th>R<sub>LDR</sub></th><th>Calculation</th><th>V<sub>out</sub></th></tr><tr><td>Dark</td><td>100 k\u03a9</td><td>3.3 \u00d7 10 \u00f7 (100 + 10)</td><td><b>0.30 V</b></td></tr><tr><td>Room light</td><td>10 k\u03a9</td><td>3.3 \u00d7 10 \u00f7 (10 + 10)</td><td><b>1.65 V</b></td></tr><tr><td>Flashlight</td><td>1 k\u03a9</td><td>3.3 \u00d7 10 \u00f7 (1 + 10)</td><td><b>3.00 V</b></td></tr></table><p>Real LDRs vary from part to part, which is one reason we calibrate later.</p>`)}
@@ -1218,6 +1363,16 @@ note: suggested alternative: 'Serial'</pre></div>
      <p>Think of two cooks. The first stands at the oven for 20 minutes waiting for the cake (<code>delay</code>). The second checks the clock now and then and keeps chopping vegetables in between (<code>millis</code>). Both cakes come out on time, but only the second cook gets anything else done.</p>
      ${anat("The non-blocking timer pattern", [["unsigned long lastRead = 0;", "Remembers WHEN we last acted. <code>unsigned long</code> holds large non-negative numbers, the same type millis() returns."],["const unsigned long INTERVAL_MS = 2000;", "How long to wait between actions: 2000 ms = 2 s (the DHT22's minimum)."],["", ""],["void loop() {", ""],["  unsigned long now = millis();", "<code>millis()</code> = milliseconds since the board started. Reading it takes almost no time; nothing waits."],["  if (now - lastRead >= INTERVAL_MS) {", "Has at least 2000 ms passed since last time? Subtraction stays correct even when millis() wraps to 0 after about 50 days."],["    lastRead = now;", "Restart the timer from now."],["    // read sensors and print", "The timed job runs here, once every 2 s."],["  }", ""],["  // check buttons, update the LED...", "This part runs thousands of times per second, so the board always responds instantly."],["}", ""]])}
      ${ex("tracing the timer", `<table class="t"><tr><th>now (ms)</th><th>lastRead</th><th>now \u2212 lastRead</th><th>\u2265 2000?</th><th>Action</th></tr><tr><td>1500</td><td>0</td><td>1500</td><td>no</td><td>skip, do other tasks</td></tr><tr><td>2001</td><td>0</td><td>2001</td><td>yes</td><td>read; lastRead = 2001</td></tr><tr><td>3000</td><td>2001</td><td>999</td><td>no</td><td>skip</td></tr><tr><td>4002</td><td>2001</td><td>2001</td><td>yes</td><td>read; lastRead = 4002</td></tr></table>`)}`, interactive:"timing"},
+    {id:"objects", title:"Reading new code: libraries, objects, and methods", html:`
+     <p>P2 uses some new-looking code: <code>#include &lt;DHT.h&gt;</code>, <code>DHT dht(DHT_PIN, DHT22);</code>, and <code>dht.readTemperature()</code>. Here is what these mean.</p>
+     <table class="t"><tr><th>Idea</th><th>Meaning</th><th>Example</th></tr>
+     <tr><td><b>Library</b></td><td>Ready-made code that someone else wrote and tested, which you add to your program</td><td>C++: <code>#include &lt;DHT.h&gt;</code> \u2022 Python: <code>import dht</code></td></tr>
+     <tr><td><b>Object</b></td><td>A variable that represents a real thing (a sensor) and bundles its data and actions</td><td>C++: <code>DHT dht(DHT_PIN, DHT22);</code> \u2022 Python: <code>sensor = dht.DHT22(Pin(15))</code></td></tr>
+     <tr><td><b>Method</b></td><td>An action that belongs to an object, called with a <b>dot</b>: <i>object.action()</i></td><td><code>dht.readTemperature()</code> \u2022 <code>sensor.measure()</code> \u2022 <code>led.on()</code></td></tr>
+     <tr><td><b>Return value</b></td><td>The answer a method gives back, which you can store in a variable</td><td><code>float t = dht.readTemperature();</code></td></tr></table>
+     ${ex("reading dot notation out loud", `<p><code>float t = dht.readTemperature();</code> reads as: <i>\u201cAsk the object named dht to read the temperature, and store the answer in a new decimal variable named t.\u201d</i> You already used this pattern: <code>Serial.println()</code> is the println method of the Serial object, and <code>led.toggle()</code> is the toggle method of the led object.</p>`)}
+     ${mis(`<ul><li>Forgetting the parentheses: <code>dht.readTemperature</code> (no <code>()</code>) does not call the method.</li><li>Calling a method before creating the object, or before <code>dht.begin()</code>.</li><li>Python: forgetting <code>sensor.measure()</code> before <code>sensor.temperature()</code>; the values are only updated by measure().</li></ul>`)}
+     ${srcs([["Adafruit DHT guide", REF.adafruitDHT[1]],["MicroPython quick reference (RP2)", REF.micropython[1]]])}`, interactive:"drill:objects"},
     {id:"p2", title:"Program P2: read and print CSV", html:`
      <p>P2 combines everything: a library, the non-blocking timer, error checking, and CSV output (comma-separated values that a spreadsheet can read). Read the annotated version, then practice in the sandbox.</p>
      ${anat("P2 Sensor reader (Arduino C++, ESP32 pins shown)", [
@@ -1299,7 +1454,7 @@ note: suggested alternative: 'Serial'</pre></div>
    ],
    rating:["I can upload P2 and see readings, but cannot yet explain them.","I can explain the divider or the ADC and do the Core challenge with help.","I can explain light \u2192 % fully, do the Core alone, and justify millis().","I can complete the Boss Challenge and help a classmate debug."],
    checkpoint:{code:"U1-O3, U1-O4, U1-O7", task:"Show calibrated P2 output, complete the Boss Challenge (LED below 30% without delay()), and complete the AI verification table.", met:"5+ valid CSV rows; no delay() over 1 s; 5 AI claims checked with sources.", upload:"Upload a screenshot of your Serial Monitor output, your code, and your AI verification table."},
-   refs:["lme","am2302","adafruitDHT","sparkfunBB","horowitz","arduinoRef","espArduino","micropython","wei","wokwi"]
+   refs:["gl5528","handson","enotes","originic","ytLdr1","ytLdr2","lme","am2302","adafruitDHT","sparkfunBB","horowitz","arduinoRef","espArduino","micropython","wei","wokwi"]
   },
   {id:"1.4", title:"Your first dataset in Google Sheets", minutes:120,
    objectives:["Describe a dataset using observation, variable, and value.","Classify variables by level of measurement (U1-O5).","Identify sources of measurement error and distinguish accuracy from precision (U1-O5).","Import sensor data into Google Sheets and summarize it with formulas and a chart.","Calculate the data volume of a sampling plan (U1-O6)."],
@@ -1899,6 +2054,205 @@ INTERACTIVES.solvecycle = function(el){
     anim($(".edpInfo", el), {opacity:[0, 1], x:[10, 0]}, {duration:.3}); };
   stages.forEach(g => { const f = () => { clearInterval(timer); timer = null; show(+g.dataset.i); }; g.onclick = f; g.onkeydown = e => { if (e.key === "Enter" || e.key === " ") f(); }; });
   $(".edpPlay", el).onclick = () => { clearInterval(timer); let i = 0; show(0); timer = setInterval(() => { if (!alive(el)) return clearInterval(timer); i++; if (i >= 7){ clearInterval(timer); timer = null; target = null; stages.forEach(s => s.classList.remove("dim")); $(".edpInfo", el).innerHTML = "<p>Back to <b>Ask</b>: sharing often reveals a new problem to solve. Use this cycle in every sandbox challenge and in your capstone.</p>"; logEvent(currentModule, "edp_walk", "activity", "done"); return; } show(i); }, 3200); };
+};
+
+/* ============ PROGRAMMING EXPLAINERS AND DRILLS ============ */
+function loopSteps(lang){ const st = []; let t = 0; const L = (line, vars, note) => st.push({line, vars, note});
+  for (let i = 0; i < 3; i++){ L(1, {i, LED:"OFF", "time (ms)":t}, lang === "cpp" ? `Check i < 3: ${i} < 3 is true, so run the body.` : `range(3) gives the next value: i = ${i}.`);
+    L(2, {i, LED:"ON", "time (ms)":t}, "LED on."); t += 150; L(3, {i, LED:"ON", "time (ms)":t}, "Wait 150 ms (the board does nothing else)."); L(4, {i, LED:"OFF", "time (ms)":t}, "LED off."); t += 150; L(5, {i, LED:"OFF", "time (ms)":t}, `Wait 150 ms. Blink ${i + 1} of 3 done.`); }
+  L(1, {i:3, LED:"OFF", "time (ms)":t}, lang === "cpp" ? "i++ makes i = 3. Check 3 < 3: false, so the for loop ends." : "range(3) has no more values, so the for loop ends."); t += 2000;
+  L(7, {i:3, LED:"OFF", "time (ms)":t}, "The pause runs once, after all 3 blinks: 2000 ms."); L(0, {i:"\u2014", LED:"OFF", "time (ms)":t}, "End of the main loop: start again from the top. One round took 2900 ms."); return st; }
+const TRACES = {
+ vars: {cpp:{code:["const int LED_PIN = 25;","int count = 0;","float temp = 29.4;","","void loop() {","  count = count + 1;","  temp = temp + 0.5;","  Serial.println(count);","}"],
+   steps:[[0,{LED_PIN:25},"Create a constant box named LED_PIN holding 25. It can never change."],[1,{LED_PIN:25,count:0},"Create a whole-number box named count, starting at 0."],[2,{LED_PIN:25,count:0,temp:29.4},"Create a decimal box named temp, starting at 29.4."],[5,{LED_PIN:25,count:1,temp:29.4},"Read count (0), add 1, store 1 back in count."],[6,{LED_PIN:25,count:1,temp:29.9},"Read temp (29.4), add 0.5, store 29.9."],[7,{LED_PIN:25,count:1,temp:29.9},"Use count: print its value.","1"],[5,{LED_PIN:25,count:2,temp:29.9},"loop() runs again. count is global, so it kept its value: 1 + 1 = 2."],[6,{LED_PIN:25,count:2,temp:30.4},"29.9 + 0.5 = 30.4."],[7,{LED_PIN:25,count:2,temp:30.4},"Print count again.","2"],[0,{LED_PIN:25,count:2,temp:30.4},"What if a line said LED_PIN = 5; ? The compiler would stop with an error (assignment of read-only variable), protecting your pin number.",null,true]]},
+  py:{code:["LED_PIN = 25      # constant (by convention)","count = 0","temp = 29.4","","while True:","    count = count + 1","    temp = temp + 0.5","    print(count)",""],
+   steps:[[0,{LED_PIN:25},"Create LED_PIN = 25. ALL CAPS tells humans: do not change this."],[1,{LED_PIN:25,count:0},"Create count = 0. Python works out that it is a whole number."],[2,{LED_PIN:25,count:0,temp:29.4},"Create temp = 29.4 (a decimal number)."],[5,{LED_PIN:25,count:1,temp:29.4},"count + 1 = 1, stored back in count."],[6,{LED_PIN:25,count:1,temp:29.9},"temp + 0.5 = 29.9."],[7,{LED_PIN:25,count:1,temp:29.9},"Print the value of count.","1"],[5,{LED_PIN:25,count:2,temp:29.9},"The while loop repeats; count keeps its value: 2."],[6,{LED_PIN:25,count:2,temp:30.4},"temp = 30.4."],[7,{LED_PIN:25,count:2,temp:30.4},"Print count.","2"],[0,{LED_PIN:25,count:2,temp:30.4},"Python would NOT stop LED_PIN = 5, because it has no const. The ALL CAPS name is a promise between programmers, so never reassign it.",null,true]]}},
+ loop: {cpp:{code:["void loop() {","  for (int i = 0; i < 3; i++) {","    digitalWrite(LED_PIN, HIGH);","    delay(150);","    digitalWrite(LED_PIN, LOW);","    delay(150);","  }","  delay(2000);","}"], steps:loopSteps("cpp").map(x => [x.line, x.vars, x.note])},
+  py:{code:["while True:","    for i in range(3):","        led.on()","        time.sleep(0.15)","        led.off()","        time.sleep(0.15)","    # end of the for loop","    time.sleep(2)",""], steps:loopSteps("py").map(x => [x.line, x.vars, x.note])}}
+};
+INTERACTIVES.vartrace = function(el, id){
+  const T = TRACES[id]; let lang = "cpp", k = -1, timer = null, out = [];
+  el.innerHTML = bench(id === "loop" ? "Loop tracer: watch the counter and the clock" : "Memory tracer: watch the variable boxes", `<div class="seg seg-sm vtl" role="tablist"><button role="tab" data-l="cpp" aria-selected="true">Arduino C++</button><button role="tab" data-l="py" aria-selected="false">MicroPython</button></div>
+   <div class="tracer"><div class="panel lines vtcode"></div><div class="panel"><b>Memory</b><div class="vtmem"></div><p class="explain vtnote">Press Step to run the first line.</p><b>Output</b><div class="serial vtout" style="height:70px"></div></div></div>
+   <div class="controls"><button class="btn primary vtStep">Step</button><button class="btn vtBack">Back</button><button class="btn vtAuto">Auto run</button><button class="btn vtReset">Reset</button><span class="explain vtpos"></span></div>`);
+  const draw = () => { const P = T[lang]; $(".vtcode", el).innerHTML = `<div class="hlbar"></div>` + P.code.map((l, i) => `<div data-l="${i}">${esc(l) || " "}</div>`).join(""); };
+  const show = animate => { const P = T[lang], s = P.steps[k]; const bar = $(".vtcode .hlbar", el);
+    if (!s){ bar.style.top = "-40px"; $(".vtmem", el).innerHTML = `<p class="explain">No variables yet.</p>`; $(".vtnote", el).textContent = "Press Step to run the first line."; $(".vtout", el).textContent = ""; $(".vtpos", el).textContent = `0 / ${P.steps.length}`; return; }
+    const row = el.querySelector(`.vtcode div[data-l="${s[0]}"]`); bar.style.height = row.offsetHeight + "px"; bar.style.top = row.offsetTop + "px"; bar.classList.toggle("warn", !!s[4]);
+    const prev = k > 0 ? P.steps[k - 1][1] : {};
+    $(".vtmem", el).innerHTML = Object.keys(s[1]).map(n => `<div class="vbox ${prev[n] !== s[1][n] ? "chg" : ""} ${n === n.toUpperCase() && n !== "LED" ? "const" : ""}"><span class="vname">${esc(n)}</span><span class="vval ${n === "LED" ? (s[1][n] === "ON" ? "ledon" : "ledoff") : ""}">${esc(String(s[1][n]))}</span></div>`).join("");
+    if (animate) el.querySelectorAll(".vbox.chg").forEach(b => pop(b, 1.12));
+    $(".vtnote", el).textContent = s[2];
+    out = P.steps.slice(0, k + 1).filter(x => x[3] != null).map(x => x[3]); $(".vtout", el).textContent = out.join("\n");
+    $(".vtpos", el).textContent = `${k + 1} / ${P.steps.length}`; };
+  const step = () => { const n = T[lang].steps.length; if (k < n - 1){ k++; show(true); } else { clearInterval(timer); timer = null; $(".vtAuto", el).textContent = "Auto run"; logEvent(currentModule, "trace_" + id, "activity", "done"); } };
+  $(".vtStep", el).onclick = step; $(".vtBack", el).onclick = () => { if (k >= 0){ k--; show(false); } };
+  $(".vtAuto", el).onclick = () => { if (timer){ clearInterval(timer); timer = null; $(".vtAuto", el).textContent = "Auto run"; } else { timer = setInterval(() => alive(el) ? step() : clearInterval(timer), 1300); $(".vtAuto", el).textContent = "Pause"; } };
+  $(".vtReset", el).onclick = () => { clearInterval(timer); timer = null; $(".vtAuto", el).textContent = "Auto run"; k = -1; show(false); };
+  el.querySelectorAll(".vtl button").forEach(b => b.onclick = () => { lang = b.dataset.l; el.querySelectorAll(".vtl button").forEach(x => x.setAttribute("aria-selected", x === b)); k = -1; draw(); show(false); });
+  draw(); show(false);
+};
+
+const DRILLS = {
+ vars:[
+  {t:"mcq", q:"Which line correctly creates a constant for the LED pin in C++?", o:["int LED_PIN = 2","const int LED_PIN = 2;","LED_PIN == 2;","const LED_PIN;"], a:1, e:"const (never changes) + int (whole number) + name + = value + semicolon.", w:["This creates a normal variable that could be changed by mistake, and it is missing the semicolon.","","== compares two values; it does not create anything.","A constant needs a type and a value when it is created."]},
+  {t:"input", q:"What value is stored in count after these lines run?", code:"int count = 5;\ncount = count + 3;\ncount = count * 2;", ans:["16"], e:"Line 2: 5 + 3 = 8 is stored. Line 3: 8 \u00d7 2 = 16 is stored. Each line uses the value left by the line before."},
+  {t:"mcq", q:"In MicroPython, how do programmers show that LED_PIN should never change?", o:["Write const before it","Use ALL CAPITAL letters for the name","Put the value in quotes","Python automatically stops changes"], a:1, e:"Python has no const keyword, so the ALL CAPS naming convention signals \u201cdo not change this.\u201d", w:["const is C++. In Python it causes a syntax error.","","Quotes turn the value into text, so it would no longer be a number.","Python allows reassigning any name; the convention is what protects it."]},
+  {t:"mcq", q:"What does this program print?", code:"void loop() {\n  int count = 0;\n  count = count + 1;\n  Serial.println(count);\n}", o:["1, 2, 3, 4 \u2026","1, 1, 1, 1 \u2026","0, 0, 0 \u2026","Nothing: an error"], a:1, e:"count is created inside loop(), so it is re-created as 0 on every pass, then becomes 1. Move it above setup() to make it keep counting.", w:["That would happen only if count were created outside loop() (global).","","count becomes 1 before it is printed.","The code is valid; it just does not do what was intended (a logic error)."]},
+  {t:"mcq", q:"Which is a valid variable name?", o:["2ndSensor","light-pct","lightPct","int"], a:2, e:"Letters, digits, and underscores, not starting with a digit, and not a reserved word.", w:["Names cannot start with a digit.","The minus sign means subtraction, so it cannot be part of a name.","","int is a reserved word (a type)."]},
+  {t:"input", q:"MicroPython: what is printed?", code:"temp = 29.4\ntemp = temp + 0.6\nprint(temp)", ans:["30.0","30"], e:"29.4 + 0.6 = 30.0. Because temp is a decimal (float), Python prints 30.0."}],
+ ifelse:[
+  {t:"input", q:"light is 50. What is printed?", code:"if (light < 30) {\n  Serial.println(\"Dark\");\n} else if (light < 70) {\n  Serial.println(\"Dim\");\n} else {\n  Serial.println(\"Bright\");\n}", ans:["dim"], e:"50 < 30 is false, so the first block is skipped. 50 < 70 is true, so \u201cDim\u201d prints and the rest is skipped."},
+  {t:"mcq", q:"With if (light < 30) { LED on } else { LED off }, what happens when light is exactly 30?", o:["LED on","LED off","Both blocks run","Neither block runs"], a:1, e:"30 < 30 is false (30 is not less than itself), so the else block runs.", w:["The LED turns on only when light is less than 30.","","Exactly one of if/else runs every time.","else catches every case where the condition is false."]},
+  {t:"mcq", q:"What is wrong with: if (temp = 31) { ... }", o:["Nothing","= stores 31 in temp instead of comparing; use ==","31 needs quotes","if needs a semicolon after it"], a:1, e:"One = means \u201cstore.\u201d Two == means \u201cis equal to?\u201d.", w:["It compiles, but it changes temp to 31, so the condition is always true: a classic logic error.","","Quotes would make 31 text, not a number.","A semicolon after if (...) would end the if statement immediately."]},
+  {t:"mcq", q:"temp is 33 and light is 20. Is (temp > 31 && light > 50) true or false?", o:["true","false"], a:1, e:"&& (AND) needs both parts to be true. temp > 31 is true, but light > 50 is false, so the whole condition is false.", w:["Only half of the condition is true; AND needs both."]},
+  {t:"mcq", q:"This MicroPython code shows an error. Why?", code:"if light < 30\n    led.on()", o:["led.on needs a semicolon","The if line is missing a colon (:)","30 must be 30.0","Python cannot compare numbers"], a:1, e:"In Python, if, else, elif, for, while, and def lines end with a colon, and the block below is indented.", w:["Python does not use semicolons to end lines.","","Whole numbers compare fine with decimals.","Comparisons like < work on numbers in Python."]}],
+ loops:[
+  {t:"input", q:"How many times does the body of this loop run?", code:"for (int i = 0; i < 4; i++) {\n  // body\n}", ans:["4"], e:"i takes the values 0, 1, 2, 3; when i becomes 4, the condition 4 < 4 is false."},
+  {t:"input", q:"MicroPython: what is the LAST number printed?", code:"for i in range(2, 6):\n    print(i)", ans:["5"], e:"range(2, 6) gives 2, 3, 4, 5. The stop value (6) is not included."},
+  {t:"mcq", q:"A learner wrote for (int i = 0; i <= 3; i++) for the Core challenge. How many blinks per group?", o:["3","4","5","It never stops"], a:1, e:"<= 3 includes 3, so i takes 0, 1, 2, 3: four values. Use i < 3 for three blinks.", w:["Three would need i < 3 (or i <= 2).","","Five would need i <= 4.","i increases each time, so the condition eventually becomes false."]},
+  {t:"parsons", q:"Put the lines in order to make the Core challenge: 3 quick blinks, then a 2-second pause.", lines:["void loop() {","  for (int i = 0; i < 3; i++) {","    digitalWrite(LED_PIN, HIGH);","    delay(150);","    digitalWrite(LED_PIN, LOW);","    delay(150);","  }","  delay(2000);","}"], e:"The for loop holds the blink (on, wait, off, wait). The 2-second pause comes after the loop's closing brace, so it runs once per round."},
+  {t:"mcq", q:"What happens if you delete the line n = n - 1; ?", code:"int n = 3;\nwhile (n > 0) {\n  Serial.println(n);\n  n = n - 1;\n}", o:["It still runs 3 times","It never stops: n stays 3, so n > 0 is always true","It runs 0 times","The compiler shows an error"], a:1, e:"The loop only ends when something inside changes the condition. Without n = n - 1, it prints 3 forever (an infinite loop).", w:["Nothing else changes n.","","n > 0 is true at the start, so the body runs.","It is valid code; the problem only shows when it runs."]}],
+ delay:[
+  {t:"input", q:"The LED is on for delay(250) and off for delay(250). How many blinks happen in 5 seconds?", ans:["10"], e:"One blink = 250 + 250 = 500 ms = 0.5 s. 5 s \u00f7 0.5 s = 10 blinks."},
+  {t:"mcq", q:"In MicroPython, which line waits half a second?", o:["time.sleep(500)","time.sleep(0.5)","delay(0.5)","time.sleep_ms(0.5)"], a:1, e:"time.sleep uses seconds: 0.5 s. (time.sleep_ms(500) would also work.)", w:["That waits 500 seconds, over 8 minutes!","","delay() is Arduino C++, not MicroPython.","sleep_ms uses milliseconds, so 0.5 ms is almost no wait."]},
+  {t:"mcq", q:"The board is running delay(2000) when you press a button. What happens?", o:["The board reacts immediately","The board does not notice until the delay ends (or misses it)","The delay ends early","The board restarts"], a:1, e:"delay() blocks everything. That is why Module 1.3 uses millis() for programs that must react quickly.", w:["Nothing else runs during delay().","","delay() always waits the full time.","Pressing a button does not reset the board."]},
+  {t:"input", q:"LED on for delay(100), off for delay(900). What percentage of the time is the LED on? (number only)", ans:["10","10%"], e:"On 100 ms out of every 100 + 900 = 1000 ms: 100 \u00f7 1000 = 0.10 = 10 %."},
+  {t:"mcq", q:"What does delay(0.5); do in Arduino C++?", o:["Waits half a second","Waits about 0 ms, because delay() takes whole milliseconds","Shows an error","Waits 5 seconds"], a:1, e:"delay() expects milliseconds as a whole number, so 0.5 becomes 0. Write delay(500) for half a second.", w:["Half a second is delay(500).","","It compiles without an error, which makes the bug harder to spot.","Nothing multiplies the value by 10."]}],
+ print:[
+  {t:"input", q:"What appears on the FIRST line of the Serial Monitor?", code:"Serial.print(\"A\");\nSerial.print(\"B\");\nSerial.println(\"C\");\nSerial.println(\"D\");", ans:["abc"], e:"print stays on the same line; println ends the line. So the first line is ABC, and D is on the second line."},
+  {t:"input", q:"What is printed?", code:"Serial.println(29.456, 1);", ans:["29.5"], e:"The second value sets the decimal places: 1 decimal, rounded, gives 29.5."},
+  {t:"mcq", q:"count holds 7. What does Serial.println(\"count\"); print?", o:["7","count","\"count\"","Nothing"], a:1, e:"Quotes make text, so it prints the word count. Without quotes, Serial.println(count) prints the value 7.", w:["That needs no quotes: Serial.println(count).","","The quotes themselves are not printed.","Text in quotes is printed exactly."]},
+  {t:"input", q:"MicroPython: what is printed?", code:"print(\"a\", 5, \"b\")", ans:["a 5 b"], e:"print() puts a space between values separated by commas."},
+  {t:"parsons", q:"Order the lines to print one CSV row: now, t, h (for example 4002,29.4,70.9).", lines:["Serial.print(now);","Serial.print(',');","Serial.print(t, 1);","Serial.print(',');","Serial.println(h, 1);"], e:"Value, comma, value, comma, and the last value with println so the row ends with a new line."}],
+ objects:[
+  {t:"mcq", q:"In float t = dht.readTemperature(); what is dht?", o:["A library","An object that represents the sensor in your code","A pin number","A data type"], a:1, e:"dht was created by DHT dht(DHT_PIN, DHT22); it is an object, and readTemperature() is one of its methods.", w:["The library is added with #include <DHT.h>.","","The pin is DHT_PIN, given when the object was created.","The data type here is float, for t."]},
+  {t:"mcq", q:"What does the dot in dht.readTemperature() mean?", o:["A decimal point","\u201cUse this method that belongs to the dht object\u201d","The end of a statement","Multiply"], a:1, e:"object.method() calls an action that belongs to that object.", w:["Decimal points only appear inside numbers like 29.4.","","Statements end with a semicolon in C++.","Multiplication uses *."]},
+  {t:"mcq", q:"MicroPython: why must sensor.measure() come before sensor.temperature()?", o:["It does not matter","measure() asks the DHT22 for a fresh reading; temperature() returns the last measured value","measure() turns the sensor off","temperature() needs a number inside the brackets"], a:1, e:"Without measure(), temperature() would return an old value or none at all.", w:["The order matters for getting a fresh value.","","measure() takes a reading; it does not switch anything off.","temperature() takes no parameters."]},
+  {t:"mcq", q:"Which line adds the DHT library to an Arduino sketch?", o:["#include <DHT.h>","import DHT","DHT dht(DHT_PIN, DHT22);","dht.begin();"], a:0, e:"#include copies the library's declarations into your sketch before it is compiled.", w:["","import is the Python way.","This creates the object; the library must already be included.","This starts the sensor; it does not add the library."]}]
+};
+INTERACTIVES.drill = function(el, id){
+  const D = DRILLS[id]; let answered = 0, right = 0;
+  el.innerHTML = bench("Check your understanding", `<div class="drill">${D.map((d, i) => `<div class="dq" data-i="${i}"><b>${i + 1}. ${esc(d.q)}</b>${d.code ? `<pre class="code">${esc(d.code)}</pre>` : ""}<div class="dbody"></div><div class="qexp"></div></div>`).join("")}</div><div class="panel dscore">Answer each question. You get feedback straight away.</div><div class="controls"><button class="btn dreset">Try again</button></div>`);
+  const finish = (i, ok, html) => { const q = el.querySelector(`.dq[data-i="${i}"]`), ex = q.querySelector(".qexp"); if (q.dataset.done) return; q.dataset.done = 1; answered++; if (ok) right++;
+    ex.className = "qexp " + (ok ? "ok" : "no"); ex.innerHTML = html; anim(ex, {opacity:[0, 1], y:[-6, 0]}, {duration:.3});
+    $(".dscore", el).textContent = `Score: ${right} of ${answered} answered (${D.length} questions)`; if (answered === D.length){ logEvent(currentModule, "drill_" + id, "activity", right + "/" + D.length); if (right === D.length) confetti(); } };
+  const render = () => { answered = 0; right = 0; $(".dscore", el).textContent = "Answer each question. You get feedback straight away.";
+    D.forEach((d, i) => { const q = el.querySelector(`.dq[data-i="${i}"]`), body = q.querySelector(".dbody"); delete q.dataset.done; q.querySelector(".qexp").className = "qexp"; q.querySelector(".qexp").innerHTML = "";
+      if (d.t === "mcq"){ body.innerHTML = `<div class="opts">${d.o.map((o, k) => `<button class="opt" data-k="${k}">${esc(o)}</button>`).join("")}</div>`;
+        body.querySelectorAll(".opt").forEach(b => b.onclick = () => { if (q.dataset.done) return; const k = +b.dataset.k, ok = k === d.a; body.querySelectorAll(".opt").forEach(x => { x.disabled = true; if (+x.dataset.k === d.a) x.classList.add("ok"); }); if (!ok){ b.classList.add("no"); shake(b); } else pop(b, 1.04);
+          finish(i, ok, ok ? `<b>Correct.</b> ${esc(d.e)}` : `<b>Not quite.</b> You chose \u201c${esc(d.o[k])}\u201d: ${esc((d.w && d.w[k]) || "")}<br><b>Correct: \u201c${esc(d.o[d.a])}\u201d.</b> ${esc(d.e)}`); }); }
+      else if (d.t === "input"){ body.innerHTML = `<div class="controls"><input class="dinput mono" aria-label="Your answer" placeholder="Your answer"><button class="btn small primary dcheck">Check</button></div>`;
+        const go = () => { const v = body.querySelector(".dinput").value.trim().toLowerCase().replace(/\s+/g, " "); if (!v) return; const ok = d.ans.some(a => a.toLowerCase() === v); body.querySelector(".dinput").disabled = true; body.querySelector(".dcheck").disabled = true;
+          finish(i, ok, ok ? `<b>Correct.</b> ${esc(d.e)}` : `<b>Not quite.</b> You answered \u201c${esc(v)}\u201d. The answer is <b>${esc(d.ans[0])}</b>. ${esc(d.e)}`); };
+        body.querySelector(".dcheck").onclick = go; body.querySelector(".dinput").onkeydown = e => { if (e.key === "Enter") go(); }; }
+      else if (d.t === "parsons"){ let order = d.lines.map((l, k) => k); for (let s2 = order.length - 1; s2 > 0; s2--){ const r = Math.floor(Math.random() * (s2 + 1)); [order[s2], order[r]] = [order[r], order[s2]]; }
+        if (order.every((v, k) => v === k)) order.reverse();
+        body.innerHTML = `<p class="explain">Drag the lines (or select one and use the arrow keys) into the correct order.</p><ol class="sortable parsons">${order.map(k => `<li class="sort-item" tabindex="0" data-k="${k}"><code>${esc(d.lines[k]) || " "}</code></li>`).join("")}</ol><button class="btn small primary pcheck">Check order</button>`;
+        const list = body.querySelector(".parsons"); let drag = null;
+        list.addEventListener("pointerdown", e => { const it = e.target.closest(".sort-item"); if (!it || q.dataset.done) return; e.preventDefault(); drag = it; it.setPointerCapture(e.pointerId); it.classList.add("dragging"); });
+        list.addEventListener("pointermove", e => { if (!drag) return; const y = e.clientY - list.getBoundingClientRect().top, others = [...list.children].filter(c => c !== drag), idx = others.filter(c => c.offsetTop + c.offsetHeight / 2 < y).length, cur = [...list.children].indexOf(drag); if (idx !== cur) flip(list, () => list.insertBefore(drag, others[idx] || null)); });
+        const end = () => { if (drag){ drag.classList.remove("dragging"); drag = null; } }; list.addEventListener("pointerup", end); list.addEventListener("pointercancel", end);
+        list.addEventListener("keydown", e => { const it = e.target.closest(".sort-item"); if (!it || q.dataset.done) return; if (e.key === "ArrowUp" && it.previousElementSibling){ e.preventDefault(); flip(list, () => list.insertBefore(it, it.previousElementSibling)); it.focus(); } if (e.key === "ArrowDown" && it.nextElementSibling){ e.preventDefault(); flip(list, () => list.insertBefore(it.nextElementSibling, it)); it.focus(); } });
+        body.querySelector(".pcheck").onclick = () => { const items = [...list.children], ok = items.every((it, k) => d.lines[+it.dataset.k] === d.lines[k]); items.forEach((it, k) => { const r = d.lines[+it.dataset.k] === d.lines[k]; it.classList.toggle("ok", r); it.classList.toggle("no", !r); });
+          if (!ok){ items.forEach(it => { if (it.classList.contains("no")) shake(it); }); const ex = q.querySelector(".qexp"); ex.className = "qexp no"; ex.innerHTML = "<b>Not yet.</b> Lines in red are in the wrong place. Think: what must happen first? What repeats? What happens once per round? Move them and check again."; return; }
+          body.querySelector(".pcheck").disabled = true; finish(i, true, `<b>Correct order!</b> ${esc(d.e)}`); }; } }); };
+  $(".dreset", el).onclick = render; render();
+};
+
+INTERACTIVES.condlab = function(el){
+  let lang = "cpp";
+  el.innerHTML = bench("Decision lab: which branch runs?", `<div class="seg seg-sm cll" role="tablist"><button role="tab" data-l="cpp" aria-selected="true">Arduino C++</button><button role="tab" data-l="py" aria-selected="false">MicroPython</button></div>
+   <div class="controls"><label>light <input type="range" class="clL" min="0" max="100" value="45"></label><b class="mono clLv"></b><label>threshold <input type="range" class="clT" min="10" max="90" value="30"></label><b class="mono clTv"></b></div>
+   <div class="two"><div class="panel lines clcode"></div><div class="panel"><div class="boardviz"><div class="ledbig cled"></div><div class="kv"><span>Condition</span><b class="clcond"></b><span>Result</span><b class="clres"></b></div></div><p class="explain clnote"></p></div></div>`);
+  const upd = () => { const L = +$(".clL", el).value, T = +$(".clT", el).value, dark = L < T; $(".clLv", el).textContent = L + " %"; $(".clTv", el).textContent = T + " %";
+    const lines = lang === "cpp" ? [`if (light < ${T}) {`,"  digitalWrite(LED_PIN, HIGH);   // dark","} else {","  digitalWrite(LED_PIN, LOW);    // bright","}"] : [`if light < ${T}:`,"    led.on()     # dark","else:","    led.off()    # bright"];
+    const active = lang === "cpp" ? (dark ? [0, 1] : [2, 3]) : (dark ? [0, 1] : [2, 3]);
+    $(".clcode", el).innerHTML = lines.map((l, i) => `<div class="${active.includes(i) ? "act" : "skip"}">${esc(l)}</div>`).join("");
+    $(".cled", el).classList.toggle("on", dark); $(".clcond", el).textContent = `${L} < ${T}`; $(".clres", el).textContent = dark ? "true \u2192 if block" : "false \u2192 else block";
+    $(".clnote", el).textContent = L === T ? `Boundary case: ${L} < ${T} is false (a number is not less than itself), so the else block runs.` : dark ? "The condition is true, so only the if block runs; the else block is skipped." : "The condition is false, so the if block is skipped and the else block runs."; };
+  el.querySelectorAll("input").forEach(x => x.oninput = () => { upd(); if (!act("condlab")) logEvent(currentModule, "condlab", "activity", "used"); });
+  el.querySelectorAll(".cll button").forEach(b => b.onclick = () => { lang = b.dataset.l; el.querySelectorAll(".cll button").forEach(x => x.setAttribute("aria-selected", x === b)); upd(); });
+  upd();
+};
+
+INTERACTIVES.loopmachine = function(el){
+  el.innerHTML = bench("For-loop builder: design a loop and run it", `<div class="controls lmc"><label>start <input type="number" class="lmS" value="0" style="width:64px"></label><label>condition <select class="lmOp"><option>&lt;</option><option>&lt;=</option><option>&gt;</option><option>&gt;=</option></select></label><label>end <input type="number" class="lmE" value="3" style="width:64px"></label><label>step <input type="number" class="lmSt" value="1" style="width:64px"></label><button class="btn primary lmRun">Run the loop</button></div>
+   <div class="two"><div class="panel"><b>C++</b><pre class="code lmcpp"></pre><b>MicroPython</b><pre class="code lmpy"></pre></div><div class="panel"><div class="boardviz"><div class="vbox lmbox"><span class="vname">i</span><span class="vval lmi">\u2014</span></div><div class="kv"><span>Repeats</span><b class="lmn">0</b></div></div><div class="lmchips"></div><p class="explain lmnote"></p></div></div>`);
+  const vals = () => { const s = parseInt($(".lmS", el).value) || 0, e = parseInt($(".lmE", el).value) || 0, st = parseInt($(".lmSt", el).value) || 0, op = $(".lmOp", el).value;
+    const cond = i => op === "<" ? i < e : op === "<=" ? i <= e : op === ">" ? i > e : i >= e; const out = []; let i = s, guard = 0;
+    while (cond(i) && guard < 60){ out.push(i); i += st; guard++; } return {s, e, st, op, out, infinite:guard >= 60 || (st === 0 && cond(s)), final:i}; };
+  const pyRange = v => { if (v.st === 0) return null; if ((v.op === "<" || v.op === "<=") && v.st > 0) return `range(${v.s}, ${v.op === "<=" ? v.e + 1 : v.e}${v.st !== 1 ? ", " + v.st : ""})`; if ((v.op === ">" || v.op === ">=") && v.st < 0) return `range(${v.s}, ${v.op === ">=" ? v.e - 1 : v.e}, ${v.st})`; return null; };
+  const code = () => { const v = vals(), stepTxt = v.st === 1 ? "i++" : v.st === -1 ? "i--" : v.st > 0 ? `i += ${v.st}` : `i -= ${-v.st}`, pr = pyRange(v);
+    $(".lmcpp", el).textContent = `for (int i = ${v.s}; i ${v.op} ${v.e}; ${stepTxt}) {\n  Serial.println(i);\n}`;
+    $(".lmpy", el).textContent = pr ? `for i in ${pr}:\n    print(i)` : "# no simple range() matches:\n# this loop would never stop (or never start)";
+    $(".lmnote", el).textContent = v.infinite ? "Warning: this loop never stops! The step moves i away from the end (or does not move it), so the condition is always true." : v.out.length === 0 ? "This loop runs 0 times: the condition is false from the start." : `It will run ${v.out.length} time${v.out.length > 1 ? "s" : ""}: i = ${v.out.join(", ")}. Then i = ${v.final}, and ${v.final} ${v.op} ${v.e} is false, so it stops.`; return v; };
+  el.querySelectorAll("input, select").forEach(x => x.oninput = x.onchange = () => { $(".lmchips", el).innerHTML = ""; $(".lmn", el).textContent = 0; $(".lmi", el).textContent = "\u2014"; code(); });
+  $(".lmRun", el).onclick = () => { const v = code(), chips = $(".lmchips", el); chips.innerHTML = ""; $(".lmn", el).textContent = 0; const list = v.out.slice(0, v.infinite ? 12 : 60); let k = 0;
+    const t = setInterval(() => { if (!alive(el)) return clearInterval(t); if (k >= list.length){ clearInterval(t); $(".lmi", el).textContent = v.infinite ? "\u221e" : v.final; if (v.infinite){ const c = document.createElement("span"); c.className = "chip no"; c.textContent = "\u2026 never stops"; chips.appendChild(c); } logEvent(currentModule, "loopmachine", "activity", "ran"); return; }
+      $(".lmi", el).textContent = list[k]; pop($(".lmbox", el), 1.12); const c = document.createElement("span"); c.className = "chip"; c.textContent = "i = " + list[k]; chips.appendChild(c); anim(c, {scale:[0, 1]}, {type:"spring", stiffness:500, damping:18}); $(".lmn", el).textContent = k + 1; k++; }, reduceMotion() ? 20 : 450); };
+  code();
+};
+
+INTERACTIVES.delaylab = function(el){
+  el.innerHTML = bench("Delay lab: design a blink", `<div class="sliders"><label>LED on: delay(<b class="dlOnV"></b>) <input type="range" class="dlOn" min="50" max="2000" step="50" value="500"></label><label>LED off: delay(<b class="dlOffV"></b>) <input type="range" class="dlOff" min="50" max="2000" step="50" value="500"></label></div>
+   <div class="two"><div class="panel"><b>Arduino C++</b><pre class="code dlcpp"></pre><b>MicroPython</b><pre class="code dlpy"></pre></div><div class="panel"><div class="boardviz"><div class="ledbig dlled"></div><div class="kv"><span>One blink</span><b class="dlP"></b><span>Blinks in 10 s</span><b class="dlN"></b><span>LED on</span><b class="dlPct"></b><span>Board busy waiting</span><b>100 %</b></div></div></div></div>
+   <canvas class="race dltl" aria-label="10-second LED timeline" style="height:90px"></canvas><p class="explain">Timeline of the first 10 seconds. The board spends all of its time inside delay(), so it cannot do anything else.</p>`);
+  let tmr = null;
+  const upd = () => { const on = +$(".dlOn", el).value, off = +$(".dlOff", el).value, P = on + off; $(".dlOnV", el).textContent = on; $(".dlOffV", el).textContent = off;
+    $(".dlcpp", el).textContent = `digitalWrite(LED_PIN, HIGH);\ndelay(${on});\ndigitalWrite(LED_PIN, LOW);\ndelay(${off});`;
+    $(".dlpy", el).textContent = `led.on()\ntime.sleep(${(on / 1000).toString()})\nled.off()\ntime.sleep(${(off / 1000).toString()})`;
+    $(".dlP", el).textContent = `${on} + ${off} = ${P} ms`; $(".dlN", el).textContent = (10000 / P).toFixed(P > 10000 ? 2 : 1).replace(/\.0$/, ""); $(".dlPct", el).textContent = Math.round(on / P * 100) + " % of the time";
+    const cv = $(".dltl", el), {g, W, H} = hiDPI(cv), X = t => 10 + t / 10000 * (W - 20); g.clearRect(0, 0, W, H); g.fillStyle = "rgba(127,140,160,.18)"; g.fillRect(10, H * .25, W - 20, H * .4);
+    for (let t = 0; t < 10000; t += P){ g.fillStyle = "#E9C46A"; g.fillRect(X(t), H * .25, Math.max(1, X(Math.min(t + on, 10000)) - X(t)), H * .4); }
+    g.fillStyle = cssv("--muted") || "#5B6B7F"; g.font = "10px sans-serif"; [0, 2, 4, 6, 8, 10].forEach(s => g.fillText(s + " s", X(s * 1000) - 6, H - 4));
+    clearInterval(tmr); const led = $(".dlled", el); let st = false; const tick = () => { if (!alive(el)) return; st = !st; led.classList.toggle("on", st); tmr = setTimeout(tick, st ? on : off); }; tmr = setTimeout(tick, 50); };
+  el.querySelectorAll("input").forEach(x => x.oninput = () => { upd(); if (!act("delaylab")) logEvent(currentModule, "delaylab", "activity", "used"); }); upd();
+};
+
+INTERACTIVES.printlab = function(el){
+  const rows = [["print","\"Temp: \"",null],["print","29.456","2"],["println","\" C\"",null],["println","\"Done\"",null]];
+  el.innerHTML = bench("Print lab: print or println?", `<p class="explain">Switch each line between print and println, and change the decimal places. Watch the Serial Monitor.</p>
+   <div class="plrows">${rows.map((r, i) => `<div class="plrow" data-i="${i}"><code>Serial.</code><select class="plf"><option ${r[0] === "print" ? "selected" : ""}>print</option><option ${r[0] === "println" ? "selected" : ""}>println</option></select><code>(${esc(r[1])}${r[2] !== null ? "," : ""}</code>${r[2] !== null ? `<select class="pld"><option value="">(none)</option><option value="0">0</option><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option></select>` : ""}<code>);</code></div>`).join("")}</div>
+   <div class="two"><div><b>Serial Monitor</b><div class="serial plout" style="height:110px;white-space:pre"></div></div><div><b>MicroPython equivalent</b><pre class="code plpy"></pre></div></div><p class="explain plnote"></p>`);
+  const upd = () => { let out = "", py = []; el.querySelectorAll(".plrow").forEach((row, i) => { const f = row.querySelector(".plf").value, r = rows[i], d = row.querySelector(".pld"); let txt;
+      if (r[2] !== null){ const dp = d.value; const v = parseFloat(r[1]); txt = dp === "" ? v.toFixed(2) : v.toFixed(+dp); py.push(`print(${dp === "" ? "\"%.2f\" % 29.456" : `\"{:.${dp}f}\".format(29.456)`}${f === "print" ? ', end=""' : ""})`); }
+      else { txt = r[1].slice(1, -1); py.push(`print(${r[1]}${f === "print" ? ', end=""' : ""})`); }
+      out += txt + (f === "println" ? "\n" : ""); });
+    $(".plout", el).textContent = out; $(".plpy", el).textContent = py.join("\n");
+    $(".plnote", el).textContent = !out.includes("\n") ? "No line ever ends, so everything piles up on one line." : "Each println ends a line; print continues on the same line. A float with no decimals setting prints 2 decimal places."; };
+  el.querySelectorAll("select").forEach(x => x.onchange = () => { upd(); if (!act("printlab")) logEvent(currentModule, "printlab", "activity", "used"); }); upd();
+};
+
+INTERACTIVES.ldrlab = function(el){
+  const R10 = 15000, G = 0.7, Rdark = 1e6, Rmin = 300, lux2R = lux => Math.max(Rmin, Math.min(Rdark, R10 * Math.pow(Math.max(lux, 0.01) / 10, -G)));
+  el.innerHTML = bench("LDR explorer: light in, resistance out", `<div class="controls"><label>Light <input type="range" class="lxS" min="-1" max="4" step="0.05" value="2.4"></label><b class="mono lxV"></b>
+    <button class="btn small" data-lx="0">Covered (about 1 lux)</button><button class="btn small" data-lx="2.5">Classroom (about 300 lux)</button><button class="btn small" data-lx="3.4">Flashlight (about 2,500 lux)</button></div>
+   <div class="two"><div><svg class="ldrin" viewBox="0 0 300 220" aria-label="Inside the LDR"><rect x="20" y="40" width="260" height="160" rx="16" fill="#F1E3C1" stroke="#9A7B4F" stroke-width="2"/><rect x="30" y="50" width="16" height="140" rx="4" fill="#B8BDC6"/><rect x="254" y="50" width="16" height="140" rx="4" fill="#B8BDC6"/>
+     <path d="M46 62 H240 V92 H60 V122 H240 V152 H60 V182 H254" fill="none" stroke="#C2410C" stroke-width="12" stroke-linejoin="round" opacity=".85"/><g class="phot"></g><g class="elec"></g><text x="150" y="30" text-anchor="middle" font-size="11" fill="currentColor">photons \u2193</text><text x="150" y="214" text-anchor="middle" font-size="10" fill="currentColor">CdS track between two electrodes</text></svg>
+     <div class="kv"><span>Free charge carriers</span><b class="lxE"></b><span>LDR resistance</span><b class="lxR"></b><span>V<sub>out</sub> (with 10 k\u03a9)</span><b class="lxVo"></b></div></div>
+    <div><canvas class="lxchart" aria-label="Resistance versus light on a log scale" style="width:100%;height:220px;display:block;background:var(--surface);border:1px solid var(--line);border-radius:10px"></canvas><p class="explain">Both axes are logarithmic: each grid step is 10\u00d7. On log scales the LDR's curve is almost a straight line (gamma \u2248 0.7).</p>
+     <button class="btn small lxResp">Show the response time (slowed 20\u00d7)</button><p class="explain lxRn"></p></div></div>`);
+  const cv = $(".lxchart", el); let rafP = null;
+  function chart(lux){ const {g, W, H} = hiDPI(cv), p = 36, x = l => p + (Math.log10(l) + 1) / 5 * (W - p - 10), y = r => H - p - (Math.log10(r) - 2) / 4.2 * (H - p - 10); g.clearRect(0, 0, W, H);
+    g.strokeStyle = "rgba(127,140,160,.25)"; g.fillStyle = cssv("--muted") || "#5B6B7F"; g.font = "10px sans-serif";
+    [-1, 0, 1, 2, 3, 4].forEach(e => { const X = x(Math.pow(10, e)); g.beginPath(); g.moveTo(X, 10); g.lineTo(X, H - p); g.stroke(); g.fillText(e < 0 ? "0.1" : String(Math.pow(10, e)), X - 8, H - p + 14); });
+    [100, 1e3, 1e4, 1e5, 1e6].forEach(r => { const Y = y(r); g.beginPath(); g.moveTo(p, Y); g.lineTo(W - 10, Y); g.stroke(); g.fillText(r >= 1e6 ? "1M" : r >= 1e3 ? (r / 1e3) + "k" : String(r), 4, Y + 3); });
+    g.fillText("lux \u2192", W - 40, H - 6); g.save(); g.translate(10, 26); g.fillText("\u03a9", 0, 0); g.restore();
+    g.strokeStyle = "#C2410C"; g.lineWidth = 2.5; g.beginPath(); for (let e = -1; e <= 4; e += 0.05){ const l = Math.pow(10, e), X = x(l), Y = y(lux2R(l)); e === -1 ? g.moveTo(X, Y) : g.lineTo(X, Y); } g.stroke(); g.lineWidth = 1;
+    g.fillStyle = "#2A9D8F"; g.beginPath(); g.arc(x(lux), y(lux2R(lux)), 6, 0, 7); g.fill(); }
+  function scene(lux){ const n = Math.round(Math.min(40, Math.max(0, (Math.log10(lux) + 1) * 8))); let ph = "", el2 = "";
+    for (let i = 0; i < n; i++){ const X = 40 + (i * 53) % 220; ph += `<line x1="${X}" y1="${8 + (i * 7) % 18}" x2="${X}" y2="${30 + (i * 7) % 18}" stroke="#EAB308" stroke-width="2.5" class="pl" style="animation-delay:${(i % 8) * .12}s"/>`; el2 += `<circle cx="${50 + (i * 37) % 190}" cy="${62 + ((i * 3) % 5) * 30}" r="3.2" fill="#2563EB" class="el" style="animation-delay:${(i % 6) * .15}s"/>`; }
+    $(".phot", el).innerHTML = ph; $(".elec", el).innerHTML = el2; return n; }
+  function upd(){ const e = +$(".lxS", el).value, lux = Math.pow(10, e), R = lux2R(lux), V = 3.3 * 10000 / (R + 10000), n = scene(lux);
+    $(".lxV", el).textContent = (lux < 1 ? lux.toFixed(1) : Math.round(lux).toLocaleString()) + " lux"; $(".lxE", el).textContent = n === 0 ? "almost none" : n < 12 ? "few" : n < 26 ? "many" : "very many";
+    $(".lxR", el).textContent = R >= 1e6 ? "\u2265 1 M\u03a9" : R >= 1000 ? (R / 1000).toFixed(R < 1e4 ? 1 : 0) + " k\u03a9" : Math.round(R) + " \u03a9"; $(".lxVo", el).textContent = V.toFixed(2) + " V"; chart(lux); }
+  el.querySelectorAll("[data-lx]").forEach(b => b.onclick = () => { const from = +$(".lxS", el).value, to = +b.dataset.lx; tweenVal(from, to, 600, v => { $(".lxS", el).value = v; upd(); }); });
+  $(".lxS", el).oninput = () => { upd(); if (!act("ldrlab")) logEvent(currentModule, "ldrlab", "activity", "used"); };
+  $(".lxResp", el).onclick = () => { const startR = lux2R(Math.pow(10, +$(".lxS", el).value)), endR = Rdark, t0 = performance.now(), dur = 30 * 20 * 3;
+    $(".lxRn", el).textContent = "Light switched off: the resistance climbs over tens of milliseconds instead of jumping instantly (shown 20\u00d7 slower)."; cancelAnimationFrame(rafP);
+    (function f(n){ const t = (n - t0) / dur, r = Math.exp(Math.log(startR) + (Math.log(endR) - Math.log(startR)) * (1 - Math.exp(-3 * Math.min(t, 1.5)))); $(".lxR", el).textContent = r >= 999000 ? "\u2265 1 M\u03a9" : r >= 1000 ? (r / 1000).toFixed(0) + " k\u03a9" : Math.round(r) + " \u03a9"; if (t < 1.5 && alive(el)) rafP = requestAnimationFrame(f); else setTimeout(upd, 1200); })(t0); };
+  upd(); addEventListener("resize", () => { if (alive(el)) upd(); });
 };
 </script>
 <script>/* ============ v2 MOTION LAYER ============ */
