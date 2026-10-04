@@ -768,6 +768,17 @@ body.device-phone .nudge{bottom:calc(76px + env(safe-area-inset-bottom))}
 .rn-head{display:flex;justify-content:space-between;align-items:center;gap:8px}.chip.new{background:var(--amber);color:#14213D;border-color:var(--amber);font-weight:700}
 .rn-list{margin:.4em 0 .4em 1.1em;padding:0}.rn-list li{margin:3px 0}
 @media print{.fb-btn,.sec-fb{display:none!important}}
+/* v15: Unit 2 interactives */
+.url-ex{white-space:pre-wrap;word-break:break-all;line-height:1.7}
+.url-ex .u-proto,.url-ex [data-i="proto"]{color:#7C3AED;font-weight:700}.url-ex .u-host,.url-ex [data-i="host"]{color:#0E7490;font-weight:700}.url-ex .u-path,.url-ex [data-i="path"]{color:#B45309;font-weight:700}.url-ex .u-q{color:#15803D}
+.url-ex [data-i]{cursor:pointer;border-radius:4px;padding:1px 2px}.url-ex [data-i]:hover{background:color-mix(in srgb,var(--amber) 30%,transparent)}
+.u2-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:8px}.u2-form label{display:flex;flex-direction:column;gap:3px;font-size:.85rem;font-weight:600}
+.hlsvg,.knsvg{width:100%;height:auto;display:block}
+.jsonbox{white-space:pre;overflow-x:auto}.jk{background:none;border:0;padding:0 2px;font:inherit;color:#0E7490;cursor:pointer;border-radius:4px}.jk:hover,.jk.on{background:color-mix(in srgb,var(--amber) 35%,transparent)}.jv{color:#B45309}
+.serial.bad{color:#FCA5A5}
+.dict .dinput{min-width:110px;width:100%;box-sizing:border-box}.cot textarea{min-width:150px}
+.p4tabs{margin:8px 0}.p4tabs button{white-space:normal}
+.dq > b{overflow-wrap:anywhere}.parsons{overflow-x:auto}.parsons .sort-item code{white-space:pre-wrap;overflow-wrap:anywhere}
 </style>
 </head>
 <body>
@@ -1638,6 +1649,570 @@ note: suggested alternative: 'Serial'</pre></div>
 ];
 const MODULES = {}; COURSE.forEach(u => u.modules.forEach(m => { if (!u.locked) MODULES[m.id] = m; }));
 
+/* ============ UNIT 2: CONNECTING TO THE CLOUD ============ */
+const RELEASE = { u2: false };   // set to true to open Unit 2 to every learner (admins can preview it anytime)
+Object.assign(REF, {
+  gasWeb: ["Google. (n.d.-c). Web apps. Google Apps Script guides.","https://developers.google.com/apps-script/guides/web"],
+  gasDeploy: ["Google. (n.d.-d). Create and manage deployments. Google Apps Script guides.","https://developers.google.com/apps-script/concepts/deployments"],
+  gasLock: ["Google. (n.d.-e). Class LockService. Google Apps Script reference.","https://developers.google.com/apps-script/reference/lock/lock-service"],
+  gasProps: ["Google. (n.d.-f). Properties service. Google Apps Script guides.","https://developers.google.com/apps-script/guides/properties"],
+  gasContent: ["Google. (n.d.-g). Content service. Google Apps Script guides.","https://developers.google.com/apps-script/guides/content"],
+  gasQuotas: ["Google. (n.d.-h). Quotas for Google services. Google Apps Script guides.","https://developers.google.com/apps-script/guides/services/quotas"],
+  mdnHttp: ["MDN contributors. (n.d.-a). An overview of HTTP. MDN Web Docs.","https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview"],
+  mdnStatus: ["MDN contributors. (n.d.-b). HTTP response status codes. MDN Web Docs.","https://developer.mozilla.org/en-US/docs/Web/HTTP/Status"],
+  mdnJson: ["MDN contributors. (n.d.-c). Working with JSON. MDN Web Docs.","https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON"],
+  mdnJs: ["MDN contributors. (n.d.-d). JavaScript guide. MDN Web Docs.","https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide"],
+  rfc9110: ["Fielding, R., Nottingham, M., & Reschke, J. (Eds.). (2022). HTTP semantics (RFC 9110). Internet Engineering Task Force.","https://doi.org/10.17487/RFC9110"],
+  rfc8259: ["Bray, T. (Ed.). (2017). The JavaScript Object Notation (JSON) data interchange format (RFC 8259). Internet Engineering Task Force.","https://doi.org/10.17487/RFC8259"],
+  openMeteo: ["Open-Meteo. (n.d.). Weather forecast API documentation.","https://open-meteo.com/en/docs"],
+  picowNet: ["Raspberry Pi Ltd. (n.d.). Connecting to the internet with Raspberry Pi Pico W [PDF].","https://datasheets.raspberrypi.com/picow/connecting-to-the-internet-with-pico-w.pdf"],
+  arduinoWifiS3: ["Arduino. (n.d.-j). UNO R4 WiFi network examples. Arduino Documentation.","https://docs.arduino.cc/tutorials/uno-r4-wifi/wifi-examples/"],
+  espHttp: ["Espressif Systems. (n.d.-e). Wi-Fi API (Arduino-ESP32). Arduino-ESP32 documentation.","https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html"],
+  mpNetwork: ["MicroPython. (n.d.-c). network \u2013 network configuration. MicroPython documentation.","https://docs.micropython.org/en/latest/library/network.html"],
+  kleppmann: ["Kleppmann, M. (2017). Designing data-intensive applications. O\u2019Reilly Media.",""]
+});
+const P3_SRC = String.raw`/** P3 - IoT Data Logger backend (Google Apps Script)
+ *  Data tab:     timestamp | device_id | sensor | value | unit
+ *  Commands tab: device_id | led | buzzer | servo | threshold
+ *  Device URL:   .../exec?key=KEY&device_id=ID&temp_C=29.4&hum_pct=70
+ */
+const DATA_SHEET = 'Data';
+const CMD_SHEET = 'Commands';
+const RESERVED = ['key', 'action', 'device_id', 'n'];
+
+function setupSheets() {                       // run once from the editor
+  const ss = SpreadsheetApp.getActive();
+  const d = ss.getSheetByName(DATA_SHEET) || ss.insertSheet(DATA_SHEET);
+  d.getRange(1, 1, 1, 5).setValues([['timestamp', 'device_id', 'sensor', 'value', 'unit']]);
+  const c = ss.getSheetByName(CMD_SHEET) || ss.insertSheet(CMD_SHEET);
+  c.getRange(1, 1, 1, 5).setValues([['device_id', 'led', 'buzzer', 'servo', 'threshold']]);
+  PropertiesService.getScriptProperties().setProperty('API_KEY', 'change-me-123');
+}
+
+function doGet(e) {
+  const p = e.parameter || {};
+  const key = PropertiesService.getScriptProperties().getProperty('API_KEY');
+  if (p.key !== key) return text_('ERR:key');
+  const action = p.action || 'log';
+  if (action === 'log') return logReadings_(p);
+  if (action === 'cmd') return getCommand_(p.device_id);
+  if (action === 'latest') return latest_(p.device_id, Number(p.n) || 50);
+  return text_('ERR:action');
+}
+
+function logReadings_(p) {
+  const device = p.device_id || 'unknown';
+  const now = new Date();
+  const rows = [];
+  Object.keys(p).forEach(k => {
+    if (RESERVED.includes(k)) return;
+    const parts = k.split('_');               // "temp_C" -> ["temp", "C"]
+    const sensor = parts[0];
+    const unit = parts.slice(1).join('_');
+    const value = Number(p[k]);
+    if (!isNaN(value)) rows.push([now, device, sensor, value, unit]);
+  });
+  if (rows.length === 0) return text_('ERR:no-readings');
+
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);                        // one writer at a time
+  try {
+    const sh = SpreadsheetApp.getActive().getSheetByName(DATA_SHEET);
+    sh.getRange(sh.getLastRow() + 1, 1, rows.length, 5).setValues(rows);
+  } finally {
+    lock.releaseLock();
+  }
+  return text_('OK:' + rows.length);
+}
+
+function getCommand_(device) {                 // used in Unit 4
+  const values = SpreadsheetApp.getActive().getSheetByName(CMD_SHEET)
+    .getDataRange().getValues();
+  const headers = values[0];
+  const row = values.find((r, i) => i > 0 && r[0] === device);
+  if (!row) return text_('ERR:no-device');
+  let out = '';
+  for (let i = 1; i < headers.length; i++) {
+    const v = row[i] === true ? 1 : row[i] === false ? 0 : row[i];
+    out += headers[i] + '=' + v + ';';
+  }
+  return text_(out);
+}
+
+function latest_(device, n) {                  // used by the dashboard in Unit 4
+  const sh = SpreadsheetApp.getActive().getSheetByName(DATA_SHEET);
+  const last = sh.getLastRow();
+  if (last < 2) return json_([]);
+  const start = Math.max(2, last - n + 1);
+  const rows = sh.getRange(start, 1, last - start + 1, 5).getValues()
+    .filter(r => !device || r[1] === device)
+    .map(r => ({ timestamp: new Date(r[0]).toISOString(), device_id: r[1],
+                 sensor: r[2], value: r[3], unit: r[4] }));
+  return json_(rows);
+}
+
+function text_(s) { return ContentService.createTextOutput(s); }
+function json_(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}`;
+const P4_CPP = String.raw`// P4 - IoT Logger: DHT22 + LDR -> Google Sheets every 30 s
+// One sketch for Uno R4 WiFi, ESP32, ESP8266
+#include <DHT.h>
+#if defined(ESP32)
+  #include <WiFi.h>
+  #include <HTTPClient.h>
+  #include <WiFiClientSecure.h>
+  const int LDR_PIN = 34; const int DHT_PIN = 4;  const float ADC_MAX = 4095.0;
+#elif defined(ESP8266)
+  #include <ESP8266WiFi.h>
+  #include <ESP8266HTTPClient.h>
+  #include <WiFiClientSecure.h>
+  const int LDR_PIN = A0; const int DHT_PIN = 14; const float ADC_MAX = 1023.0;
+#else  // Uno R4 WiFi
+  #include <WiFiS3.h>
+  const int LDR_PIN = A0; const int DHT_PIN = 2;  const float ADC_MAX = 1023.0;
+#endif
+
+// ---------- EDIT THESE ----------
+const char* WIFI_SSID  = "YOUR_WIFI";
+const char* WIFI_PASS  = "YOUR_PASSWORD";
+const String SCRIPT_URL = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec";
+const String API_KEY    = "change-me-123";
+const String DEVICE_ID  = "team1-esp32";
+const unsigned long SEND_EVERY_MS = 30000;
+// --------------------------------
+
+DHT dht(DHT_PIN, DHT22);
+unsigned long lastSend = 0;
+bool firstSend = true;
+
+void connectWiFi() {
+  if (WiFi.status() == WL_CONNECTED) return;
+  Serial.print("Connecting to Wi-Fi");
+  WiFi.begin(WIFI_SSID, WIFI_PASS);
+  unsigned long start = millis();
+  while (WiFi.status() != WL_CONNECTED && millis() - start < 20000) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println(WiFi.status() == WL_CONNECTED ? " connected!" : " failed.");
+}
+
+String httpsGet(String url) {
+#if defined(ESP32) || defined(ESP8266)
+  WiFiClientSecure client;
+  client.setInsecure();                 // classroom shortcut: skips certificate check
+  HTTPClient http;
+  http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
+  if (!http.begin(client, url)) return "ERR:begin";
+  int code = http.GET();
+  String body = (code > 0) ? http.getString() : String("ERR:http ") + String(code);
+  http.end();
+  body.trim();
+  return body;
+#else  // Uno R4 WiFi: manual HTTPS that follows Google's redirect
+  for (int hop = 0; hop < 3; hop++) {
+    int hostStart = url.indexOf("://") + 3;
+    int pathStart = url.indexOf('/', hostStart);
+    String host = url.substring(hostStart, pathStart);
+    String path = url.substring(pathStart);
+    WiFiSSLClient client;
+    client.setTimeout(10000);
+    if (!client.connect(host.c_str(), 443)) return "ERR:connect";
+    client.print("GET " + path + " HTTP/1.0\r\nHost: " + host + "\r\nConnection: close\r\n\r\n");
+    String status = client.readStringUntil('\n');     // e.g. "HTTP/1.0 302 Found"
+    String location = "";
+    while (true) {                                      // read headers
+      String line = client.readStringUntil('\n');
+      if (line.length() <= 1) break;                    // blank line = end of headers
+      String lower = line;
+      lower.toLowerCase();
+      if (lower.startsWith("location:")) { location = line.substring(9); location.trim(); }
+    }
+    if (status.indexOf(" 301") > 0 || status.indexOf(" 302") > 0 || status.indexOf(" 303") > 0) {
+      client.stop();
+      if (location.length() == 0) return "ERR:redirect";
+      url = location;                                   // follow the forwarding address
+      continue;
+    }
+    String body = "";
+    unsigned long start = millis();
+    while ((client.connected() || client.available()) && millis() - start < 10000) {
+      if (client.available()) body += (char)client.read();
+    }
+    client.stop();
+    body.trim();
+    return body;
+  }
+  return "ERR:too-many-redirects";
+#endif
+}
+
+void setup() {
+  Serial.begin(115200);
+  dht.begin();
+  connectWiFi();
+}
+
+void loop() {
+  if (firstSend || millis() - lastSend >= SEND_EVERY_MS) {
+    firstSend = false;
+    lastSend = millis();
+    connectWiFi();                                      // reconnects if dropped
+
+    float t = dht.readTemperature();
+    float h = dht.readHumidity();
+    float light = analogRead(LDR_PIN) / ADC_MAX * 100.0;
+    if (isnan(t) || isnan(h)) { Serial.println("DHT read failed, skipping"); return; }
+
+    String url = SCRIPT_URL + "?key=" + API_KEY + "&device_id=" + DEVICE_ID
+               + "&temp_C=" + String(t, 1)
+               + "&hum_pct=" + String(h, 1)
+               + "&light_pct=" + String(light, 1);
+    Serial.print("Reply: ");
+    Serial.println(httpsGet(url));
+  }
+}`;
+const P4_PY = String.raw`# P4 - IoT Logger: DHT22 + LDR -> Google Sheets every 30 s (Pico W)
+import network, time, dht
+import urequests as requests
+from machine import Pin, ADC
+
+# ---------- EDIT THESE ----------
+WIFI_SSID  = "YOUR_WIFI"
+WIFI_PASS  = "YOUR_PASSWORD"
+SCRIPT_URL = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec"
+API_KEY    = "change-me-123"
+DEVICE_ID  = "team1-picow"
+SEND_EVERY_S = 30
+# --------------------------------
+
+ldr = ADC(26)
+sensor = dht.DHT22(Pin(15))
+wlan = network.WLAN(network.STA_IF)
+
+def connect_wifi():
+    if wlan.isconnected():
+        return True
+    wlan.active(True)
+    wlan.connect(WIFI_SSID, WIFI_PASS)
+    for _ in range(40):                       # wait up to 20 s
+        if wlan.isconnected():
+            print("Connected:", wlan.ifconfig()[0])
+            return True
+        time.sleep(0.5)
+    print("Wi-Fi failed")
+    return False
+
+def https_get(url):
+    try:
+        r = requests.get(url)                 # follows Google's redirect
+        text = r.text.strip()
+        r.close()
+        return text
+    except Exception as e:
+        return "ERR:" + str(e)
+
+while True:
+    if connect_wifi():
+        try:
+            sensor.measure()
+            t, h = sensor.temperature(), sensor.humidity()
+            light = ldr.read_u16() / 65535 * 100
+            url = "{}?key={}&device_id={}&temp_C={:.1f}&hum_pct={:.1f}&light_pct={:.1f}".format(
+                SCRIPT_URL, API_KEY, DEVICE_ID, t, h, light)
+            print("Reply:", https_get(url))
+        except OSError:
+            print("Sensor read failed")
+    time.sleep(SEND_EVERY_S)`;
+
+const M21 = {id:"2.1", title:"Networks, HTTP, JSON, and JavaScript basics", minutes:90,
+ rating:["I can name the parts of a URL only with notes.","I can build a request URL and explain most status codes.","I can explain a request and reply and read JSON on my own.","I can explain HTTP and JSON to a classmate and spot errors in a URL."],
+ objectives:["Explain how a device joins a network and talks to a server as a client (U2-O1).","Identify the parts of a URL, including the endpoint and query string (U2-O1).","Describe an HTTP request and reply, including GET vs. POST and common status codes (U2-O1).","Read a JSON reply and find keys and values (U2-O1).","Read and write basic JavaScript: const and let, objects, arrays, forEach, map, filter, and template strings."],
+ sections:[
+  {id:"hook", title:"Hook: how does a reading reach a spreadsheet?", html:`
+   <p>In Unit 1 your board printed readings to the Serial Monitor, and you copied them into Google Sheets by hand. By the end of this unit, your board will send every reading to your own Google Sheet <b>by itself</b>, every 30 seconds, from anywhere with Wi-Fi.</p>
+   <p>To get there you need to understand the language devices use to talk across the internet. It is the same language your browser uses every time you open a website.</p>
+   ${tryit(`<p><b>Predict first:</b> when you type a website address and press Enter, what do you think your browser sends, and what comes back? Write two sentences before reading on.</p>`)}`},
+  {id:"network", title:"Networks, IP addresses, clients, and servers", html:`
+   <p>A <b>network</b> is a group of devices that can send messages to each other. Your board joins a <b>Wi-Fi network</b> just like a phone: it needs the network name (<b>SSID</b>) and the password.</p>
+   <table class="t"><tr><th>Term</th><th>Meaning</th><th>In our system</th></tr>
+   <tr><td><b>IP address</b></td><td>A number that identifies a device on a network, like a house address</td><td>Your board gets one when it joins Wi-Fi, for example 192.168.1.42</td></tr>
+   <tr><td><b>Router</b></td><td>The box (or phone hotspot) that connects the local network to the internet</td><td>The classroom Wi-Fi or your phone hotspot</td></tr>
+   <tr><td><b>Client</b></td><td>The device that <i>asks</i> for something</td><td>Your board (and your browser)</td></tr>
+   <tr><td><b>Server</b></td><td>The computer that <i>answers</i></td><td>Google's servers running your Apps Script</td></tr>
+   <tr><td><b>Domain name</b></td><td>A human-friendly name for a server</td><td>script.google.com</td></tr></table>
+   <p>The pattern is always the same: the <b>client sends a request</b>, and the <b>server sends a response</b>. The server never contacts your board first; your board must ask.</p>
+   ${mis(`<p><b>Many boards only use 2.4 GHz Wi-Fi.</b> The ESP32, ESP8266, Pico W, and Uno R4 WiFi cannot join 5 GHz-only networks. If your board never connects, check that the network (or your phone hotspot) offers 2.4 GHz. School networks that need a login page in a browser (captive portals) also do not work with boards.</p>`)}
+   ${srcs([["MDN: overview of HTTP", REF.mdnHttp[1]]])}`},
+  {id:"url", title:"Anatomy of a URL and the query string", html:`
+   <p>A <b>URL</b> (uniform resource locator) tells the client exactly where to send a request and what to include. Here is the kind of URL your board will send:</p>
+   <pre class="code url-ex"><span class="u-proto">https://</span><span class="u-host">script.google.com</span><span class="u-path">/macros/s/AKfy.../exec</span><span class="u-q">?key=team3-secret&amp;device_id=team3-esp32&amp;temp_C=29.4&amp;hum_pct=70</span></pre>
+   <table class="t"><tr><th>Part</th><th>Example</th><th>What it does</th></tr>
+   <tr><td><b>Protocol</b></td><td>https://</td><td>How to talk: HTTPS means HTTP with encryption</td></tr>
+   <tr><td><b>Host (domain)</b></td><td>script.google.com</td><td>Which server to contact</td></tr>
+   <tr><td><b>Path</b></td><td>/macros/s/AKfy.../exec</td><td>Which program on that server; together with the host, this is the <b>endpoint</b></td></tr>
+   <tr><td><b>Query string</b></td><td>?key=...&amp;temp_C=29.4</td><td>Extra data sent with the request, as <b>key=value</b> pairs</td></tr></table>
+   <p>The query string starts with <b>?</b>, and each pair is separated by <b>&amp;</b>. In our course, every reading follows a simple <b>data contract</b>: the parameter name is <code>sensor_unit</code>, so <code>temp_C=29.4</code> means sensor <i>temp</i>, unit <i>C</i>, value <i>29.4</i>. The server splits each name at the underscore and saves one tidy row per reading.</p>
+   ${mis(`<ul><li><b>Spaces and special characters:</b> URLs cannot contain spaces. Use device IDs like <code>team3-esp32</code>, never <code>team 3</code>.</li><li><b>Forgetting the ?</b> before the first pair, or using ? again instead of &amp; for later pairs.</li><li><b>Wrong naming:</b> <code>temperature=29.4</code> has no unit, so it breaks the contract. Write <code>temp_C=29.4</code>.</li></ul>`)}
+   <p>Build your own request below and watch it turn into rows.</p>`, interactive:"urlparts"},
+  {id:"http", title:"HTTP: requests, replies, and status codes", html:`
+   <p><b>HTTP</b> (Hypertext Transfer Protocol) is the set of rules for requests and replies on the web. Think of it as sending a <b>letter</b>: the URL is the address, the query string is a form filled in on the letter, and the server mails back a <b>reply card</b>.</p>
+   <table class="t"><tr><th>Method</th><th>Use</th><th>In this course</th></tr><tr><td><b>GET</b></td><td>Ask for something; data rides in the URL</td><td>Our boards send readings with GET because it is simple and works on every board</td></tr><tr><td><b>POST</b></td><td>Send data in the request body, not the URL</td><td>Better for large or private data; used by professional systems</td></tr></table>
+   <p>Every reply starts with a <b>status code</b>, a three-digit number that says what happened:</p>
+   <table class="t"><tr><th>Code</th><th>Meaning</th><th>When you might see it</th></tr>
+   <tr><td><b>200 OK</b></td><td>Success</td><td>The script ran and replied</td></tr>
+   <tr><td><b>302 Found</b></td><td>Redirect: \u201cyour reply is at this other address\u201d</td><td>Apps Script always answers the first request with a 302 to a second address that holds the reply text</td></tr>
+   <tr><td><b>401 / 403</b></td><td>Not authorized / forbidden</td><td>The web app is not shared with \u201cAnyone,\u201d or a login is required</td></tr>
+   <tr><td><b>404 Not Found</b></td><td>No such page</td><td>A typo in the URL, or a deleted deployment</td></tr>
+   <tr><td><b>500</b></td><td>Server error</td><td>A bug in the script crashed while running</td></tr></table>
+   <p>Codes in the 200s mean success, 300s mean \u201clook elsewhere,\u201d 400s mean the client made a mistake, and 500s mean the server failed.</p>
+   ${ex("reading a reply", `<p>Your board prints <code>Reply: ERR:key</code>. The status was 200 (the script ran fine), but the script's own message says the key did not match. Fix: check that API_KEY on the board matches the key in Script properties exactly, including capitals.</p>`)}
+   <p>Send letters in the explainer below and watch what comes back in each situation.</p>
+   ${srcs([["MDN: HTTP status codes", REF.mdnStatus[1]],["RFC 9110: HTTP semantics", REF.rfc9110[1]]])}`, interactive:"httpletter"},
+  {id:"json", title:"JSON: data the way programs like it", html:`
+   <p>Many servers reply with <b>JSON</b> (JavaScript Object Notation), a text format for structured data that almost every programming language can read.</p>
+   ${code("json", '{\n  "latitude": 14.6,\n  "longitude": 121.0,\n  "current": {\n    "time": "2026-10-05T09:30",\n    "temperature_2m": 31.2,\n    "relative_humidity_2m": 68\n  },\n  "current_units": {\n    "temperature_2m": "\\u00b0C",\n    "relative_humidity_2m": "%"\n  }\n}', "A simplified weather reply in JSON")}
+   <table class="t"><tr><th>JSON part</th><th>Looks like</th><th>Meaning</th></tr><tr><td>Object</td><td><code>{ ... }</code></td><td>A set of key\u2013value pairs</td></tr><tr><td>Key</td><td><code>"temperature_2m"</code></td><td>A name, always in double quotes</td></tr><tr><td>Value</td><td><code>31.2</code>, <code>"\u00b0C"</code>, <code>true</code>, <code>{...}</code>, <code>[...]</code></td><td>A number, text, true/false, another object, or a list (array)</td></tr><tr><td>Path</td><td><code>current.temperature_2m</code></td><td>How to reach a value inside nested objects</td></tr></table>
+   <h3>Activity: read a real weather API</h3>
+   <ol><li>Open this link in a new tab: <a href="https://api.open-meteo.com/v1/forecast?latitude=14.6&longitude=121.0&current=temperature_2m,relative_humidity_2m" target="_blank" rel="noopener">Open-Meteo current weather for Metro Manila</a>.</li><li>Your browser shows JSON. Find the current temperature, the humidity, and the time.</li><li>Look at the URL: which query parameters set the location, and which choose the data?</li><li>Change the latitude and longitude to your town and reload.</li></ol>
+   <p class="explain">Open-Meteo is a free weather service that needs no account or key, which makes it ideal for practice.</p>
+   ${mis(`<ul><li>Keys and text values need <b>double quotes</b>: <code>'temp'</code> is not valid JSON.</li><li>No comma after the last item: <code>{"a": 1,}</code> is invalid.</li></ul>`)}
+   <p>Explore the JSON below: tap any key to see its path and value.</p>
+   ${srcs([["MDN: working with JSON", REF.mdnJson[1]],["RFC 8259: JSON", REF.rfc8259[1]],["Open-Meteo API docs", REF.openMeteo[1]]])}`, interactive:"jsonx"},
+  {id:"jsbasics", title:"JavaScript basics for Apps Script", html:`
+   <p>Your cloud logger runs on <b>Google Apps Script</b>, which uses <b>JavaScript</b>. You already know the big ideas from C++ and Python (variables, decisions, loops, functions); here is how they look in JavaScript.</p>
+   <table class="t"><tr><th>Idea</th><th>JavaScript</th><th>C++ / Python you know</th></tr>
+   <tr><td>Constant</td><td><code>const DATA_SHEET = 'Data';</code></td><td><code>const</code> in C++; ALL CAPS in Python</td></tr>
+   <tr><td>Variable that changes</td><td><code>let count = 0;</code></td><td><code>int count = 0;</code> / <code>count = 0</code></td></tr>
+   <tr><td>Text</td><td><code>'Data'</code> or <code>"Data"</code></td><td>Same</td></tr>
+   <tr><td>Array (list)</td><td><code>const rows = [];</code> then <code>rows.push(x)</code></td><td>Python list and <code>append</code></td></tr>
+   <tr><td>Object (named fields)</td><td><code>const r = {sensor:'temp', value:29.4};</code> then <code>r.value</code></td><td>Like a Python dictionary</td></tr>
+   <tr><td>Function</td><td><code>function add(a, b) { return a + b; }</code></td><td>Same idea as C++ and <code>def</code></td></tr>
+   <tr><td>Arrow function</td><td><code>x =&gt; x * 2</code></td><td>A short, unnamed function</td></tr>
+   <tr><td>Template string</td><td><code>\`OK:\${rows.length}\`</code></td><td>Like Python's <code>format</code></td></tr>
+   <tr><td>Strict comparison</td><td><code>===</code> and <code>!==</code></td><td>Like <code>==</code> and <code>!=</code>, but the type must match too</td></tr></table>
+   <h3>Working with arrays: forEach, map, filter</h3>
+   ${code("javascript", "const temps = [29.4, 30.1, 85.0, 29.9];\n\ntemps.forEach(t => Logger.log(t));          // do something with each item\nconst f = temps.map(t => t * 9 / 5 + 32);    // make a NEW array: [84.9, 86.2, 185, 85.8]\nconst ok = temps.filter(t => t < 80);        // keep only some items: [29.4, 30.1, 29.9]", "Three ways to work through an array")}
+   <p><b>forEach</b> runs code for every item. <b>map</b> builds a new array by changing every item. <b>filter</b> builds a new array with only the items that pass a test. P3 uses all three ideas.</p>
+   <h3>try ... finally</h3>
+   <p><code>try { ... } finally { ... }</code> means \u201cdo this, and <i>whatever happens</i>, then do that.\u201d P3 uses it to always release the lock, even if writing to the Sheet fails.</p>
+   ${mis(`<ul><li>Using <code>=</code> instead of <code>===</code> in a condition.</li><li>Changing a <code>const</code>: <code>const n = 1; n = 2;</code> causes an error. Use <code>let</code> for values that change.</li><li>Template strings need <b>backticks</b> (\` \`), not quotes.</li></ul>`)}
+   ${srcs([["MDN: JavaScript guide", REF.mdnJs[1]]])}`},
+  {id:"jsdrill", title:"Drill: HTTP, JSON, and JavaScript", html:`<p>Check your understanding. Each answer explains why.</p>`, interactive:"drill:u21"}
+ ],
+ quiz:[
+  {q:"In the URL ...exec?key=abc&device_id=t3&temp_C=29.4, what is the query string?", o:["https://script.google.com","/macros/s/.../exec","?key=abc&device_id=t3&temp_C=29.4","temp_C"], a:2, e:"The query string starts at ? and holds key=value pairs separated by &.", w:["That is the protocol and host.","That is the path; with the host it forms the endpoint.","","temp_C is one parameter name inside the query string."]},
+  {q:"Following the course data contract, which parameter correctly sends humidity of 70 %?", o:["humidity=70","hum_pct=70","hum=70%","pct_hum=70"], a:1, e:"Names are sensor_unit, so the server can split them into sensor and unit columns.", w:["No unit, so the unit column would be empty.","","% is a special character in URLs and the unit is missing from the name.","The order is sensor first, then unit."]},
+  {q:"What does a 302 status code mean?", o:["Success","The reply is at another address (redirect)","Not authorized","Server error"], a:1, e:"Apps Script answers the first request with a 302 that points to the address holding the reply text.", w:["Success is 200.","","Not authorized is 401 or 403.","Server errors are in the 500s."]},
+  {q:"In this JSON, how do you reach the temperature? {\"current\": {\"temperature_2m\": 31.2}}", o:["temperature_2m.current","current.temperature_2m","current[31.2]","temperature_2m"], a:1, e:"Start at the outer object, then go into nested keys with a dot.", w:["The order is reversed.","","31.2 is the value, not a key.","temperature_2m is inside current, so you need the full path."]},
+  {q:"What does [29.4, 85.0, 29.9].filter(t => t < 80) return?", o:["[29.4, 85.0, 29.9]","[85.0]","[29.4, 29.9]","true"], a:2, e:"filter keeps only the items for which the test is true.", w:["filter removes items that fail the test.","That would be the items that are 80 or more.","","filter returns an array, not true or false."]}],
+ checkpoint:{code:"U2-O1", task:"Annotate a sample request URL and a sample reply.", met:"4 of 4 parts named correctly: endpoint, key, parameters, and status or reply.", upload:"Upload a photo or screenshot of your annotated URL and reply."},
+ refs:["mdnHttp","mdnStatus","rfc9110","mdnJson","rfc8259","openMeteo","mdnJs"]};
+
+const P3_WALK = [
+ ["const DATA_SHEET = 'Data';","Tab names stored once as constants, so renaming a tab means editing one line."],
+ ["const RESERVED = ['key', 'action', 'device_id', 'n'];","An array of control parameters that must not be saved as sensor readings."],
+ ["function setupSheets() {","Run once by hand: creates the Data and Commands tabs with header rows and stores the API key."],
+ ["ss.getSheetByName(DATA_SHEET) || ss.insertSheet(DATA_SHEET)","Use the tab if it exists; || (OR) falls back to creating it when the first call returns null."],
+ ["d.getRange(1, 1, 1, 5).setValues([[...]])","getRange(row, column, numRows, numColumns) selects A1:E1. setValues takes a 2-D array: a list of rows, each a list of cells."],
+ ["PropertiesService...setProperty('API_KEY', ...)","Keeps the key in Script properties, outside the code, so sharing the code does not reveal the key."],
+ ["function doGet(e) {","Apps Script runs this for every HTTP GET request. e.parameter holds the query-string values."],
+ ["if (p.key !== key) return text_('ERR:key');","Authentication with a guard clause: wrong key, stop immediately. !== is strict \u201cnot equal.\u201d"],
+ ["const action = p.action || 'log';","Default action is log, so devices can send short URLs."],
+ ["if (action === 'log') return logReadings_(p);","A router: each action goes to its own handler function."],
+ ["const now = new Date();","One server timestamp for every reading in this request, so readings line up exactly."],
+ ["Object.keys(p).forEach(k => { ... })","Loops through every parameter name with an arrow function."],
+ ["const parts = k.split('_');","The data contract in action: temp_C becomes ['temp', 'C']."],
+ ["if (!isNaN(value)) rows.push([...]);","Validation at the door: only real numbers become rows."],
+ ["lock.waitLock(10000);","Waits up to 10 s so that only one request writes at a time; two devices can never overwrite each other's rows."],
+ ["try { ... } finally { lock.releaseLock(); }","finally always runs, so the lock is released even if writing fails."],
+ ["sh.getRange(sh.getLastRow() + 1, 1, rows.length, 5).setValues(rows);","Writes all rows in one batch below the last row: one write is far faster than many."],
+ ["return text_('OK:' + rows.length);","Replies with how many rows were saved, for example OK:3."],
+ ["function getCommand_ / latest_","Used later in Unit 4 for two-way control and the dashboard. Names ending in _ are private: they cannot be called from the browser."]];
+const M22 = {id:"2.2", title:"Build the Apps Script logger", minutes:120,
+ rating:["I followed the steps but cannot explain how the logger works yet.","I deployed the web app and got OK in a browser test.","I can explain doGet, the key check, LockService, and why I redeploy a new version.","I completed the Extension (range check) and can help another team deploy."],
+ objectives:["Explain how doGet(e) receives a request and what e.parameter contains (U2-O2).","Deploy an Apps Script web app with the right access settings, and test it from a browser (U2-O2).","Explain why every code change needs a new deployment version (U2-O2).","Explain how P3 authenticates, validates, and stores readings in tidy format, and why it uses LockService and Script properties (U2-O2)."],
+ sections:[
+  {id:"why", title:"What we are building: a web API for your Sheet", html:`
+   <p>Your board cannot write to a Google Sheet directly. Instead, you will put a small program in front of the Sheet: a <b>web app</b> written in Google Apps Script. Your board sends readings to the web app's URL; the web app checks them and writes tidy rows into the Sheet. A program that receives requests and replies like this is called a <b>web API</b>.</p>
+   ${fig(`<svg viewBox="0 0 640 150" role="img" aria-label="Board to web app to Sheet"><defs><marker id="ah21" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#5B6B7F"/></marker></defs>${[["Board","sends a request","#2A9D8F"],["Apps Script web app","checks key and values","#1F3A5F"],["Google Sheet","Data tab: tidy rows","#C9A227"]].map((b,i)=>`<rect x="${10+i*215}" y="30" width="190" height="70" rx="12" fill="${b[2]}"/><text x="${105+i*215}" y="60" text-anchor="middle" fill="#fff" font-weight="700" font-size="14">${b[0]}</text><text x="${105+i*215}" y="82" text-anchor="middle" fill="#fff" font-size="11">${b[1]}</text>${i<2?`<path d="M${202+i*215} 65 H${222+i*215}" stroke="#5B6B7F" stroke-width="2.5" marker-end="url(#ah21)"/>`:""}`).join("")}<text x="320" y="130" text-anchor="middle" font-size="11" fill="currentColor">The reply (for example OK:3) travels back to the board.</text></svg>`, "Figure 2.2.1. The web app sits between your board and your Sheet.")}
+   <p>The Data tab uses a <b>tidy</b> layout: one row per reading, with five columns: <code>timestamp | device_id | sensor | value | unit</code>. Any board, team, or new sensor can join without changing the layout.</p>`},
+  {id:"build", title:"Guided build: create and deploy your web app", html:`
+   <ol><li>Create a new Google Sheet in your course folder, named for example <code>Team3 IoT Log</code>.</li>
+   <li>Open <b>Extensions \u2192 Apps Script</b>. Delete the starter code and paste Program P3 (next section).</li>
+   <li>In <code>setupSheets</code>, change <code>'change-me-123'</code> to your team's own secret key, for example <code>t3-mango-48</code>. Do not reuse a real password.</li>
+   <li>Choose <code>setupSheets</code> in the toolbar and click <b>Run</b>. Google asks you to approve permissions (because the script edits your Sheet): choose your account, then <b>Advanced \u2192 Go to project</b> and <b>Allow</b>. The <b>Data</b> and <b>Commands</b> tabs appear.</li>
+   <li>Click <b>Deploy \u2192 New deployment</b>. Choose type <b>Web app</b>. Set <b>Execute as: Me</b> and <b>Who has access: Anyone</b>. Click <b>Deploy</b> and copy the URL that ends in <code>/exec</code>.</li>
+   <li><b>Test from your browser:</b> paste <code>YOUR_URL?key=YOUR_KEY&amp;device_id=browser-test&amp;temp_C=25&amp;hum_pct=60</code>. The page should show <code>OK:2</code>, and two rows should appear in the Data tab.</li></ol>
+   ${tip("Why \u201cAnyone\u201d?", `<p>Your board cannot sign in to Google, so the web app must accept requests without a login. That is why P3 checks a <b>secret key</b> instead: anyone may knock, but only requests with the right key are saved. Keep the URL and key private; never post them online.</p>`)}
+   ${mis(`<ul><li><b>Using the editor's test URL</b> (ending in <code>/dev</code>): only you can use it. Devices need the <code>/exec</code> URL.</li><li><b>ERR:key:</b> the key in the URL does not exactly match the key you stored (check capitals and spaces).</li><li><b>No rows appear:</b> you ran <code>setupSheets</code> in a different Sheet's script, or the tab is not named exactly <code>Data</code>.</li></ul>`)}
+   <p>Practice the browser test in the simulator below before trying your real web app.</p>
+   ${srcs([["Apps Script: web apps", REF.gasWeb[1]]])}`, interactive:"logsim"},
+  {id:"p3", title:"Program P3: the Apps Script backend", html:`
+   <p>Paste this whole program into the Apps Script editor. It follows a common professional structure: <b>settings \u2192 entry point (router) \u2192 one function per action \u2192 small helpers</b>.</p>
+   ${code("javascript", P3_SRC, "Program P3 - Code.gs (Google Apps Script)")}
+   <h3>Line-by-line walkthrough</h3>
+   <table class="t"><tr><th>Code</th><th>What it does and why</th></tr>${P3_WALK.map(r => `<tr><td><code>${esc(r[0])}</code></td><td>${esc(r[1])}</td></tr>`).join("")}</table>
+   ${ex("following one request", `<p>Your board sends <code>?key=t3-mango-48&amp;device_id=t3-esp32&amp;temp_C=29.4&amp;hum_pct=70</code>. <code>doGet</code> checks the key (match), chooses <i>log</i>, and <code>logReadings_</code> skips <code>key</code> and <code>device_id</code> (reserved). <code>temp_C</code> becomes the row <i>[now, t3-esp32, temp, 29.4, C]</i> and <code>hum_pct</code> becomes <i>[now, t3-esp32, hum, 70, pct]</i>. Both rows are written in one batch, and the reply is <code>OK:2</code>.</p>`)}
+   ${srcs([["Apps Script: web apps", REF.gasWeb[1]],["LockService", REF.gasLock[1]],["Properties service", REF.gasProps[1]],["Content service", REF.gasContent[1]]])}`},
+  {id:"deploy", title:"Deployments and versions: why your edit \u201cdid nothing\u201d", html:`
+   <p>This is the most common Apps Script surprise. A deployment does not run \u201cthe latest code\u201d: it runs a <b>fixed version</b> of the code, frozen when you deployed. Saving new code changes the editor, but the URL keeps running the old version.</p>
+   <p><b>To publish an edit:</b> <b>Deploy \u2192 Manage deployments \u2192</b> the pencil (Edit) icon <b>\u2192 Version: New version \u2192 Deploy</b>. The URL stays the same, so your boards keep working.</p>
+   ${mis(`<p><b>Clicking \u201cNew deployment\u201d again</b> creates a <i>different</i> URL. Your boards still use the old one. Always edit the existing deployment and choose a new version.</p>`)}
+   <p>Try it in the deployment simulator: change the reply text, test, then publish a new version and test again.</p>
+   ${srcs([["Apps Script: deployments", REF.gasDeploy[1]]])}`, interactive:"deploylab"},
+  {id:"why2", title:"Three professional habits inside P3", html:`
+   <table class="t"><tr><th>Habit</th><th>In P3</th><th>Why it matters</th></tr>
+   <tr><td><b>Keep secrets out of code</b></td><td>The key lives in Script properties (PropertiesService)</td><td>You can share or screenshot the code without leaking the key</td></tr>
+   <tr><td><b>One writer at a time</b></td><td>LockService waits until no other request is writing</td><td>With 15 devices, two requests can arrive in the same moment; without a lock, one could overwrite the other's rows</td></tr>
+   <tr><td><b>Validate at the door</b></td><td>Wrong key \u2192 ERR:key; non-numbers skipped; no readings \u2192 ERR:no-readings</td><td>Bad data is easier to stop at ingestion than to clean later</td></tr></table>
+   <p>The Data tab is your <b>raw (bronze) layer</b>: append-only. Nobody edits or deletes rows by hand; cleaning happens later, in Unit 3, on a copy.</p>`},
+  {id:"challenges", title:"Challenges", html:`
+   <ul><li><b>Core:</b> send 3 test readings from the browser with 3 different sensor names (for example temp_C, hum_pct, light_pct). <b>Success check:</b> 3 different sensor names appear in column C. You can practice this in the simulator above first.</li>
+   <li><b>Extension:</b> add validation that rejects temperatures outside \u221240 to 80 \u00b0C and replies <code>ERR:range</code>. <b>Success check:</b> one valid and one invalid browser test give different replies. (Remember: new version!)</li></ul>
+   ${tip("Plan before you code (Extension)", `<ol><li><b>Ask:</b> where in P3 is each reading checked?</li><li><b>Plan:</b> inside the forEach, if the sensor is temp and the value is below \u221240 or above 80, remember that something is out of range.</li><li><b>Create:</b> after the loop, if anything was out of range, return <code>text_('ERR:range')</code> before writing.</li><li><b>Test:</b> send temp_C=25 and temp_C=200, and compare the replies.</li></ol>`)}`},
+  {id:"drill", title:"Drill: the Apps Script logger", html:`<p>Check your understanding before connecting your board.</p>`, interactive:"drill:u22"}
+ ],
+ quiz:[
+  {q:"Which function does Apps Script run when a device sends an HTTP GET request to the web app?", o:["setupSheets()","doGet(e)","logReadings_(p)","main()"], a:1, e:"doGet(e) is the entry point for every GET request; e.parameter holds the query values.", w:["setupSheets is run once by hand from the editor.","","logReadings_ is called by doGet, not by Apps Script directly.","Apps Script web apps do not use main()."]},
+  {q:"You edited P3 and saved, but the web app still behaves the old way. What is missing?", o:["Running setupSheets again","Deploying a new version of the existing deployment","Clearing the browser cache","Renaming the Data tab"], a:1, e:"A deployment runs a fixed version; edit the deployment and choose New version to publish changes at the same URL.", w:["setupSheets only creates tabs and stores the key.","","The server is still running the old version, whatever the browser does.","Renaming the tab would break logging."]},
+  {q:"Why does P3 use LockService?", o:["To encrypt the data","So only one request writes at a time and rows are never overwritten","To hide the API key","To make requests faster"], a:1, e:"With many devices, two writes could land on the same row; the lock makes them take turns.", w:["HTTPS encrypts the data in transit.","","Script properties hide the key.","Waiting for the lock can actually make a request slightly slower."]},
+  {q:"A browser test returns ERR:key. What is the most likely cause?", o:["The Sheet is full","The key in the URL does not exactly match the stored key","The board is offline","The value is not a number"], a:1, e:"P3 compares the key first and stops with ERR:key on any mismatch, including capitals and spaces.", w:["A full Sheet would cause a different error.","","A browser test does not involve the board.","Non-numbers are skipped later; the key is checked first."]},
+  {q:"Why is \u201cWho has access\u201d set to Anyone?", o:["So anyone can edit the Sheet","Because boards cannot sign in to Google; the secret key protects the logger instead","To make the Sheet public","It is required for the editor to work"], a:1, e:"Anyone can send a request, but only requests with the right key are saved, and the Sheet itself stays private.", w:["Access to the web app does not give access to edit the Sheet.","","The Sheet stays private; only the web app accepts requests.","The editor works with any access setting."]}],
+ checkpoint:{code:"U2-O2", task:"Browser test of your team's web app, then make one code edit and redeploy a new version.", met:"OK:2 reply, 2 tidy rows, and the edit takes effect at the same URL.", upload:"Upload a screenshot of your OK reply and the new rows in the Data tab."},
+ refs:["gasWeb","gasDeploy","gasLock","gasProps","gasContent","mdnJs"]};
+
+const P4_WALK = [
+ ["#if defined(ESP32) ... #elif defined(ESP8266) ... #else","One sketch for three boards: the compiler keeps only the block for the board you selected (includes, pins, and ADC maximum)."],
+ ["// ---------- EDIT THESE ----------","The only five lines each team changes: Wi-Fi name and password, the /exec URL, the API key, and a unique DEVICE_ID."],
+ ["void connectWiFi() {","Joins Wi-Fi. The first line returns at once if already connected, so calling it before every send doubles as automatic reconnection."],
+ ["while (... && millis() - start < 20000)","Waits for Wi-Fi, but never longer than 20 s: a timeout keeps the board from hanging forever."],
+ ["String httpsGet(String url) {","One function hides the differences between boards (an abstraction). The rest of the sketch just calls httpsGet(url)."],
+ ["client.setInsecure();","Encrypts the connection but skips checking Google's certificate: a classroom shortcut, revisited in Unit 4 (security)."],
+ ["http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);","Follows Apps Script's 302 redirect automatically to fetch the reply text."],
+ ["int code = http.GET();","Sends the request. A positive number is the HTTP status; a negative number means the connection failed."],
+ ["for (int hop = 0; hop < 3; hop++) {  (Uno R4 WiFi)","The R4's client does not follow redirects, so the code follows them itself, at most 3 times."],
+ ["if (firstSend || millis() - lastSend >= SEND_EVERY_MS)","Sends once at start-up, then every 30 s, with the non-blocking timer from Module 1.3."],
+ ["if (isnan(t) || isnan(h)) { ... return; }","Skips a failed DHT22 reading instead of sending bad data."],
+ ["String url = SCRIPT_URL + \"?key=\" + API_KEY + ...","Builds the request following the data contract: temp_C, hum_pct, light_pct."],
+ ["Serial.println(httpsGet(url));","Sends and prints the reply: OK:3 means 3 rows were saved."]];
+const M23 = {id:"2.3", title:"Device to cloud", minutes:150,
+ rating:["My board connects to Wi-Fi, but readings do not arrive yet.","Readings arrive in my Sheet every 30 seconds.","I can explain each part of P4 and fix common errors from the reply.","I completed the Extension and can help another team debug."],
+ objectives:["Connect a board to Wi-Fi with a timeout (U2-O3).","Build a request URL from sensor readings that follows the data contract (U2-O3).","Send readings to the web app every 30 seconds and read the reply (U2-O3).","Explain the Apps Script redirect and troubleshoot common logging errors (U2-O3)."],
+ sections:[
+  {id:"journey", title:"The journey of one reading", html:`
+   <p>Every 30 seconds your board will: read its sensors, build a URL, send an HTTPS GET request, follow a redirect, and print the reply. Watch the whole trip below, step by step.</p>
+   <p>Notice the <b>redirect</b>: Google's server saves your rows on the first request, then answers \u201c302: your reply is at this other address.\u201d The board knocks on the second address to collect the reply text <code>OK:3</code>.</p>`, interactive:"knock"},
+  {id:"wifi", title:"Joining Wi-Fi safely", html:`
+   <p>Before sending anything, the board must join Wi-Fi. A careful program does three things:</p>
+   <ol><li><b>Checks first:</b> if already connected, it does nothing.</li><li><b>Waits with a timeout:</b> it tries for up to 20 seconds, then gives up for now instead of freezing.</li><li><b>Tries again later:</b> because <code>connectWiFi()</code> runs before every send, a dropped connection is repaired automatically.</li></ol>
+   ${code("cpp", 'void connectWiFi() {\n  if (WiFi.status() == WL_CONNECTED) return;      // 1. already connected\n  WiFi.begin(WIFI_SSID, WIFI_PASS);\n  unsigned long start = millis();\n  while (WiFi.status() != WL_CONNECTED && millis() - start < 20000) {   // 2. timeout\n    delay(500);\n  }\n}', "Wi-Fi with a timeout (Arduino C++)")}
+   ${code("python", 'def connect_wifi():\n    if wlan.isconnected():          # 1. already connected\n        return True\n    wlan.active(True)\n    wlan.connect(WIFI_SSID, WIFI_PASS)\n    for _ in range(40):             # 2. up to 40 x 0.5 s = 20 s\n        if wlan.isconnected():\n            return True\n        time.sleep(0.5)\n    return False', "Wi-Fi with a timeout (MicroPython)")}
+   ${mis(`<ul><li>The network is 5 GHz-only, or needs a browser login page: boards cannot join these.</li><li>A typo in the SSID or password (they are case-sensitive).</li><li>A phone hotspot that turned itself off to save battery.</li></ul>`)}
+   ${srcs([["Raspberry Pi: Pico W networking", REF.picowNet[1]],["Arduino-ESP32: Wi-Fi API", REF.espHttp[1]],["MicroPython: network", REF.mpNetwork[1]]])}`},
+  {id:"build", title:"Guided build: Program P4", html:`
+   <ol><li>Open P4 for your board (below). Fill in the five values in the <b>EDIT THESE</b> block: Wi-Fi name, password, your <code>/exec</code> URL from Module 2.2, your API key, and a unique <code>DEVICE_ID</code> such as <code>team3-esp32</code>.</li>
+   <li>Upload P4 (Arduino IDE) or save it as <code>main.py</code> and run it (Thonny).</li>
+   <li>Open the Serial Monitor (115200 baud) or Shell. Wait for <code>connected!</code>, then <code>Reply: OK:3</code>.</li>
+   <li>Open your Sheet. Three new rows should appear every 30 seconds.</li></ol>
+   ${tip("Keep secrets out of shared code", `<p>Before sharing your code or a screenshot, replace the Wi-Fi password, URL, and key with placeholders. Treat them like passwords.</p>`)}
+   <div class="seg seg-sm p4tabs" role="tablist"><button role="tab" data-p4="cpp" aria-selected="true">Uno R4 WiFi, ESP32, ESP8266 (C++)</button><button role="tab" data-p4="py" aria-selected="false">Pico W (MicroPython)</button></div>
+   <div class="p4pane" data-p4p="cpp">${code("cpp", P4_CPP, "Program P4 - IoT logger (Arduino C++)")}</div>
+   <div class="p4pane" data-p4p="py" hidden>${code("python", P4_PY, "Program P4 - IoT logger (MicroPython)")}</div>
+   <h3>Walkthrough: the C++ version</h3>
+   <table class="t"><tr><th>Code</th><th>What it does and why</th></tr>${P4_WALK.map(r => `<tr><td><code>${esc(r[0])}</code></td><td>${esc(r[1])}</td></tr>`).join("")}</table>
+   <h3>The MicroPython version in brief</h3>
+   <p>It has the same parts: <code>connect_wifi()</code> with a 20-second limit, <code>https_get()</code>, which uses <code>urequests</code> (it follows the redirect for you) and always calls <code>r.close()</code> to free the Pico W's small memory, and a main loop that reads sensors, builds the URL with <code>format</code>, prints the reply, and sleeps 30 seconds. <code>try/except</code> makes sure one failed request or sensor read never crashes the logger.</p>
+   ${srcs([["Arduino: UNO R4 WiFi network examples", REF.arduinoWifiS3[1]],["Raspberry Pi: Pico W networking", REF.picowNet[1]]])}`},
+  {id:"reply", title:"Reading the reply and troubleshooting", html:`
+   <table class="t"><tr><th>Reply or symptom</th><th>Most likely cause</th><th>Fix</th></tr>
+   <tr><td>Stuck at \u201cConnecting to Wi-Fi\u2026\u201d</td><td>Wrong SSID/password, 5 GHz network, or captive portal</td><td>Use a 2.4 GHz hotspot; retype the credentials</td></tr>
+   <tr><td><code>ERR:key</code></td><td>Key on the board differs from Script properties</td><td>Copy the key exactly; check capitals</td></tr>
+   <tr><td><code>ERR:no-readings</code></td><td>Parameter names lack the <code>sensor_unit</code> form, or values are not numbers</td><td>Print the URL and check it</td></tr>
+   <tr><td>A web page in HTML instead of OK</td><td>Access is not \u201cAnyone,\u201d or you used the /dev URL</td><td>Redeploy with access Anyone; use /exec</td></tr>
+   <tr><td><code>ERR:http -1</code> or <code>ERR:connect</code></td><td>No internet through this network, or HTTPS blocked</td><td>Test the URL in a phone browser on the same network</td></tr>
+   <tr><td>Error about the redirect, but rows appear</td><td>The rows were saved; only the reply text failed</td><td>Logging works; you can ignore it or update the board package</td></tr>
+   <tr><td>DHT read failed, skipping</td><td>Loose DHT22 wire</td><td>Recheck wiring from Module 1.3</td></tr></table>
+   ${ex("debugging step by step", `<p>Print the full URL just before sending (<code>Serial.println(url);</code>). Copy it from the Serial Monitor into a browser. If the browser shows OK:3, the server is fine and the problem is the board's connection. If the browser shows an error, fix the URL first. Splitting the problem in half like this finds bugs fast.</p>`)}`},
+  {id:"challenges", title:"Challenges", html:`
+   <ul><li><b>Core:</b> change the interval to 60 seconds and add <code>light_raw</code> (the raw ADC value) as a fourth reading. <b>Success check:</b> 4 rows per send in the Sheet. (Hint: the unit part is <code>raw</code>.)</li>
+   <li><b>Extension:</b> add the Wi-Fi signal strength as <code>rssi_dBm</code> using <code>WiFi.RSSI()</code> (C++) or <code>wlan.status('rssi')</code> (MicroPython). <b>Success check:</b> values between \u221230 and \u221290 appear.</li></ul>
+   <p>Practice building correct request URLs below before editing your board's code.</p>`, interactive:"reqbuilder"},
+  {id:"drill", title:"Drill: device to cloud", html:`<p>Check your understanding.</p>`, interactive:"drill:u23"}
+ ],
+ quiz:[
+  {q:"Why does connectWiFi() wait at most 20 seconds?", o:["Wi-Fi needs exactly 20 seconds","So the board never hangs forever if the network is down","To save the battery","Because Apps Script requires it"], a:1, e:"A timeout lets the program continue and try again later instead of freezing.", w:["Connecting usually takes a few seconds; 20 is only the limit.","","It helps a little, but the main reason is not hanging.","Apps Script never sees the Wi-Fi step."]},
+  {q:"What does the reply OK:3 mean?", o:["3 errors happened","3 rows were saved","The third attempt worked","Wi-Fi signal level 3"], a:1, e:"P3 replies with the number of rows it wrote.", w:["Errors start with ERR.","","P3 does not count attempts.","Signal strength is sent as rssi_dBm."]},
+  {q:"The board shows an error about the redirect, but new rows appear in the Sheet. What happened?", o:["Nothing was saved","Logging worked; only fetching the reply text failed","The key is wrong","The Sheet is broken"], a:1, e:"Apps Script saves on the first request; the redirect only delivers the reply text.", w:["The rows in the Sheet prove they were saved.","","A wrong key would save nothing.","The rows show the Sheet works."]},
+  {q:"Which DEVICE_ID is best?", o:["my board","team3-esp32","esp32","Team 3 ESP32!"], a:1, e:"Unique, no spaces or special characters, and it says who and which board.", w:["Spaces break URLs.","","Not unique: every ESP32 team might use it.","Spaces and ! break URLs."]},
+  {q:"Your board cannot connect to the school Wi-Fi, which opens a login page in browsers. What should you do?", o:["Type the password into the code","Use a 2.4 GHz phone hotspot or a network without a login page","Change the API key","Redeploy the web app"], a:1, e:"Boards cannot complete browser login pages (captive portals).", w:["The login page needs a browser; the board cannot fill it in.","","The key is unrelated to joining Wi-Fi.","The web app is unrelated to joining Wi-Fi."]}],
+ checkpoint:{code:"U2-O3", task:"Live logging demo.", met:"3 rows arrive per send for 3 consecutive sends with your team's device ID.", upload:"Upload a screenshot of the Serial Monitor replies and the matching rows in your Sheet."},
+ refs:["picowNet","arduinoWifiS3","espHttp","mpNetwork","gasWeb","mdnStatus"]};
+
+const M24 = {id:"2.4", title:"Reliability and good data habits", minutes:120,
+ rating:["I can name reliability features but have not tested them.","My logger recovers after an outage.","I can choose a safe send interval and explain my data dictionary.","I completed the buffer Extension or the Boss Challenge and can teach these ideas."],
+ objectives:["Add reliability features (timeouts, reconnection, reply checking, unique device IDs) and test them under failure (U2-O4).","Choose a send interval that a shared script can handle (U2-O4).","Write a data dictionary and explain the consequences of a schema change (U2-O5).","Debug a logging error with a Chain-of-Thought prompt, testing each AI hypothesis before accepting it (U2-O6)."],
+ sections:[
+  {id:"fail", title:"Things will fail: design for it", html:`
+   <p>Real IoT systems run for days or months. Wi-Fi drops, routers restart, phone hotspots switch off, and servers are briefly busy. A reliable logger does not avoid failure; it <b>recovers</b> from it without anyone pressing reset.</p>
+   <table class="t"><tr><th>Feature</th><th>What it does</th><th>In P4</th></tr>
+   <tr><td><b>Timeout</b></td><td>Never wait forever</td><td>20 s Wi-Fi limit; 10 s HTTP limit</td></tr>
+   <tr><td><b>Reconnection</b></td><td>Repair a dropped connection automatically</td><td><code>connectWiFi()</code> runs before every send</td></tr>
+   <tr><td><b>Reply checking</b></td><td>Know whether a send really worked</td><td>Check that the reply starts with <code>OK</code></td></tr>
+   <tr><td><b>Failure counter</b></td><td>Notice repeated problems</td><td>Count failed sends; restart Wi-Fi after several</td></tr>
+   <tr><td><b>Buffering</b></td><td>Keep readings while offline and send them later</td><td>Extension challenge</td></tr></table>
+   ${code("cpp", 'int failures = 0;\n...\nString reply = httpsGet(url);\nif (reply.startsWith("OK")) {\n  failures = 0;                      // success: reset the counter\n} else {\n  failures++;\n  Serial.println("Send failed (" + String(failures) + "): " + reply);\n  if (failures >= 3) { WiFi.disconnect(); failures = 0; }   // force a fresh connection next time\n}', "Checking the reply and counting failures (C++)")}
+   <p>Compare three firmware designs in the outage simulator below.</p>`, interactive:"outage"},
+  {id:"traffic", title:"Sharing one script: choosing a send interval", html:`
+   <p>When a whole class sends to scripts at once, each request takes time to run, and P3's lock lets only one request write at a time. Apps Script also limits how many scripts can run at the same moment for one account. If requests arrive faster than they can be handled, they wait in a queue, and some time out.</p>
+   <p><b>Rule for this course:</b> keep each device at <b>30 seconds or slower</b>. That is plenty for room temperature, humidity, and light, which change slowly.</p>
+   ${ex("doing the math", `<p>15 devices sending every 30 s = 15 \u00f7 30 = <b>0.5 requests per second</b>, easily handled. The same 15 devices every 1 s = <b>15 requests per second</b>, far more than one script and one Sheet can write, so the queue grows until requests fail.</p>`)}
+   <p>Use the traffic simulator to see where the queue starts to overflow. It uses a simplified model to show the idea; real limits depend on your account and how long each request takes.</p>
+   ${srcs([["Apps Script quotas", REF.gasQuotas[1]]])}`, interactive:"traffic"},
+  {id:"habits", title:"Good data habits: IDs, timestamps, and the raw layer", html:`
+   <ul><li><b>Unique device IDs:</b> use the <code>team#-board</code> pattern, for example <code>team3-esp32</code>. Two devices with the same ID are impossible to separate later.</li>
+   <li><b>Server-side timestamps:</b> P3 stamps the time on Google's server, so boards without a clock still produce comparable data, in the Sheet's time zone (set it to Asia/Manila in File \u2192 Settings).</li>
+   <li><b>Raw data is append-only:</b> never edit or delete rows in the Data tab. Clean a copy in Unit 3. If you change raw data, nobody can check your results later.</li>
+   <li><b>Metadata:</b> record where the sensor is, who set it up, and when it moved. Data without context becomes useless.</li></ul>
+   <h3>Batch vs. streaming</h3>
+   <p>Sending each reading as it happens is <b>streaming</b>: always fresh, but many small requests. Collecting several readings and sending them together is <b>batching</b>: fewer requests and less power, but the data arrives later. The buffer in the Extension challenge is a small batch.</p>
+   ${tip("Discussion (15 minutes)", `<p>If 1,000 devices sent data every second, what would break first: the Wi-Fi, the script, or the Sheet? Rank the three and suggest one fix for each. (Real systems use databases and message queues for this.)</p>`)}
+   <p class="explain">Further reading: Kleppmann (2017), <i>Designing Data-Intensive Applications</i>.</p>`},
+  {id:"dictionary", title:"Your data dictionary and schema changes", html:`
+   <p>A <b>data dictionary</b> describes every column: its meaning, type, unit, allowed values, and where it comes from. It lets someone who has never met your team use your data correctly. The agreed shape of every row is called the <b>schema</b>.</p>
+   <p>Complete your team's dictionary below. Then think about a <b>schema change</b>: what if one team adds a <code>location</code> column and another does not?</p>`, interactive:"dictionary"},
+  {id:"aidebug", title:"AI activity: debug with Chain-of-Thought", html:`
+   <p>When logging fails, AI can suggest causes, but it cannot see your board, your Wi-Fi, or your Sheet. You stay the investigator: <b>the AI suggests hypotheses; you test each one</b> before believing it. Asking the AI to reason step by step (<b>Chain-of-Thought</b>) makes its suggestions easier to check (Wei et al., 2022).</p>
+   <p>Use the scenario and prompt below with Sensi or another AI tool. Never paste your real key, URL, or Wi-Fi password: replace them with placeholders.</p>`, interactive:"cotdebug"},
+  {id:"challenges", title:"Challenges", html:`
+   <ul><li><b>Core:</b> switch off the router or hotspot for 1 minute, then switch it back on. <b>Success check:</b> logging resumes without pressing reset.</li>
+   <li><b>Extension:</b> store up to 10 readings in an array while offline and send them when Wi-Fi returns. <b>Success check:</b> no gap longer than one interval in the Sheet after a 2-minute outage.</li>
+   <li><b>Boss Challenge:</b> two teams log to <b>one</b> shared Sheet with different device IDs. <b>Success check:</b> a <code>COUNTIF</code> per device shows both are logging.</li></ul>`},
+  {id:"drill", title:"Drill: reliability and data habits", html:`<p>Check your understanding.</p>`, interactive:"drill:u24"}
+ ],
+ quiz:[
+  {q:"Why is it important that connectWiFi() runs before every send?", o:["It makes sending faster","It reconnects automatically if Wi-Fi dropped","It changes the API key","It clears the Sheet"], a:1, e:"If already connected it returns at once; if not, it reconnects, so the logger recovers by itself.", w:["It adds a quick check but does not speed sending.","","The key never changes.","It never touches the Sheet."]},
+  {q:"15 devices each send every 30 seconds. About how many requests per second does the script receive?", o:["0.5","2","15","450"], a:0, e:"15 \u00f7 30 = 0.5 requests per second.", w:["","That would be 60 devices, or 15 devices every 7.5 s.","That would be every 1 second.","That is 15 \u00d7 30, not 15 \u00f7 30."]},
+  {q:"Why should nobody edit rows in the Data tab by hand?", o:["Google forbids it","It is the raw, append-only record; editing it makes results impossible to check","It deletes the script","It slows the Wi-Fi"], a:1, e:"Clean a copy instead; keep the original as evidence.", w:["Sheets allows editing; the rule is a data habit.","","Editing cells does not affect the script.","Editing has nothing to do with Wi-Fi."]},
+  {q:"One team adds a location column to the shared Sheet; another team does not. What can break?", o:["Nothing","Rows from the two teams no longer line up, and formulas or analysis that expect 5 columns can fail","Wi-Fi stops","The key changes"], a:1, e:"A schema change must be agreed and applied by everyone, with a plan to migrate old rows.", w:["Mismatched columns cause real problems in analysis.","","Wi-Fi is unaffected.","The key is unaffected."]},
+  {q:"In the Chain-of-Thought debugging activity, what do you do with each AI hypothesis?", o:["Accept the first one","Test it yourself and record the result before accepting or rejecting it","Ask another AI to agree","Ignore it"], a:1, e:"The AI cannot see your setup; only a test confirms the cause.", w:["The first idea is often wrong.","","Two AIs agreeing is not evidence.","Hypotheses are useful when tested."]}],
+ checkpoint:{code:"U2-O4, U2-O5, U2-O6", task:"Router or hotspot outage test; completed data dictionary with one proposed schema change; Chain-of-Thought debugging log.", met:"Logging resumes within 2 intervals without reset; every dictionary column filled and 2 consequences of the change named; 3-row log with the final cause confirmed by a test.", upload:"Upload a screenshot of the Sheet before and after the outage, and your data dictionary."},
+ refs:["gasQuotas","gasLock","wei","kleppmann","mdnHttp"]};
+
+/* Register Unit 2 modules; open them when released, or for an admin preview */
+const UNIT2_MODULES = [M21, M22, M23, M24];
+function adminPreviewOn(){ try { const a = JSON.parse(sessionStorage.getItem("sti_admin") || "null"); return !!(a && a.exp > Date.now()); } catch(e){ return false; } }
+function applyReleases(){
+  const u = COURSE.find(x => x.id === "u2"); if (!u) return;
+  u.modules = UNIT2_MODULES;
+  const open = RELEASE.u2 || adminPreviewOn();
+  u.locked = !open; u.sub = RELEASE.u2 ? "Open now" : open ? "Admin preview (not yet released)" : "Coming soon";
+  UNIT2_MODULES.forEach(m => { if (open) MODULES[m.id] = m; else delete MODULES[m.id]; });
+}
+applyReleases();
+
 const TEST_ITEMS = [{"n": 1, "q": "A sketch uses `delay(2000)` inside `loop()` between sensor readings. What is the main problem?", "o": ["It uses too much memory.", "It works only on ESP32 boards.", "The board cannot do anything else during the 2-second wait.", "It makes each reading less accurate."], "part": "Physical computing", "c": "C1"}, {"n": 2, "q": "The ESP32's analog-to-digital converter is 12-bit. What is the largest raw value `analogRead()` can return?", "o": ["255", "1023", "65535", "4095"], "part": "Physical computing", "c": "C1"}, {"n": 3, "q": "An LDR on an Uno R4 WiFi gives a raw reading of 512 (10-bit, maximum 1023). Using raw ÷ 1023 × 100, the light level is about:", "o": ["50%", "25%", "51.2%", "100%"], "part": "Physical computing", "c": "C1"}, {"n": 4, "q": "This code runs inside `loop()`, which repeats about every 1 ms: `if (now - lastRead >= 2000) { lastRead = now; readSensor(); }`. How often is `readSensor()` called?", "o": ["Every 1 ms", "About every 2 seconds", "Only once", "Never"], "part": "Physical computing", "c": "C1"}, {"n": 5, "q": "Why does the course connect the ESP32's light sensor to GPIO 34 instead of an ADC2 pin?", "o": ["ADC2 pins are output-only.", "GPIO 34 has a higher resolution.", "ADC2 pins cannot be read while Wi-Fi is running.", "ADC2 pins use 5 V."], "part": "Physical computing", "c": "C1"}, {"n": 6, "q": "`dht.readTemperature()` returns `NaN`. What should the program do?", "o": ["Send 0 °C to the cloud.", "Restart the Wi-Fi connection.", "Reuse yesterday's value.", "Skip logging this reading and report the error."], "part": "Physical computing", "c": "C1"}, {"n": 7, "q": "In `.../exec?key=abc&device_id=team1&temp_C=29.4`, what does the part after `?` do?", "o": ["Passes named values to the server.", "Encrypts the data.", "Names the Wi-Fi network.", "Sets the serial baud rate."], "part": "IoT connectivity", "c": "C2"}, {"n": 8, "q": "A device receives the reply `ERR:key` from the Apps Script logger. What is the most likely cause?", "o": ["The Wi-Fi password is wrong.", "The DHT22 is disconnected.", "The API key in the device code does not match the key stored in the script.", "The Sheet is full."], "part": "IoT connectivity", "c": "C2"}, {"n": 9, "q": "After editing the Apps Script code, the device still gets the old behavior. Why?", "o": ["The Sheet needs refreshing.", "The deployment still points to the old version of the code.", "The device must use a new URL after every edit.", "The browser cache is full."], "part": "IoT connectivity", "c": "C2"}, {"n": 10, "q": "What does an HTTP status code of 302 mean?", "o": ["Success", "Unauthorized", "Server error", "The response is at another address (redirect)."], "part": "IoT connectivity", "c": "C2"}, {"n": 11, "q": "Why does the course add the timestamp on the server instead of on the device?", "o": ["The boards have no reliable clock, so server time makes all readings comparable.", "Timestamps make requests faster.", "Devices are not allowed to send dates.", "Google Sheets cannot store device times."], "part": "IoT connectivity", "c": "C2"}, {"n": 12, "q": "Which statement best describes the bronze (raw) layer of the course pipeline?", "o": ["It holds only hourly averages.", "It is deleted after each pipeline run.", "It keeps every reading exactly as received and is never edited by hand.", "It contains only rows that passed quality checks."], "part": "Data engineering", "c": "C3"}, {"n": 13, "q": "A device sends 3 readings every 30 seconds. How many rows does it add per day?", "o": ["2,880", "8,640", "86,400", "1,440"], "part": "Data engineering", "c": "C3"}, {"n": 14, "q": "The course stores raw data first and transforms it later with P10. This approach is called:", "o": ["ETL", "Streaming", "Batching", "ELT"], "part": "Data engineering", "c": "C3"}, {"n": 15, "q": "What is `LockService` used for in the logger?", "o": ["Preventing two simultaneous requests from overwriting each other's rows", "Encrypting the data", "Hiding the Sheet from viewers", "Speeding up Wi-Fi"], "part": "Data engineering", "c": "C3"}, {"n": 16, "q": "The `PipelineLog` quality percentage falls from 98% to 60% over two runs. What is the best first step?", "o": ["Delete the `Rejected` tab.", "Loosen the quality rules so more rows pass.", "Open the `Rejected` tab to see which reasons and devices increased.", "Ignore it, because quality always varies."], "part": "Data engineering", "c": "C3"}, {"n": 17, "q": "Two rows have the same timestamp, device, sensor, and value. This is a:", "o": ["missing value", "duplicate", "outlier", "unit mismatch"], "part": "Data cleaning", "c": "C4"}, {"n": 18, "q": "One reading is 85.3 with unit F among Celsius readings. The correct cleaned value is about:", "o": ["29.6 °C", "85.3 °C", "47.4 °C", "The row should be deleted."], "part": "Data cleaning", "c": "C4"}, {"n": 19, "q": "For a set of temperatures, Q1 = 28 °C and Q3 = 30 °C. Using the IQR rule, the upper fence is:", "o": ["31 °C", "32 °C", "36 °C", "33 °C"], "part": "Data cleaning", "c": "C4"}, {"n": 20, "q": "A temperature log has a single missing reading between 29.6 °C and 29.8 °C. Following the course rule, what is the best action?", "o": ["Replace it with 0.", "Delete the whole day's data.", "Interpolate it as about 29.7 °C and record the change in the cleaning log.", "Replace it with 999."], "part": "Data cleaning", "c": "C4"}, {"n": 21, "q": "Which practice follows the course's golden rule of cleaning?", "o": ["Edit the raw `Data` tab directly to save time.", "Clean in a copy or through the pipeline, and record every change in a cleaning log.", "Delete any value that looks unusual.", "Clean only the values that support the expected result."], "part": "Data cleaning", "c": "C4"}, {"n": 22, "q": "Which chart best shows how classroom temperature changes during one day?", "o": ["Line chart", "Pie chart", "Bar chart of devices", "A table only"], "part": "Analysis and communication", "c": "C5"}, {"n": 23, "q": "Temperature and humidity in a room have a correlation of r = 0.85. Which conclusion is valid?", "o": ["Temperature causes humidity to rise.", "85% of humidity is explained by temperature.", "There is a strong positive linear association, which does not prove cause.", "There is no relationship."], "part": "Analysis and communication", "c": "C5"}, {"n": 24, "q": "Increasing a moving-average window from 3 to 10 readings makes the line:", "o": ["noisier", "react faster to changes", "unchanged", "smoother but slower to react to real changes"], "part": "Analysis and communication", "c": "C5"}, {"n": 25, "q": "Which finding sentence meets the course's data story standard?", "o": ["\"The room is hot.\"", "\"The window side averaged 1.8 °C warmer than the door side over 45 minutes.\"", "\"We collected a lot of data.\"", "\"The sensors worked well.\""], "part": "Analysis and communication", "c": "C5"}, {"n": 26, "q": "A team's device ID (for example, `team3-esp32`) is which level of measurement?", "o": ["Nominal", "Ordinal", "Interval", "Ratio"], "part": "Analysis and communication", "c": "C5"}, {"n": 27, "q": "Why is a forecasting model compared with a baseline that predicts \"next value = current value\"?", "o": ["Baselines are always the best model.", "It makes the model train faster.", "A model is useful only if it beats the simplest reasonable prediction.", "It removes the need for test data."], "part": "Data science", "c": "C6"}, {"n": 28, "q": "How should time-series sensor data be split into training and test sets?", "o": ["Shuffle randomly, then split 70/30.", "Train on the earlier 70%, test on the later 30%.", "Use the same rows for training and testing.", "Train on the latest data and test on the earliest."], "part": "Data science", "c": "C6"}, {"n": 29, "q": "A feature is the rolling mean of the current and previous 4 readings, and the model predicts the current reading. What is the problem?", "o": ["Concept drift", "Underfitting", "Too few features", "Data leakage"], "part": "Data science", "c": "C6"}, {"n": 30, "q": "On the test set, a model's MAE is 0.35 °C and the baseline's MAE is 0.30 °C. What should the team conclude?", "o": ["The baseline is more accurate, so the model is not useful yet.", "The model is more accurate.", "They are equally accurate.", "MAE cannot compare them."], "part": "Data science", "c": "C6"}, {"n": 31, "q": "An anomaly detector flagged 12 readings: 5 were real events and 7 were false alarms. What is the main risk of keeping this setting?", "o": ["Data leakage", "Missing every real event", "Alert fatigue, so people start ignoring the flags", "Overfitting the training set"], "part": "Data science", "c": "C6"}, {"n": 32, "q": "In P8, why does the device itself sound the buzzer when it is too hot, instead of waiting for the cloud?", "o": ["Cloud decisions cost money.", "The safety action still works if Wi-Fi or the cloud is down.", "Apps Script cannot read thresholds.", "Buzzers cannot be controlled remotely."], "part": "Automation and control", "c": "C7"}, {"n": 33, "q": "What is the purpose of the 30-minute cooldown in `checkAlerts()`?", "o": ["To save battery", "To make alerts faster", "To delete old data", "To avoid repeated alerts that people learn to ignore"], "part": "Automation and control", "c": "C7"}, {"n": 34, "q": "The published dashboard's page source contains the same API key the devices use to log data. What is the main risk, and the fix?", "o": ["Anyone could write fake readings; use a separate read-only key for the dashboard.", "The page will load slowly; shorten the key.", "There is no risk, because the page is on GitHub.", "The chart will break; remove the chart."], "part": "Automation and control", "c": "C7"}, {"n": 35, "q": "In Google's PARTS prompting framework, the letters stand for:", "o": ["Purpose, Audience, Rules, Tone, Summary", "Persona, Answer, Review, Test, Submit", "Persona, Act, Recipient, Theme, Structure", "Plan, Ask, Revise, Test, Share"], "part": "Human-centered AI", "c": "C8"}, {"n": 36, "q": "A team must choose among three possible cleaning strategies. Which prompting technique fits best?", "o": ["Chain-of-Thought only", "Tree-of-Thought", "A one-word prompt", "No prompt; let the AI decide"], "part": "Human-centered AI", "c": "C8"}, {"n": 37, "q": "Chain-of-Thought prompting is most useful in this course when you need to:", "o": ["generate many creative options", "avoid explaining reasoning", "make the AI respond faster", "debug or explain code through visible steps you can check"], "part": "Human-centered AI", "c": "C8"}, {"n": 38, "q": "An AI gives you code that compiles. According to the human-in-the-loop rules, what must happen before you use it?", "o": ["You can explain every line, have tested it with edge cases, and have checked unfamiliar functions in official documentation.", "Submit it, because it compiles.", "Ask a second AI to approve it.", "Rename the variables so it looks original."], "part": "Human-centered AI", "c": "C8"}, {"n": 39, "q": "An AI wrote this line for an ESP32, where `raw` is an `int`: `float pct = raw / 4095 * 100;`. What is wrong?", "o": ["Nothing; it is correct.", "4095 should be 1023.", "Integer division makes the result 0 for almost every reading; use `4095.0`.", "A `float` cannot store percentages."], "part": "Human-centered AI", "c": "C8"}, {"n": 40, "q": "Which of these should never be pasted into an AI tool?", "o": ["A public error message", "The device's API key or Wi-Fi password", "A question about `millis()`", "The course pin map"], "part": "Human-centered AI", "c": "C8"}];
 </script>
 <script>
@@ -2357,6 +2932,233 @@ INTERACTIVES.ldrlab = function(el){
     (function f(n){ const t = (n - t0) / dur, r = Math.exp(Math.log(startR) + (Math.log(endR) - Math.log(startR)) * (1 - Math.exp(-3 * Math.min(t, 1.5)))); $(".lxR", el).textContent = r >= 999000 ? "\u2265 1 M\u03a9" : r >= 1000 ? (r / 1000).toFixed(0) + " k\u03a9" : Math.round(r) + " \u03a9"; if (t < 1.5 && alive(el)) rafP = requestAnimationFrame(f); else setTimeout(upd, 1200); })(t0); };
   upd(); addEventListener("resize", () => { if (alive(el)) upd(); });
 };
+
+/* ============ UNIT 2 INTERACTIVES ============ */
+function u2Rows(q){ const out = [], bad = []; q.split("&").filter(Boolean).forEach(pair => { const [k, v = ""] = pair.split("="); if (["key","action","device_id","n"].includes(k)) return; const parts = k.split("_"); const val = Number(decodeURIComponent(v));
+  if (parts.length < 2 || !parts[1]) bad.push(k + ": no unit (use sensor_unit)"); else if (isNaN(val) || v === "") bad.push(k + ": value is not a number"); else out.push({sensor:parts[0], unit:parts.slice(1).join("_"), value:val}); }); return {out, bad}; }
+INTERACTIVES.urlparts = function(el){
+  el.innerHTML = bench("Build a request: from readings to rows", `<div class="u2-form"><label>device_id <input class="dinput upD" value="team3-esp32"></label><label>temp_C <input class="dinput upT" value="29.4" inputmode="decimal"></label><label>hum_pct <input class="dinput upH" value="70" inputmode="decimal"></label><label>light_pct <input class="dinput upL" value="55.2" inputmode="decimal"></label><label>Extra (name=value) <input class="dinput upX" placeholder="e.g. rssi_dBm=-62"></label></div>
+   <p class="explain">Tap a coloured part of the URL to learn what it is.</p><pre class="code url-ex upUrl" aria-live="polite"></pre><div class="panel upInfo">The query string starts at <b>?</b>; pairs are separated by <b>&amp;</b>.</div>
+   <h3 style="margin:.6em 0 .3em">What the server saves (Data tab)</h3><div class="upRows"></div>`);
+  const info = {proto:"<b>Protocol:</b> https:// means HTTP with encryption.", host:"<b>Host:</b> which server to contact (Google's Apps Script servers).", path:"<b>Path:</b> which program on the server; host + path = the <b>endpoint</b> (your /exec URL).", key:"<b>key:</b> the secret the server checks before saving anything.", dev:"<b>device_id:</b> which board sent the readings. Must be unique and contain no spaces.", read:"<b>A reading:</b> name = sensor_unit, then = value. The server splits the name at the underscore."};
+  const upd = () => { const d = $(".upD", el).value.trim(), x = $(".upX", el).value.trim(); const pairs = [["temp_C", $(".upT", el).value.trim()],["hum_pct", $(".upH", el).value.trim()],["light_pct", $(".upL", el).value.trim()]].filter(p => p[1] !== "");
+    if (x && x.includes("=")) pairs.push(x.split("=").map(s => s.trim()));
+    const q = ["key=t3-mango-48", "device_id=" + d].concat(pairs.map(p => p[0] + "=" + p[1])).join("&");
+    $(".upUrl", el).innerHTML = `<span class="u-proto" data-i="proto">https://</span><span class="u-host" data-i="host">script.google.com</span><span class="u-path" data-i="path">/macros/s/AKfy.../exec</span><span class="u-q">?<span data-i="key">key=t3-mango-48</span>&amp;<span data-i="dev">device_id=${esc(d)}</span>${pairs.map(p => `&amp;<span data-i="read">${esc(p[0])}=${esc(p[1])}</span>`).join("")}</span>`;
+    $(".upUrl", el).querySelectorAll("[data-i]").forEach(s => s.onclick = () => { $(".upInfo", el).innerHTML = info[s.dataset.i]; pop(s, 1.08); if (!act("urlparts")) logEvent(currentModule, "urlparts", "activity", "done"); });
+    const r = u2Rows(q), warnD = /\s/.test(d) || !d;
+    $(".upRows", el).innerHTML = (warnD ? `<p class="feedback no">device_id must not be empty or contain spaces.</p>` : "") + `<table class="t"><tr><th>timestamp</th><th>device_id</th><th>sensor</th><th>value</th><th>unit</th></tr>${r.out.map(o => `<tr><td>(server time)</td><td>${esc(d)}</td><td>${esc(o.sensor)}</td><td>${o.value}</td><td>${esc(o.unit)}</td></tr>`).join("")}</table>${r.bad.length ? `<p class="feedback no">Not saved: ${r.bad.map(esc).join("; ")}</p>` : ""}<p class="explain">Reply: <b>${r.out.length ? "OK:" + r.out.length : "ERR:no-readings"}</b></p>`;
+    A(el.querySelectorAll(".upRows tr"), {opacity:[0, 1], x:[-8, 0]}, {delay:stag(0.05), duration:.25}); };
+  el.querySelectorAll("input").forEach(i => i.oninput = upd); upd();
+};
+INTERACTIVES.httpletter = function(el){
+  const SC = {ok:["Correct URL and key","200 OK","OK:3","#2A9D8F","The script ran and saved 3 rows."], key:["Wrong key","200 OK","ERR:key","#C9A227","HTTP worked (200), but the script refused: the key did not match. Read the reply text, not just the status."], nf:["Typo in the URL","404 Not Found","(an error page)","#E76F51","No program exists at that address. Check the /exec URL."], auth:["Access not set to Anyone","401 / 403","(a sign-in page)","#E76F51","Google wants a sign-in, which a board cannot do. Redeploy with access: Anyone."], err:["Bug in the script","500 Server error","(error message)","#B91C1C","The script crashed while running. Check the Executions log in Apps Script."]};
+  el.innerHTML = bench("HTTP as a letter", `<div class="controls">${Object.keys(SC).map((k, i) => `<button class="btn small hlS ${i ? "" : "primary"}" data-s="${k}">${SC[k][0]}</button>`).join("")}</div>
+   <svg class="hlsvg" viewBox="0 0 640 210" role="img" aria-label="A request letter travels to the server and a reply card returns"><rect x="20" y="70" width="120" height="80" rx="12" fill="#1F3A5F"/><text x="80" y="115" text-anchor="middle" fill="#fff" font-weight="700" font-size="13">Board</text><text x="80" y="134" text-anchor="middle" fill="#9FB0C4" font-size="10">client</text>
+    <rect x="500" y="70" width="120" height="80" rx="12" fill="#2A9D8F"/><text x="560" y="108" text-anchor="middle" fill="#fff" font-weight="700" font-size="13">Apps Script</text><text x="560" y="127" text-anchor="middle" fill="#E6F4F1" font-size="10">server</text>
+    <path d="M140 100 H500" stroke="var(--line)" stroke-width="2" stroke-dasharray="6 6"/><path d="M500 125 H140" stroke="var(--line)" stroke-width="2" stroke-dasharray="6 6"/>
+    <g class="hlLetter" opacity="0"><rect x="-34" y="-20" width="68" height="40" rx="4" fill="#fff" stroke="#1F3A5F" stroke-width="2"/><path d="M-34 -20 L0 4 L34 -20" fill="none" stroke="#1F3A5F" stroke-width="2"/><text y="34" text-anchor="middle" font-size="10" fill="currentColor">GET request</text></g>
+    <g class="hlCard" opacity="0"><rect x="-44" y="-22" width="88" height="44" rx="6" class="hlCardBg" fill="#2A9D8F"/><text class="hlCode" y="-4" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">200 OK</text><text class="hlBody" y="12" text-anchor="middle" font-size="11" fill="#fff">OK:3</text></g></svg>
+   <div class="panel hlInfo">Choose a situation, then watch the letter and the reply card.</div>`);
+  const L = $(".hlLetter", el), C = $(".hlCard", el); let t0 = null, raf = null;
+  const run = k => { const s = SC[k]; cancelAnimationFrame(raf); $(".hlCode", el).textContent = s[1]; $(".hlBody", el).textContent = s[2]; $(".hlCardBg", el).setAttribute("fill", s[3]); $(".hlInfo", el).innerHTML = "Sending\u2026";
+    const dur = reduceMotion() ? 1 : 1400; t0 = performance.now();
+    (function f(n){ const t = Math.min(1, (n - t0) / dur); L.setAttribute("opacity", t < .5 ? 1 : 0); L.setAttribute("transform", `translate(${170 + 300 * Math.min(1, t * 2)},100)`);
+      C.setAttribute("opacity", t >= .5 ? 1 : 0); C.setAttribute("transform", `translate(${470 - 300 * Math.max(0, (t - .5) * 2)},125)`);
+      if (t < 1 && alive(el)) raf = requestAnimationFrame(f); else { $(".hlInfo", el).innerHTML = `<b>${esc(s[1])}</b> \u2022 reply: <code>${esc(s[2])}</code><br>${esc(s[4])}`; logEvent(currentModule, "httpletter", "activity", "used"); } })(t0); };
+  el.querySelectorAll(".hlS").forEach(b => b.onclick = () => { el.querySelectorAll(".hlS").forEach(x => x.classList.toggle("primary", x === b)); run(b.dataset.s); });
+  run("ok");
+};
+INTERACTIVES.jsonx = function(el){
+  const data = {latitude:14.6, longitude:121.0, current:{time:"2026-10-05T09:30", temperature_2m:31.2, relative_humidity_2m:68}, current_units:{temperature_2m:"\u00b0C", relative_humidity_2m:"%"}};
+  const tasks = [["Find the current temperature.", "current.temperature_2m"],["Find the unit of humidity.", "current_units.relative_humidity_2m"],["Find the time of the reading.", "current.time"]]; let ti = 0;
+  const render = (o, path, ind) => { const pad = "  ".repeat(ind); return "{\n" + Object.keys(o).map((k, i, a) => { const p = path ? path + "." + k : k, v = o[k], comma = i < a.length - 1 ? "," : "";
+      return typeof v === "object" ? `${pad}  <button class="jk" data-p="${p}">"${k}"</button>: ${render(v, p, ind + 1)}${comma}` : `${pad}  <button class="jk" data-p="${p}">"${k}"</button>: <span class="jv">${esc(JSON.stringify(v))}</span>${comma}`; }).join("\n") + "\n" + pad + "}"; };
+  el.innerHTML = bench("JSON explorer", `<div class="two"><pre class="code jsonbox">${render(data, "", 0)}</pre><div><div class="panel jxInfo">Tap a key to see its path and value.</div><div class="panel jxTask"></div></div></div>`);
+  const showTask = () => { $(".jxTask", el).innerHTML = ti < tasks.length ? `<b>Task ${ti + 1} of ${tasks.length}:</b> ${tasks[ti][0]} Tap its key.` : `<b>All tasks done.</b> In code you would write <code>data.current.temperature_2m</code> to get 31.2.`; };
+  el.querySelectorAll(".jk").forEach(b => b.onclick = () => { const p = b.dataset.p, v = p.split(".").reduce((o, k) => o[k], data);
+    $(".jxInfo", el).innerHTML = `<b>Path:</b> <code>${esc(p)}</code><br><b>Value:</b> <code>${esc(JSON.stringify(v))}</code>${typeof v === "object" ? " (an object with more keys inside)" : ""}`; el.querySelectorAll(".jk").forEach(x => x.classList.toggle("on", x === b));
+    if (ti < tasks.length){ if (p === tasks[ti][1]){ ti++; toast("Correct!"); if (ti === tasks.length) logEvent(currentModule, "jsonx", "activity", "done"); showTask(); } else { shake(b); } } });
+  showTask();
+};
+INTERACTIVES.logsim = function(el){
+  const KEY = "t3-mango-48"; let rows = [], range = false;
+  el.innerHTML = bench("Logger simulator: test your web app from a browser", `<p class="explain">This simulates P3 in your browser, with the key <code>${KEY}</code>. Edit the URL and press Send, just like typing it into a browser's address bar.</p>
+   <div class="controls"><input class="dinput lsUrl mono" style="flex:1;min-width:240px" value="https://script.google.com/macros/s/AKfy.../exec?key=${KEY}&device_id=browser-test&temp_C=25&hum_pct=60"><button class="btn primary lsGo">Send</button><button class="btn lsClr">Clear Data tab</button></div>
+   <label class="chk"><input type="checkbox" class="lsRange"><span>Extension: reject temperatures outside \u221240 to 80 \u00b0C (ERR:range)</span></label>
+   <div class="two"><div><b>Browser shows</b><div class="serial lsReply" style="height:60px"></div></div><div><b>Core challenge</b><p class="lsCore explain">Send readings with 3 different sensor names.</p></div></div>
+   <b>Data tab</b><div class="lsTab"></div>`);
+  const draw = () => { $(".lsTab", el).innerHTML = `<table class="t"><tr><th>timestamp</th><th>device_id</th><th>sensor</th><th>value</th><th>unit</th></tr>${rows.slice(-12).map(r => `<tr><td>${r[0]}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${r[3]}</td><td>${esc(r[4])}</td></tr>`).join("") || `<tr><td colspan="5" class="explain">No rows yet.</td></tr>`}</table>`;
+    const names = new Set(rows.map(r => r[2])); $(".lsCore", el).innerHTML = names.size >= 3 ? `\u2713 ${names.size} sensor names in column C: ${[...names].map(esc).join(", ")}. Core challenge met!` : `Sensor names so far: ${names.size} of 3${names.size ? " (" + [...names].map(esc).join(", ") + ")" : ""}.`;
+    if (names.size >= 3 && act("logsim") !== "core"){ logEvent(currentModule, "logsim", "activity", "core"); confetti(); } };
+  $(".lsGo", el).onclick = () => { const u = $(".lsUrl", el).value.trim(), qi = u.indexOf("?"), reply = $(".lsReply", el);
+    let out;
+    if (!/^https:\/\/script\.google\.com\/macros\/s\/[^/]+\/exec/.test(u)) out = u.includes("/dev") ? "(sign-in page: /dev URLs only work for you; use /exec)" : "(404 Not Found: check the /exec URL)";
+    else { const q = qi < 0 ? "" : u.slice(qi + 1), p = {}; q.split("&").filter(Boolean).forEach(x => { const [k, v = ""] = x.split("="); p[decodeURIComponent(k)] = decodeURIComponent(v); });
+      if (p.key !== KEY) out = "ERR:key";
+      else if (p.action && p.action !== "log") out = "ERR:action";
+      else { const r = u2Rows(q), now = new Date().toLocaleTimeString(); const dev = p.device_id || "unknown";
+        if (range && r.out.some(o => o.sensor === "temp" && (o.value < -40 || o.value > 80))) out = "ERR:range";
+        else if (!r.out.length) out = "ERR:no-readings";
+        else { r.out.forEach(o => rows.push([now, dev, o.sensor, o.value, o.unit])); out = "OK:" + r.out.length; } } }
+    reply.textContent = out; reply.classList.toggle("bad", !out.startsWith("OK")); pop(reply, 1.03); draw(); };
+  $(".lsClr", el).onclick = () => { rows = []; draw(); };
+  $(".lsRange", el).onchange = e => range = e.target.checked;
+  draw();
+};
+INTERACTIVES.deploylab = function(el){
+  let saved = "OK:", deployed = "OK:", draft = "OK:", ver = 1, url = "\u2026/AKfy-abc/exec";
+  el.innerHTML = bench("Deployment simulator", `<p class="explain">P3's last line is <code>return text_('<span class="dlR"></span>' + rows.length);</code>. Change the reply text, then test.</p>
+   <div class="controls"><label>Reply text in the editor <input class="dinput dlIn" value="OK:"></label><button class="btn dlSave">Save</button></div>
+   <div class="controls"><button class="btn dlTest">Test the URL</button><button class="btn primary dlNew">Manage deployments \u2192 Edit \u2192 New version</button><button class="btn dlAnother">New deployment</button></div>
+   <div class="two"><div class="panel"><b>Editor (saved code)</b><p class="mono dlEd"></p><b>Live deployment</b><p class="mono dlLive"></p></div><div class="panel"><b>Browser test result</b><div class="serial dlOut" style="height:70px"></div><p class="explain dlNote"></p></div></div>`);
+  const draw = () => { $(".dlR", el).textContent = draft; $(".dlEd", el).textContent = `text_('${saved}' + rows.length)`; $(".dlLive", el).textContent = `Version ${ver}: text_('${deployed}' + rows.length) at ${url}`; };
+  $(".dlIn", el).oninput = e => { draft = e.target.value; draw(); };
+  $(".dlSave", el).onclick = () => { saved = draft; draw(); $(".dlNote", el).textContent = "Saved in the editor. Now test the URL: what do you expect?"; };
+  $(".dlTest", el).onclick = () => { $(".dlOut", el).textContent = deployed + "2"; const stale = saved !== deployed;
+    $(".dlNote", el).innerHTML = stale ? `The URL still runs <b>version ${ver}</b>, so your saved change does not show. Publish a new version.` : "The live version matches your saved code."; pop($(".dlOut", el), 1.04);
+    if (!stale && saved !== "OK:" && act("deploylab") !== "done") logEvent(currentModule, "deploylab", "activity", "done"); };
+  $(".dlNew", el).onclick = () => { ver++; deployed = saved; draw(); $(".dlNote", el).innerHTML = `Version ${ver} is live at the <b>same URL</b>. Test again.`; };
+  $(".dlAnother", el).onclick = () => { $(".dlNote", el).innerHTML = `This would create a <b>different URL</b> (for example \u2026/AKfy-xyz/exec). Your boards still use ${url}, so they would keep running the old version. Use <b>Manage deployments \u2192 Edit \u2192 New version</b> instead.`; shake($(".dlAnother", el)); };
+  draw();
+};
+INTERACTIVES.knock = function(el){
+  const steps = [["Read sensors", "temp 29.4 \u00b0C, hum 70 %, light 55.2 %", 0],["Build the URL", "\u2026/exec?key=\u2026&device_id=team3-esp32&temp_C=29.4&hum_pct=70&light_pct=55.2", 0],["Knock: HTTPS GET to script.google.com", "The request travels encrypted over Wi-Fi and the internet.", 1],["Rows saved", "doGet runs: key OK, 3 tidy rows written to the Data tab.", 2],["302 redirect", "Google replies: \u201cyour reply text is at script.googleusercontent.com.\u201d", 3],["Knock again", "The board (or urequests) follows the forwarding address.", 4],["Reply received", "Serial Monitor: Reply: OK:3", 5]];
+  let i = -1, timer = null;
+  el.innerHTML = bench("The journey of one reading", `<svg class="knsvg" viewBox="0 0 640 200" role="img" aria-label="A board sends a request to Google, is redirected, and receives a reply"><rect x="10" y="70" width="110" height="70" rx="10" fill="#1F3A5F"/><text x="65" y="110" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">Board</text>
+    <rect x="260" y="20" width="160" height="60" rx="10" fill="#2A9D8F"/><text x="340" y="47" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">script.google.com</text><text x="340" y="64" text-anchor="middle" fill="#E6F4F1" font-size="10">runs doGet</text>
+    <rect x="260" y="130" width="160" height="60" rx="10" fill="#5B6B7F"/><text x="340" y="157" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">googleusercontent</text><text x="340" y="174" text-anchor="middle" fill="#E5E7EB" font-size="10">holds the reply text</text>
+    <rect x="510" y="60" width="120" height="90" rx="10" fill="#C9A227"/><text x="570" y="82" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">Data tab</text><g class="knRows"></g>
+    <circle class="knDot" r="9" fill="#E9C46A" stroke="#14213D" stroke-width="2" cx="65" cy="105"/><g class="knTag" opacity="0"><rect x="-26" y="-12" width="52" height="24" rx="5" fill="#E76F51"/><text y="5" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">302</text></g></svg>
+   <div class="panel knInfo">Press Play or Step.</div><div class="controls"><button class="btn primary knPlay">Play</button><button class="btn knStep">Step</button><button class="btn knReset">Reset</button></div>`);
+  const pos = [[65,105],[65,105],[340,50],[340,50],[340,50],[340,160],[65,105]];
+  const show = () => { const s = steps[i]; $(".knInfo", el).innerHTML = `<b>Step ${i + 1} of ${steps.length}: ${esc(s[0])}</b><br><span class="mono">${esc(s[1])}</span>`; const [x, y] = pos[i];
+    const d = $(".knDot", el); anim(d, {cx:[+d.getAttribute("cx"), x], cy:[+d.getAttribute("cy"), y]}, {duration:.6}); d.setAttribute("cx", x); d.setAttribute("cy", y);
+    $(".knTag", el).setAttribute("opacity", i === 4 ? 1 : 0); $(".knTag", el).setAttribute("transform", "translate(440,100)");
+    $(".knRows", el).innerHTML = i >= 3 ? ["temp 29.4","hum 70","light 55.2"].map((t, k) => `<text x="570" y="${104 + k * 15}" text-anchor="middle" font-size="10" fill="#fff">${t}</text>`).join("") : "";
+    if (i === steps.length - 1){ clearInterval(timer); timer = null; logEvent(currentModule, "knock", "activity", "done"); } };
+  const step = () => { if (i < steps.length - 1){ i++; show(); } };
+  $(".knStep", el).onclick = step; $(".knPlay", el).onclick = () => { clearInterval(timer); if (i >= steps.length - 1) i = -1; step(); timer = setInterval(() => alive(el) ? step() : clearInterval(timer), 1500); };
+  $(".knReset", el).onclick = () => { clearInterval(timer); i = -1; $(".knRows", el).innerHTML = ""; $(".knTag", el).setAttribute("opacity", 0); $(".knDot", el).setAttribute("cx", 65); $(".knDot", el).setAttribute("cy", 105); $(".knInfo", el).textContent = "Press Play or Step."; };
+};
+INTERACTIVES.reqbuilder = function(el){
+  const tasks = [["Core: send temp, hum, light, and the raw light value", ["temp_C","hum_pct","light_pct","light_raw"]],["Extension: add Wi-Fi signal strength", ["temp_C","hum_pct","light_pct","rssi_dBm"]]]; let k = 0;
+  el.innerHTML = bench("Request URL checker", `<div class="seg seg-sm rbT" role="tablist">${tasks.map((t, i) => `<button role="tab" data-i="${i}" aria-selected="${i === 0}">${t[0].split(":")[0]}</button>`).join("")}</div><p class="rbTask"></p>
+   <textarea class="sb-code rbIn" rows="3" spellcheck="false" aria-label="Request URL"></textarea><div class="controls"><button class="btn primary rbGo">Check my URL</button></div><ul class="sb-results rbOut"></ul>`);
+  const load = () => { $(".rbTask", el).innerHTML = `<b>${esc(tasks[k][0])}.</b> Write the full URL your board would send (use any realistic values).`; $(".rbIn", el).value = "https://script.google.com/macros/s/AKfy.../exec?key=t3-mango-48&device_id=team3-esp32&temp_C=29.4&hum_pct=70&light_pct=55.2"; $(".rbOut", el).innerHTML = ""; };
+  $(".rbGo", el).onclick = () => { const u = $(".rbIn", el).value.trim(), q = u.split("?")[1] || "", p = {}; q.split("&").filter(Boolean).forEach(x => { const [a, b = ""] = x.split("="); p[a] = b; });
+    const need = tasks[k][1], checks = [
+      [/^https:\/\/script\.google\.com\/macros\/s\/[^/]+\/exec\?/.test(u), "Starts with your /exec endpoint followed by ?", "Begin with https://script.google.com/macros/s/.../exec then ?"],
+      [!!p.key, "Includes key=", "Add key=YOUR_KEY so the server accepts the request."],
+      [!!p.device_id && !/\s|%20/.test(p.device_id), "device_id is present with no spaces", "Add device_id=team#-board (no spaces)."],
+      [!/\s/.test(u), "No spaces anywhere in the URL", "Remove spaces; URLs cannot contain them."]].concat(need.map(n => [p[n] !== undefined && p[n] !== "" && !isNaN(Number(p[n])), `${n} has a number`, `Add ${n}=<number>.`]));
+    if (k === 1) checks.push([p.rssi_dBm !== undefined && Number(p.rssi_dBm) <= -30 && Number(p.rssi_dBm) >= -90, "rssi_dBm is between \u221230 and \u221290", "Signal strength is negative, typically \u221230 (very strong) to \u221290 (very weak)."]);
+    const ok = checks.every(c => c[0]); $(".rbOut", el).innerHTML = checks.map(c => `<li class="${c[0] ? "ok" : "no"}"><b>${c[0] ? "\u2713" : "\u2717"}</b> ${esc(c[0] ? c[1] : c[2])}</li>`).join("") + (ok ? `<li class="ok"><b>Reply:</b> OK:${need.length} (${need.length} rows)</li>` : "");
+    if (ok){ confetti(); logEvent(currentModule, "reqbuilder", "activity", k === 0 ? "done" : "ext"); } };
+  el.querySelectorAll(".rbT button").forEach(b => b.onclick = () => { k = +b.dataset.i; el.querySelectorAll(".rbT button").forEach(x => x.setAttribute("aria-selected", x === b)); load(); });
+  load();
+};
+INTERACTIVES.outage = function(el){
+  const D = [["A: connects once in setup()", "Connects at start-up only. After an outage it never reconnects."],["B: reconnects before every send (P4)", "Calls connectWiFi() before each send, so it recovers on its own."],["C: reconnects + buffers 10 readings", "Also stores readings during the outage and sends them when Wi-Fi returns."]]; let d = 1;
+  el.innerHTML = bench("Outage simulator", `<div class="seg seg-sm ouD" role="tablist">${D.map((x, i) => `<button role="tab" data-i="${i}" aria-selected="${i === 1}">${x[0].split(":")[0]}</button>`).join("")}</div><p class="ouDesc"></p>
+   <div class="controls"><label>Outage starts at minute <input type="range" class="ouS" min="2" max="8" value="4"></label><b class="ouSv mono"></b><label>lasts <input type="range" class="ouL" min="1" max="4" value="2"></label><b class="ouLv mono"></b></div>
+   <canvas class="race ouC" style="height:110px" aria-label="Rows arriving in the Sheet over 12 minutes"></canvas><div class="panel ouInfo"></div>`);
+  const draw = () => { const s = +$(".ouS", el).value, L = +$(".ouL", el).value; $(".ouSv", el).textContent = s; $(".ouLv", el).textContent = L + " min"; $(".ouDesc", el).textContent = D[d][1];
+    const cv = $(".ouC", el), {g, W, H} = hiDPI(cv), X = m => 20 + m / 12 * (W - 40); g.clearRect(0, 0, W, H);
+    g.fillStyle = "rgba(231,111,81,.15)"; g.fillRect(X(s), 6, X(s + L) - X(s), H - 30); g.fillStyle = "#E76F51"; g.font = "10px sans-serif"; g.fillText("Wi-Fi down", X(s) + 4, 18);
+    let sent = 0, lost = 0, late = 0, buf = 0;
+    for (let t = 0; t < 12; t += 0.5){ const down = t >= s && t < s + L; let dot = null;
+      if (d === 0){ if (t < s) dot = "#2A9D8F"; else lost++; }
+      else if (down){ lost++; if (d === 2 && buf < 10){ buf++; lost--; } }
+      else { dot = "#2A9D8F"; if (d === 2 && buf){ late += buf; for (let b = 0; b < buf; b++){ g.fillStyle = "#C9A227"; g.beginPath(); g.arc(X(t - (b + 1) * .5), H - 40, 4, 0, 7); g.fill(); } buf = 0; } }
+      if (dot){ sent++; g.fillStyle = dot; g.beginPath(); g.arc(X(t), H - 40, 4, 0, 7); g.fill(); } }
+    g.fillStyle = cssv("--muted") || "#5B6B7F"; [0, 2, 4, 6, 8, 10, 12].forEach(m => g.fillText(m + " min", X(m) - 10, H - 8));
+    $(".ouInfo", el).innerHTML = d === 0 ? `<b>Logging stopped for good</b> at minute ${s}. ${lost} readings lost, and it will not recover until someone presses reset.` : d === 1 ? `<b>Recovered automatically</b> after the outage. ${lost} readings were missed during it (a gap of ${L} min in the Sheet).` : `<b>Recovered with no gap</b>: ${late} buffered readings were sent when Wi-Fi returned (gold dots). ${lost > 0 ? lost + " were lost because the buffer holds only 10." : "Nothing was lost."}`;
+    if (!act("outage")) logEvent(currentModule, "outage", "activity", "done"); };
+  el.querySelectorAll(".ouD button").forEach(b => b.onclick = () => { d = +b.dataset.i; el.querySelectorAll(".ouD button").forEach(x => x.setAttribute("aria-selected", x === b)); draw(); });
+  el.querySelectorAll("input").forEach(x => x.oninput = draw); draw();
+};
+INTERACTIVES.traffic = function(el){
+  el.innerHTML = bench("Class traffic simulator", `<div class="sliders"><label>Devices <input type="range" class="trN" min="1" max="40" value="15"></label><b class="trNv mono"></b><label>Send every (s) <input type="range" class="trI" min="1" max="120" value="30"></label><b class="trIv mono"></b></div>
+   <canvas class="race trC" style="height:120px" aria-label="Requests queueing at the script"></canvas><div class="kv"><span>Requests per second</span><b class="trR"></b><span>Script can handle (simplified)</span><b>about 2 per second</b><span>Result</span><b class="trS"></b></div>
+   <p class="explain">Simplified model: each logging request holds P3's lock for about half a second, so one script writes about 2 requests per second. Real limits vary with your account and code.</p>`);
+  let q = 0, raf = null, last = performance.now(), acc = 0, dots = [];
+  const tick = n => { if (!alive(el)) return; const N = +$(".trN", el).value, I = +$(".trI", el).value, rate = N / I, dt = Math.min(.1, (n - last) / 1000); last = n;
+    $(".trNv", el).textContent = N; $(".trIv", el).textContent = I + " s"; $(".trR", el).textContent = rate.toFixed(2);
+    acc += rate * dt; while (acc >= 1){ acc--; dots.push(0); } q = Math.max(0, q + (rate - 2) * dt); if (q > 60) q = 60;
+    const ok = rate <= 1.6, warn = rate <= 2; $(".trS", el).textContent = ok ? "Flows smoothly" : warn ? "At the limit: occasional waits" : "Queue overflows: requests time out"; $(".trS", el).style.color = ok ? "var(--teal)" : warn ? "#B45309" : "var(--bad)";
+    const cv = $(".trC", el), {g, W, H} = hiDPI(cv); g.clearRect(0, 0, W, H); g.fillStyle = "#1F3A5F"; g.fillRect(W - 110, 20, 90, H - 40); g.fillStyle = "#fff"; g.font = "11px sans-serif"; g.fillText("Apps Script", W - 98, H / 2);
+    dots = dots.map(x => x + dt * 0.8).filter(x => x < 1); g.fillStyle = "#2A9D8F"; dots.forEach((x, i) => { g.beginPath(); g.arc(20 + x * (W - 150), 30 + (i * 17) % (H - 60), 4, 0, 7); g.fill(); });
+    g.fillStyle = q > 30 ? "#B91C1C" : "#C9A227"; const qn = Math.round(q); for (let i = 0; i < Math.min(qn, 40); i++){ g.fillRect(W - 120 - (i % 10) * 9, H - 18 - Math.floor(i / 10) * 9, 7, 7); }
+    if (qn) { g.fillStyle = cssv("--ink") || "#14213D"; g.fillText(`queue: ${qn}`, W - 210, 14); }
+    raf = requestAnimationFrame(tick); };
+  el.querySelectorAll("input").forEach(x => x.oninput = () => { if (!act("traffic")) logEvent(currentModule, "traffic", "activity", "used"); });
+  raf = requestAnimationFrame(tick);
+};
+INTERACTIVES.dictionary = function(el){
+  const cols = ["timestamp","device_id","sensor","value","unit"], fields = ["Type","Unit","Allowed values","Example","Source"];
+  const ex = {timestamp:["date-time","Asia/Manila time","any","2026-10-05 09:30:00","Apps Script"]};
+  const saved = store.get("sti_dict_" + (user ? user.email : "g"), {});
+  el.innerHTML = bench("Data dictionary", `<p class="explain">The first row is done for you. Fill in every cell for the other columns. Your answers are saved on this device.</p>
+   <div class="adm-tablewrap"><table class="t dict"><tr><th>Column</th>${fields.map(f => `<th>${f}</th>`).join("")}</tr>${cols.map(c => `<tr><td><b>${c}</b></td>${fields.map((f, i) => `<td><input class="dinput dc" data-c="${c}" data-i="${i}" value="${esc((saved[c] || ex[c] || [])[i] || "")}" ${ex[c] ? "readonly" : ""} aria-label="${c} ${f}"></td>`).join("")}</tr>`).join("")}</table></div>
+   <h3 style="margin:.6em 0 .3em">Propose a schema change</h3><p>Suggest one new column (for example <code>location</code> or <code>firmware_version</code>). What breaks if one team adopts it and another does not? How would you move old rows to the new layout?</p>
+   <textarea class="dinput dcChange" rows="4" style="width:100%;box-sizing:border-box" placeholder="Change: ...  Consequence 1: ...  Consequence 2: ...  Migration step: ...">${esc(saved._change || "")}</textarea>
+   <div class="controls"><button class="btn primary dcCheck">Check my dictionary</button></div><div class="feedback dcFb"></div>`);
+  const save = () => { const o = {}; el.querySelectorAll(".dc").forEach(i => { (o[i.dataset.c] = o[i.dataset.c] || [])[+i.dataset.i] = i.value; }); o._change = $(".dcChange", el).value; store.set("sti_dict_" + (user ? user.email : "g"), o); return o; };
+  el.querySelectorAll("input, textarea").forEach(i => i.oninput = save);
+  $(".dcCheck", el).onclick = () => { const o = save(), empty = []; cols.forEach(c => fields.forEach((f, i) => { if (!(o[c] && String(o[c][i] || "").trim())) empty.push(c + " \u2192 " + f); })); const ch = o._change.trim().length >= 40;
+    const fb = $(".dcFb", el); if (!empty.length && ch){ fb.className = "feedback dcFb ok"; fb.innerHTML = "Complete: every cell is filled and you proposed a schema change. Compare with a classmate, then upload a screenshot as checkpoint evidence."; logEvent(currentModule, "dictionary", "activity", "complete"); confetti(); }
+    else { fb.className = "feedback dcFb no"; fb.innerHTML = (empty.length ? `Still empty: ${empty.slice(0, 6).map(esc).join(", ")}${empty.length > 6 ? "\u2026" : ""}. ` : "") + (ch ? "" : "Describe your schema change with its consequences and a migration step."); } };
+};
+INTERACTIVES.cotdebug = function(el){
+  const prompt = `P (Persona): You are a patient IoT troubleshooting coach for a beginner.
+A (Aim): Help me find why my board's readings are not reaching my Google Sheet.
+R (Recipients): I am new to programming; explain each step simply.
+T (Theme): My ESP32 runs P4 (Arduino C++). The Serial Monitor shows "connected!" then "Reply: ERR:key" every 30 seconds. No rows appear in the Data tab. A browser test with my URL and key shows OK:2.
+S (Structure): List 3 possible causes, most likely first. For each, give one test I can do and what result would confirm or rule it out.
+Chain-of-Thought: Think step by step about each part of the path: board, Wi-Fi, URL, Apps Script, Sheet.
+[My key and URL are replaced with placeholders for safety.]`;
+  const saved = store.get("sti_cot_" + (user ? user.email : "g"), [["","",""],["","",""],["","",""]]);
+  el.innerHTML = bench("Debug with Chain-of-Thought", `<p><b>Scenario:</b> the board connects to Wi-Fi, but every reply is <code>ERR:key</code>, while the same URL works in a browser.</p>
+   <div class="codebox"><div class="codehead"><span>PARTS + Chain-of-Thought prompt</span><button class="btn small cotCopy" type="button">Copy</button></div><pre class="code"><code>${esc(prompt)}</code></pre></div>
+   <div class="controls"><button class="btn cotAsk">Ask Sensi with this prompt</button></div>
+   <p>Record each AI hypothesis, the test <b>you</b> ran, and the result. Accept a cause only when a test confirms it.</p>
+   <div class="adm-tablewrap"><table class="t cot"><tr><th>#</th><th>AI hypothesis</th><th>My test</th><th>Result (confirmed / ruled out)</th></tr>${saved.map((r, i) => `<tr><td>${i + 1}</td>${r.map((v, j) => `<td><textarea class="dinput cotC" data-r="${i}" data-c="${j}" rows="2" style="width:100%;box-sizing:border-box">${esc(v)}</textarea></td>`).join("")}</tr>`).join("")}</table></div>
+   <div class="controls"><button class="btn primary cotDone">Check my log</button></div><div class="feedback cotFb"></div>
+   <details><summary>Teacher's note: the usual cause</summary><p>Often the key on the board has an extra space, different capitals, or the old key from before it was changed; or the board uses an older deployment URL whose code expects a different key. The browser test working proves the server side is fine, so the difference must be in the URL the board builds. Printing the board's URL and pasting it into a browser confirms it.</p></details>`);
+  const save = () => { const o = [["","",""],["","",""],["","",""]]; el.querySelectorAll(".cotC").forEach(t => o[+t.dataset.r][+t.dataset.c] = t.value); store.set("sti_cot_" + (user ? user.email : "g"), o); return o; };
+  el.querySelectorAll(".cotC").forEach(t => t.oninput = save);
+  $(".cotCopy", el).onclick = () => { (navigator.clipboard ? navigator.clipboard.writeText(prompt) : Promise.reject()).then(() => toast("Prompt copied.")).catch(() => toast("Select the prompt and copy it.", "warn")); };
+  $(".cotAsk", el).onclick = () => { if (typeof openAI === "function"){ openAI(); setTimeout(() => { const i = $("#aiIn") || document.querySelector(".ai textarea"); if (i){ i.value = prompt; i.dispatchEvent(new Event("input")); i.focus(); } }, 300); } };
+  $(".cotDone", el).onclick = () => { const o = save(), full = o.every(r => r.every(v => v.trim().length >= 3)), conf = o.some(r => /confirm/i.test(r[2]));
+    const fb = $(".cotFb", el); if (full && conf){ fb.className = "feedback cotFb ok"; fb.textContent = "Complete: 3 hypotheses, each with your own test and result, and a cause confirmed by a test."; logEvent(currentModule, "cot_debug", "activity", "done"); confetti(); }
+    else { fb.className = "feedback cotFb no"; fb.textContent = !full ? "Fill in all three rows: hypothesis, your test, and the result." : "Mark which hypothesis a test confirmed (write \u201cconfirmed\u201d in its result)."; } };
+};
+Object.assign(DRILLS, {
+ u21:[
+  {t:"mcq", q:"Which part of a URL holds the data the board sends?", o:["The protocol","The host","The path","The query string"], a:3, e:"Everything after ? is key=value pairs: the query string.", w:["https:// only says how to talk.","The host says which server.","The path says which program on the server.",""]},
+  {t:"input", q:"How many readings (rows) will this request save? ?key=k&device_id=t3&temp_C=29&hum_pct=70&light_pct=50", ans:["3"], e:"key and device_id are control parameters; the three sensor_unit pairs become three rows."},
+  {t:"mcq", q:"Your browser test shows 404 Not Found. What is the most likely cause?", o:["Wrong key","A typo in the URL","The Sheet is full","Wi-Fi is off"], a:1, e:"404 means no program exists at that address.", w:["A wrong key gives a 200 reply with ERR:key.","","A full Sheet causes a different error.","The browser loaded a page, so the network works."]},
+  {t:"input", q:"What value does data.current.temperature_2m give for {\"current\": {\"temperature_2m\": 31.2}}?", ans:["31.2"], e:"Follow the path: current, then temperature_2m."},
+  {t:"mcq", q:"What does [1, 2, 3].map(x => x * 10) return?", o:["[1, 2, 3]","60","[10, 20, 30]","[30]"], a:2, e:"map makes a new array by changing every item.", w:["map returns a changed copy.","That would be adding them up and multiplying.","","map keeps every item."]},
+  {t:"mcq", q:"Which line correctly creates a value that will change later in JavaScript?", o:["const count = 0;","let count = 0;","int count = 0;","count == 0;"], a:1, e:"Use let for values that change and const for values that do not.", w:["const values cannot be reassigned.","","int is C++, not JavaScript.","== compares; it does not create a variable."]}],
+ u22:[
+  {t:"mcq", q:"What does e.parameter contain inside doGet(e)?", o:["The Sheet","The query-string values of the request","The API key from Script properties","The reply text"], a:1, e:"e.parameter.temp_C, for example, is \"29.4\".", w:["The Sheet is reached with SpreadsheetApp.","","The stored key is read with PropertiesService.","The reply is what doGet returns."]},
+  {t:"input", q:"Request: ?key=OK_KEY&device_id=t3&temp_C=25&mood=happy. With the correct key, what does P3 reply?", ans:["OK:1"], e:"mood has no unit part and happy is not a number, so only temp_C becomes a row: OK:1."},
+  {t:"mcq", q:"You clicked New deployment instead of editing the existing one. What happens?", o:["Nothing changes","You get a different URL; boards using the old URL keep running old code","The Sheet is deleted","The key is reset"], a:1, e:"Always edit the existing deployment and choose New version.", w:["A new deployment always gets a new URL.","","Deployments never delete the Sheet.","The key in Script properties is unaffected."]},
+  {t:"mcq", q:"Why does P3 store the key with PropertiesService instead of writing it in the code?", o:["It is faster","So sharing the code does not reveal the key","Apps Script requires it","It encrypts the Sheet"], a:1, e:"Script properties keep secrets outside the source code.", w:["Speed is not the reason.","","You could write it in the code, but it would be visible.","It does not encrypt anything."]},
+  {t:"parsons", q:"Order the guard and router lines at the start of doGet.", lines:["function doGet(e) {","  const p = e.parameter || {};","  if (p.key !== key) return text_('ERR:key');","  const action = p.action || 'log';","  if (action === 'log') return logReadings_(p);","}"], e:"Read the parameters, reject a wrong key first (guard clause), then route the action."}],
+ u23:[
+  {t:"mcq", q:"In P4, what does http.GET() return when the connection itself fails?", o:["200","A negative number","OK:0","An empty Sheet"], a:1, e:"Positive numbers are HTTP status codes; negative numbers are connection errors.", w:["200 means the request succeeded.","","OK:0 would be a reply from the script.","GET returns a number, not a Sheet."]},
+  {t:"input", q:"P4 sends every 30 s, 3 readings each time. How many rows does one board add in 10 minutes?", ans:["60"], e:"10 minutes = 20 sends; 20 \u00d7 3 = 60 rows."},
+  {t:"mcq", q:"Why must the Pico W code call r.close() after each request?", o:["To end Wi-Fi","To free memory; otherwise the board runs out after many requests","To save the reply","To change the key"], a:1, e:"Each open response uses memory on the small Pico W.", w:["Wi-Fi stays connected.","","The reply text is read before closing.","The key is unrelated."]},
+  {t:"mcq", q:"The Serial Monitor shows a web page in HTML instead of OK:3. What should you check first?", o:["The DHT22 wiring","That the web app access is Anyone and you use the /exec URL","The LDR resistor","The baud rate"], a:1, e:"An HTML page usually means Google is asking for a sign-in.", w:["Sensors would give a skipped reading, not HTML.","","The LDR does not affect the reply.","A wrong baud rate gives garbled symbols, not HTML."]}],
+ u24:[
+  {t:"mcq", q:"Which design recovers from a 2-minute Wi-Fi outage without anyone pressing reset?", o:["Connect once in setup() only","Call connectWiFi() before every send","Use delay(120000)","Restart the router"], a:1, e:"Checking and reconnecting before every send repairs dropped connections automatically.", w:["It never reconnects after the outage.","","Waiting does not reconnect.","The board must reconnect itself."]},
+  {t:"input", q:"20 devices send every 10 s. How many requests per second does the script receive?", ans:["2"], e:"20 \u00f7 10 = 2 requests per second, right at the limit of the simplified model; 30 s or slower is safer."},
+  {t:"mcq", q:"Two boards in a shared Sheet both use device_id team1-esp32. What is the problem?", o:["None","Their rows cannot be told apart later","The script stops","The key changes"], a:1, e:"Unique IDs are the only way to separate devices in the data.", w:["Duplicate IDs make the data ambiguous.","","The script keeps running.","The key is unrelated."]},
+  {t:"mcq", q:"Where should cleaning (removing bad readings) happen?", o:["By deleting rows in the Data tab","On a copy, downstream, keeping the raw Data tab unchanged","In the router","Nowhere"], a:1, e:"The Data tab is the raw, append-only record.", w:["Editing raw data destroys the evidence.","","Routers do not clean data.","Bad readings must be handled, just not in the raw layer."]}]
+});
 </script>
 <script>/* ============ v2 MOTION LAYER ============ */
 const M = window.Motion || null;
@@ -3233,7 +4035,7 @@ function admLogin(msg){
    <div class="controls"><button class="btn primary" id="admGo">Open dashboard</button></div><div class="err" id="admErr" role="alert">${msg || ""}</div></div>`;
   const go = async () => { const v = $("#admPass").value; if (!v) return; $("#admGo").disabled = true; $("#admErr").textContent = "Checking\u2026";
     const r = await api("admin_login", {passcode:v}, false); $("#admGo").disabled = false;
-    if (r.ok){ sessionStorage.setItem("sti_admin", JSON.stringify({token:r.token, exp:Date.now() + r.expiresIn * 1000, email:user.email})); logEvent("admin", "dashboard", "admin_login", "ok"); renderMap(); viewAdmin(); return; }
+    if (r.ok){ sessionStorage.setItem("sti_admin", JSON.stringify({token:r.token, exp:Date.now() + r.expiresIn * 1000, email:user.email})); logEvent("admin", "dashboard", "admin_login", "ok"); if (typeof applyReleases === "function") applyReleases(); renderMap(); viewAdmin(); return; }
     const m = {bad_passcode:`Incorrect passcode. ${r.remaining} attempt${r.remaining === 1 ? "" : "s"} left before a 15-minute lock.`, locked:`Too many attempts. Try again in ${r.minutes || 15} minutes.`, not_admin:"This account is not on the administrator list (CONFIG.ADMIN_EMAILS in Code.gs).", admin_disabled:"Admin sign-in is not set up yet: add ADMIN_PASSCODE (8+ characters) in Apps Script Script properties, then deploy a new version.", network:"No connection to the server. Check your internet and try again."};
     $("#admErr").textContent = m[r.error] || ("Could not sign in (" + (r.error || "unknown error") + ")."); };
   $("#admGo").onclick = go; $("#admPass").onkeydown = e => { if (e.key === "Enter") go(); }; $("#admPass").focus();
@@ -3304,7 +4106,7 @@ function admRender(){
   $("#admQ").oninput = e => { admQuery = e.target.value; admRenderTable(); };
   $("#admF").onchange = e => { admFilter = e.target.value; admRenderTable(); };
   $("#admRefresh").onclick = () => { $("#view").querySelector("h1").textContent = "Teacher dashboard (refreshing\u2026)"; admLoad(); };
-  $("#admOut").onclick = async () => { await adminCall("admin_logout"); sessionStorage.removeItem("sti_admin"); renderMap(); toast("Signed out of admin."); location.hash = "#/home"; };
+  $("#admOut").onclick = async () => { await adminCall("admin_logout"); sessionStorage.removeItem("sti_admin"); if (typeof applyReleases === "function") applyReleases(); renderMap(); toast("Signed out of admin."); location.hash = "#/home"; };
   $("#admRes").onclick = admResearchCsv;
   $("#admCsv").onclick = () => { const rows = admTableRows(), q = v => `"${String(v == null ? "" : v).replace(/"/g, '""')}"`;
     const head = ["given_name","last_name","email","role","grade_levels","school_or_industry","last_seen","hours","visits","modules_done","sections_done","quiz_pct","pre_test","post_test","badges","needs_attention","research_consent"];
@@ -3463,6 +4265,13 @@ const RELEASE_NOTES = [
   "Beta feedback button: tell us what is broken, confusing, or could be better."],
   next:"Coming next: Unit 2, Connecting to the cloud."}
 ];
+if (typeof RELEASE !== "undefined" && RELEASE.u2) RELEASE_NOTES.unshift({v:"Beta 2", date:"2026-10-12", title:"Unit 2 is open: connect to the cloud", items:[
+  "Unit 2: Connecting to the cloud (Modules 2.1 to 2.4) is now open.",
+  "Learn HTTP, URLs, JSON, and the JavaScript you need for Google Apps Script.",
+  "Build your own cloud logger (Program P3) and send readings from your board to Google Sheets every 30 seconds (Program P4).",
+  "New simulators: URL builder, logger and deployment simulators, the journey of one reading, outage and class traffic simulators.",
+  "Data dictionary and Chain-of-Thought debugging activities, plus seven new Unit 2 badges."],
+  next:"Coming next: Python Lab A, Python and Google Colab."});
 const FB_TYPES = [["broken","Something is broken"],["confusing","Something is confusing"],["content","Wrong fact or typo"],["suggestion","Suggestion"],["other","Other"]];
 function fbContext(sectionId){
   const h = location.hash || "#/home", mm = h.match(/^#\/m\/([^?]+)/), mid = mm ? decodeURIComponent(mm[1]) : "";
@@ -3937,7 +4746,7 @@ function viewSurvey(unit){
 /* ---------- Course overview ---------- */
 function viewOverview(){
   const comps = [["C1","Physical computing","Wire sensors and program boards in C++ and MicroPython."],["C2","IoT connectivity","Send data over Wi-Fi and HTTP to the cloud."],["C3","Data engineering","Design data flows, formats, and pipelines."],["C4","Data cleaning","Find and fix errors, gaps, and outliers honestly."],["C5","Analysis and communication","Summarize, chart, and tell a data story."],["C6","Data science","Build and test simple prediction and anomaly models."],["C7","Automation and control","Make systems act on data automatically."],["C8","Human-centered AI","Use AI as a partner you direct, verify, and are accountable for."]];
-  const units = [["Unit 1","Sensors and programming foundations","open","#2A9D8F"],["Unit 2","Connecting to the cloud","soon","#1F3A5F"],["Lab A","Python and Google Colab","soon","#7C3AED"],["Unit 3","Making sense of the data","soon","#E76F51"],["Unit 4","Acting on data and data science","soon","#C9A227"],["Unit 5","Capstone","soon","#15803D"]];
+  const units = [["Unit 1","Sensors and programming foundations","open","#2A9D8F"],["Unit 2","Connecting to the cloud",(typeof RELEASE !== "undefined" && RELEASE.u2) ? "open" : "soon","#1F3A5F"],["Lab A","Python and Google Colab","soon","#7C3AED"],["Unit 3","Making sense of the data","soon","#E76F51"],["Unit 4","Acting on data and data science","soon","#C9A227"],["Unit 5","Capstone","soon","#15803D"]];
   $("#view").innerHTML = `<section class="ov-hero"><p class="crumb">Course overview</p><h1>From Sensor to Insight</h1><p class="lede2">IoT Data Analytics, Engineering, and Science with Human-Centered AI</p>
     <p>Across five units you will build a real Internet of Things system: sensors on a microcontroller send live data to Google Sheets, you clean and analyze it in Sheets and Python, your system acts on it automatically, and you present a data story. Along the way you learn to use AI as a partner you direct and check, not a shortcut you trust blindly.</p>
     <div class="controls">${preGate() ? `<a class="btn shimmer" href="#/test/pre">Take the pre-test</a>` : `<a class="btn shimmer" href="#/m/1.1">Start Unit 1</a>`}<a class="btn" href="#ov-assess">How you are assessed</a></div></section>
@@ -4129,6 +4938,38 @@ viewBadges = function(){ _viewBadges();
   const intro = $("#view p"); if (intro) intro.insertAdjacentHTML("afterend", `<p class="explain">Each badge lists what you still need. Tap <b>Open</b> to jump to that activity or quiz.</p>`); };
 
 const _renderMapFb = renderMap; renderMap = function(){ _renderMapFb.apply(this, arguments); try { addFeedbackButton(); } catch(e){} };
+
+/* Unit 2 badges, and fixes for multi-unit courses */
+BADGE_REQS["U1-DONE"] = ["1.1","1.2","1.3","1.4"].map(id => ({t:`Finish Module ${id} (100%)`, ok:() => !!MODULES[id] && modulePct(MODULES[id]) === 1, v:() => MODULES[id] ? Math.round(modulePct(MODULES[id]) * 100) + "%" : "0%", at:[id,"top"]}));
+const U2_BADGES = [
+ {id:"U2-O1", name:"Web Whisperer", color:"#0E7490", icon:"M-12 0 a12 12 0 1 0 24 0 a12 12 0 1 0 -24 0 M-12 0 h24 M0 -12 c-6 6 -6 18 0 24 M0 -12 c6 6 6 18 0 24", how:"Score 4/5 on the Module 2.1 quiz and build a request in the URL builder."},
+ {id:"U2-O2", name:"Cloud Builder", color:"#1F3A5F", icon:"M-12 6 a6 6 0 0 1 2 -12 a8 8 0 0 1 15 -2 a6 6 0 0 1 7 8 a5 5 0 0 1 -2 6z", how:"Score 4/5 on the Module 2.2 quiz, meet the Core challenge in the logger simulator, and publish a new version in the deployment simulator."},
+ {id:"U2-O3", name:"Data Sender", color:"#2A9D8F", icon:"M-12 8 l24 -8 -24 -8 4 8z M-8 0 h12", how:"Score 4/5 on the Module 2.3 quiz and pass the Core task in the request URL checker."},
+ {id:"U2-O4", name:"Never Give Up", color:"#7C3AED", icon:"M-10 4 a10 10 0 1 0 2 -10 M-10 -10 v6 h6", how:"Use the outage and traffic simulators and answer the reconnection and send-rate quiz items in Module 2.4 correctly."},
+ {id:"U2-O5", name:"Data Librarian", color:"#C9A227", icon:"M-10 -12 h20 v24 h-20z M-6 -6 h12 M-6 0 h12 M-6 6 h8", how:"Complete the data dictionary with a schema change and answer the schema quiz item correctly."},
+ {id:"U2-O6", name:"Hypothesis Tester", color:"#BE185D", icon:"M-4 -12 h8 M-2 -12 v8 l-8 14 h20 l-8 -14 v-8", how:"Complete the Chain-of-Thought debugging log with a cause confirmed by a test."},
+ {id:"U2-DONE", name:"Unit 2 Complete", color:"#14213D", icon:"M0 -12 l3.5 7.5 8 1 -6 5.5 1.5 8 -7 -4 -7 4 1.5 -8 -6 -5.5 8 -1z", how:"Complete all four Unit 2 modules."}];
+U2_BADGES.forEach(b => BADGES.push(b));
+Object.assign(BADGE_REQS, {
+ "U2-O1":[{t:"Score at least 4/5 on the Module 2.1 quiz", ok:() => qc("2.1") >= 4, v:() => qc("2.1") + "/5", at:["2.1","quiz"]},{t:"Build a request and tap a URL part in the URL builder", ok:() => !!act("urlparts"), at:["2.1","url"]}],
+ "U2-O2":[{t:"Score at least 4/5 on the Module 2.2 quiz", ok:() => qc("2.2") >= 4, v:() => qc("2.2") + "/5", at:["2.2","quiz"]},{t:"Meet the Core challenge in the logger simulator (3 sensor names)", ok:() => act("logsim") === "core", at:["2.2","build"]},{t:"Publish a new version in the deployment simulator", ok:() => act("deploylab") === "done", at:["2.2","deploy"]}],
+ "U2-O3":[{t:"Score at least 4/5 on the Module 2.3 quiz", ok:() => qc("2.3") >= 4, v:() => qc("2.3") + "/5", at:["2.3","quiz"]},{t:"Pass the Core task in the request URL checker", ok:() => ["done","ext"].includes(act("reqbuilder")), at:["2.3","challenges"]}],
+ "U2-O4":[{t:"Try the outage simulator", ok:() => !!act("outage"), at:["2.4","fail"]},{t:"Try the traffic simulator", ok:() => !!act("traffic"), at:["2.4","traffic"]},{t:"Answer the reconnection and send-rate quiz items (1 and 2) correctly", ok:() => qok("2.4", 0) && qok("2.4", 1), at:["2.4","quiz"]}],
+ "U2-O5":[{t:"Complete the data dictionary with a schema change", ok:() => act("dictionary") === "complete", at:["2.4","dictionary"]},{t:"Answer the schema change quiz item (4) correctly", ok:() => qok("2.4", 3), at:["2.4","quiz"]}],
+ "U2-O6":[{t:"Complete the Chain-of-Thought debugging log", ok:() => act("cot_debug") === "done", at:["2.4","aidebug"]}],
+ "U2-DONE":["2.1","2.2","2.3","2.4"].map(id => ({t:`Finish Module ${id} (100%)`, ok:() => !!MODULES[id] && modulePct(MODULES[id]) === 1, v:() => MODULES[id] ? Math.round(modulePct(MODULES[id]) * 100) + "%" : "0%", at:[id,"top"]}))
+});
+BADGES.forEach(b => { const R = BADGE_REQS[b.id]; if (R) b.test = () => R.every(r => r.ok()); });
+const unitOf = id => COURSE.find(u => u.modules.some(m => m.id === id));
+/* module page: correct unit name, Unit 1 survey only after 1.4, P4 language tabs */
+const _vmU2 = viewModule;
+viewModule = function(id){ _vmU2(id);
+  const u = unitOf(id), cr = document.querySelector("#view .mod-hero .crumb"); if (u && cr) cr.textContent = `${u.title.split(":")[0]} \u2022 Module ${id}`;
+  if (id !== "1.4") document.querySelectorAll('#view a[href="#/survey/u1"]').forEach(a => { const c = a.closest(".callout"); if (c) c.remove(); });
+  document.querySelectorAll("#view .p4tabs button").forEach(b => b.onclick = () => { document.querySelectorAll("#view .p4tabs button").forEach(x => x.setAttribute("aria-selected", x === b)); document.querySelectorAll("#view .p4pane").forEach(p => p.hidden = p.dataset.p4p !== b.dataset.p4); });
+  if (typeof getBoard === "function" && getBoard() === "pico"){ const pb = document.querySelector('#view .p4tabs button[data-p4="py"]'); if (pb) pb.click(); }
+};
+Object.assign(INT_NAMES, {urlparts:"URL builder: readings to rows", httpletter:"HTTP as a letter", jsonx:"JSON explorer", "drill:u21":"Drill: HTTP, JSON, and JavaScript", logsim:"Logger simulator", deploylab:"Deployment simulator", "drill:u22":"Drill: the Apps Script logger", knock:"The journey of one reading", reqbuilder:"Request URL checker", "drill:u23":"Drill: device to cloud", outage:"Outage simulator", traffic:"Class traffic simulator", dictionary:"Data dictionary", cotdebug:"Chain-of-Thought debugging log", "drill:u24":"Drill: reliability and data habits"});
 
 if (!apiReady()) $("#banner").innerHTML = `<div class="banner">Preview mode: progress is saved on this device only. Add the Apps Script web app URL in CONFIG.API_URL to enable tracking, uploads, and Sensi.</div>`;
 applyDevice(); applySettings();
