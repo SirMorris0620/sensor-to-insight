@@ -693,6 +693,25 @@ a.btn{text-decoration:none}
 .ldrin .el{animation:jig .9s ease-in-out infinite alternate}@keyframes jig{to{transform:translateX(8px)}}
 .video2{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media (max-width:760px){.video2{grid-template-columns:1fr}}
 .vtl,.cll{margin-bottom:8px}.vtl button,.cll button{white-space:normal}
+/* v10: teacher dashboard */
+.adm-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px}
+.adm-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:12px 0}
+.adm-card{border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--surface);display:flex;flex-direction:column;gap:2px}
+.adm-card span{font-size:.82rem;color:var(--muted)}.adm-card b{font-size:1.6rem;color:var(--navy)}.adm-card small{color:var(--muted)}
+.adm-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media (max-width:900px){.adm-grid{grid-template-columns:1fr}}
+section.panel{margin:0 0 14px}section.panel h2{margin-top:0;font-size:1.15rem}
+.adm-bars{display:flex;flex-direction:column;gap:8px}
+.adm-bar{display:grid;grid-template-columns:minmax(120px,40%) 1fr auto;gap:10px;align-items:center;font-size:.9rem}
+.adm-track{height:14px;border-radius:7px;background:var(--bg);overflow:hidden;border:1px solid var(--line)}.adm-track i{display:block;height:100%;border-radius:7px}
+.adm-svg{width:100%;height:auto;display:block}.adm-svg .gl{stroke:var(--line)}.adm-svg .ax{font-size:11px;fill:var(--muted)}.adm-svg .vl{font-size:10px;fill:var(--ink);text-anchor:middle}
+.adm-legend{display:flex;gap:16px;font-size:.88rem;margin-bottom:6px}.adm-legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.adm-tablewrap{overflow-x:auto}.adm-t th{white-space:nowrap}.adm-t td{vertical-align:top}
+.adm-sort{background:none;border:0;color:inherit;font:inherit;font-weight:700;cursor:pointer;padding:0}
+.adm-link{background:none;border:0;padding:0;color:var(--teal);font:inherit;font-weight:700;cursor:pointer;text-align:left;text-decoration:underline}
+.adm-quote{border-left:3px solid var(--line);padding:4px 10px;margin:8px 0}.adm-quote p{margin:.2em 0}
+.adm-drawer{position:fixed;top:0;right:0;bottom:0;width:min(640px,100vw);background:var(--surface);border-left:1px solid var(--line);box-shadow:-12px 0 30px -18px rgba(0,0,0,.5);z-index:60;overflow-y:auto;padding:18px 20px calc(18px + env(safe-area-inset-bottom))}
+.adm-dhead{display:flex;justify-content:space-between;align-items:center;gap:10px}.adm-dhead h2{margin:0}
+.adm-login{max-width:520px}
 </style>
 </head>
 <body>
@@ -3030,11 +3049,11 @@ const TEST_CFG = { MINUTES: 45, REQUIRE_PRETEST: true, POSTTEST_OPEN: false };  
 const COMP_NAMES = {C1:"Physical computing",C2:"IoT connectivity",C3:"Data engineering",C4:"Data cleaning",C5:"Analysis and communication",C6:"Data science",C7:"Automation and control",C8:"Human-centered AI"};
 let testActive = false;
 const testDone = t => !!(prog.tests && prog.tests[t]);
-const preGate = () => TEST_CFG.REQUIRE_PRETEST && !testDone("pre");
+const preGate = () => TEST_CFG.REQUIRE_PRETEST && !testDone("pre") && !(typeof adminActive === "function" && adminActive());
 const fmtItem = s => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
 function viewTest(kind){
   const isPre = kind === "pre", name = isPre ? "Pre-test" : "Post-test";
-  if (!isPre && !TEST_CFG.POSTTEST_OPEN && !testDone("post")){ $("#view").innerHTML = `<p class="crumb">${name}</p><h1>${name}</h1><div class="callout tip"><b>Not open yet</b><p>The post-test opens after the capstone. Your teacher will tell you when to take it.</p></div>`; return; }
+  if (!isPre && !TEST_CFG.POSTTEST_OPEN && !testDone("post") && !(typeof adminActive === "function" && adminActive())){ $("#view").innerHTML = `<p class="crumb">${name}</p><h1>${name}</h1><div class="callout tip"><b>Not open yet</b><p>The post-test opens after the capstone. Your teacher will tell you when to take it.</p></div>`; return; }
   if (testDone(kind)) return testResult(kind);
   const saved = store.get(`sti_test_${kind}_${user.email}`, null);
   if (!saved){
@@ -3088,6 +3107,132 @@ function testResult(kind){
 }
 function viewPreGate(){
   $("#view").innerHTML = `<p class="crumb">Unit 1</p><h1>Take the pre-test first</h1><p>Before you start the modules, take the 40-question pre-test (about 45 minutes). It is not graded; it shows where you are starting so you can see your growth by the end of the course.</p><a class="btn primary big" href="#/test/pre" style="max-width:320px">Go to the pre-test</a>`;
+}
+
+/* ============ TEACHER DASHBOARD (admin) ============ */
+const ADMIN_UI_EMAILS = ["morris.bana@dlsu.edu.ph"];   // only shows the link; the server decides who is admin
+const isAdminEmail = () => !!(user && ADMIN_UI_EMAILS.includes(String(user.email).toLowerCase()));
+const adminSess = () => { try { const a = JSON.parse(sessionStorage.getItem("sti_admin") || "null"); return a && a.exp > Date.now() && a.email === user.email ? a : null; } catch(e){ return null; } };
+const adminActive = () => !!adminSess();
+let ADM = null, admSort = {k:"lastSeen", d:-1}, admFilter = "all", admQuery = "";
+const SB_NAMES = {sb_blink:"Warm-up (1.2)", sb_pattern:"Core (1.2)", sb_csv:"CSV logger (1.3)", sb_alarm:"Boss: light alarm (1.3)"};
+const U1_MODS = ["1.1", "1.2", "1.3", "1.4"];
+function admDays(iso){ if (!iso) return Infinity; return (Date.now() - new Date(iso).getTime()) / 864e5; }
+function admName(l){ return [l.givenName, l.lastName].filter(Boolean).join(" ") || l.email; }
+function admFlags(l){ const f = [];
+  if (!l.tests.pre) f.push("No pre-test");
+  if (admDays(l.lastSeen) > 7) f.push("Inactive 7+ days");
+  if (l.quizTotal >= 5 && l.quizRight / l.quizTotal < 0.6) f.push("Quiz under 60%");
+  Object.keys(l.sandbox || {}).forEach(k => { const c = l.sandbox[k]; if (!c.passed && c.tries >= 10) f.push("Stuck: " + (SB_NAMES[k] || k)); });
+  return f; }
+function admPct(n, d){ return d ? Math.round(100 * n / d) : 0; }
+async function adminCall(action, data){ return api(action, Object.assign({token:(adminSess() || {}).token}, data || {}), false); }
+
+function viewAdmin(){
+  if (!isAdminEmail()){ $("#view").innerHTML = `<h1>Not available</h1><p>This page is for course administrators.</p>`; return; }
+  if (!adminActive()) return admLogin();
+  $("#view").innerHTML = `<p class="crumb">Administrator</p><h1>Teacher dashboard</h1><p class="explain">Loading learner data\u2026</p>`;
+  admLoad();
+}
+function admLogin(msg){
+  $("#view").innerHTML = `<p class="crumb">Administrator</p><h1>Teacher dashboard</h1>
+   <p>Signed in as <b>${esc(user.email)}</b>. Enter your administrator passcode to view learner progress. Learner data stays protected: the passcode is checked on the server, and the session ends after 6 hours or when you close the browser.</p>
+   <div class="panel adm-login"><label for="admPass"><b>Administrator passcode</b></label><input id="admPass" type="password" autocomplete="current-password" class="dinput" style="width:100%;max-width:340px">
+   <div class="controls"><button class="btn primary" id="admGo">Open dashboard</button></div><div class="err" id="admErr" role="alert">${msg || ""}</div></div>`;
+  const go = async () => { const v = $("#admPass").value; if (!v) return; $("#admGo").disabled = true; $("#admErr").textContent = "Checking\u2026";
+    const r = await api("admin_login", {passcode:v}, false); $("#admGo").disabled = false;
+    if (r.ok){ sessionStorage.setItem("sti_admin", JSON.stringify({token:r.token, exp:Date.now() + r.expiresIn * 1000, email:user.email})); logEvent("admin", "dashboard", "admin_login", "ok"); renderMap(); viewAdmin(); return; }
+    const m = {bad_passcode:`Incorrect passcode. ${r.remaining} attempt${r.remaining === 1 ? "" : "s"} left before a 15-minute lock.`, locked:`Too many attempts. Try again in ${r.minutes || 15} minutes.`, not_admin:"This account is not on the administrator list (CONFIG.ADMIN_EMAILS in Code.gs).", admin_disabled:"Admin sign-in is not set up yet: add ADMIN_PASSCODE (8+ characters) in Apps Script Script properties, then deploy a new version.", network:"No connection to the server. Check your internet and try again."};
+    $("#admErr").textContent = m[r.error] || ("Could not sign in (" + (r.error || "unknown error") + ")."); };
+  $("#admGo").onclick = go; $("#admPass").onkeydown = e => { if (e.key === "Enter") go(); }; $("#admPass").focus();
+}
+async function admLoad(){
+  const r = await adminCall("admin_data");
+  if (!r.ok){ if (r.error === "admin_session"){ sessionStorage.removeItem("sti_admin"); return admLogin("Your session ended. Please sign in again."); } $("#view").innerHTML = `<h1>Teacher dashboard</h1><div class="callout mis"><b>Could not load data</b><p>${esc(r.error || "unknown error")}</p></div>`; return; }
+  ADM = r; admRender();
+}
+function admBars(items, max, fmt){ return `<div class="adm-bars">${items.map(it => `<div class="adm-bar"><span class="adm-bl">${esc(it[0])}</span><span class="adm-track"><i style="width:${max ? Math.max(1.5, it[1] / max * 100) : 0}%;background:${it[2] || "var(--teal)"}"></i></span><b>${fmt ? fmt(it) : it[1]}</b></div>`).join("")}</div>`; }
+function admCompChart(L){
+  const pre = L.filter(l => l.tests.pre), post = L.filter(l => l.tests.post), comps = ["C1","C2","C3","C4","C5","C6","C7","C8"], tot = [6,5,5,5,5,5,3,6];
+  const avg = (arr, k, i) => arr.length ? arr.reduce((a, l) => a + l.tests[k].comp[i] / tot[i], 0) / arr.length * 100 : null;
+  const W = 640, H = 230, bw = 24, gx = (W - 44) / 8;
+  let svg = `<svg viewBox="0 0 ${W} ${H + 40}" class="adm-svg" role="img" aria-label="Average pre-test and post-test score by competency">`;
+  [0, 25, 50, 75, 100].forEach(v => { const y = H - v / 100 * (H - 20); svg += `<line x1="30" x2="${W}" y1="${y}" y2="${y}" class="gl"/><text x="2" y="${y + 4}" class="ax">${v}%</text>`; });
+  comps.forEach((c, i) => { const x = 40 + i * gx + 4, a = avg(pre, "pre", i), b = avg(post, "post", i);
+    if (a != null) svg += `<rect x="${x}" y="${H - a / 100 * (H - 20)}" width="${bw}" height="${a / 100 * (H - 20)}" fill="#2A9D8F"><title>${c} pre-test: ${Math.round(a)}%</title></rect><text x="${x + bw / 2}" y="${H - a / 100 * (H - 20) - 4}" class="vl">${Math.round(a)}</text>`;
+    if (b != null) svg += `<rect x="${x + bw + 4}" y="${H - b / 100 * (H - 20)}" width="${bw}" height="${b / 100 * (H - 20)}" fill="#E9C46A"><title>${c} post-test: ${Math.round(b)}%</title></rect><text x="${x + bw * 1.5 + 4}" y="${H - b / 100 * (H - 20) - 4}" class="vl">${Math.round(b)}</text>`;
+    svg += `<text x="${x + bw + 2}" y="${H + 18}" class="ax" text-anchor="middle">${c}</text>`; });
+  svg += `</svg>`;
+  return `<div class="adm-legend"><span><i style="background:#2A9D8F"></i>Pre-test (n = ${pre.length})</span><span><i style="background:#E9C46A"></i>Post-test (n = ${post.length})</span></div>${svg}<p class="explain">C1 Physical computing \u2022 C2 IoT connectivity \u2022 C3 Data engineering \u2022 C4 Data cleaning \u2022 C5 Analysis and communication \u2022 C6 Data science \u2022 C7 Automation and control \u2022 C8 Human-centered AI. Post-test bars appear once learners take it.</p>`; }
+function admDaily(daily){
+  if (!daily.length) return `<p class="explain">No visits recorded yet.</p>`;
+  const W = 640, H = 160, max = Math.max(1, ...daily.map(d => d.active)), bw = Math.min(26, (W - 40) / daily.length - 4);
+  let svg = `<svg viewBox="0 0 ${W} ${H + 34}" class="adm-svg" role="img" aria-label="Active learners per day">`;
+  daily.forEach((d, i) => { const x = 34 + i * ((W - 40) / daily.length), h = d.active / max * (H - 20);
+    svg += `<rect x="${x}" y="${H - h}" width="${bw}" height="${h}" rx="3" fill="#1F3A5F"><title>${d.date}: ${d.active} active</title></rect><text x="${x + bw / 2}" y="${H - h - 4}" class="vl">${d.active}</text>`;
+    if (i % Math.ceil(daily.length / 7) === 0) svg += `<text x="${x + bw / 2}" y="${H + 16}" class="ax" text-anchor="middle">${d.date.slice(5)}</text>`; });
+  return svg + `</svg>`; }
+function admTableRows(){
+  let L = ADM.learners.slice();
+  if (admQuery){ const q = admQuery.toLowerCase(); L = L.filter(l => (admName(l) + " " + l.email + " " + l.org).toLowerCase().includes(q)); }
+  if (admFilter === "attention") L = L.filter(l => admFlags(l).length);
+  if (admFilter === "nopre") L = L.filter(l => !l.tests.pre);
+  if (admFilter === "done") L = L.filter(l => U1_MODS.every(m => l.modulesDone.includes(m)));
+  if (["Student","Teacher","Professional"].includes(admFilter)) L = L.filter(l => l.role === admFilter);
+  const val = l => ({name:admName(l).toLowerCase(), role:l.role, org:String(l.org).toLowerCase(), lastSeen:l.lastSeen || "", modules:l.modulesDone.length, sections:l.sectionsDone.length, quiz:l.quizTotal ? l.quizRight / l.quizTotal : -1, pre:l.tests.pre ? l.tests.pre.score : -1, post:l.tests.post ? l.tests.post.score : -1, badges:l.badges.length, flags:admFlags(l).length})[admSort.k];
+  return L.sort((a, b) => (val(a) > val(b) ? 1 : val(a) < val(b) ? -1 : 0) * admSort.d); }
+function admRenderTable(){
+  const rows = admTableRows(), cols = [["name","Learner"],["role","Role"],["org","School / industry"],["lastSeen","Last seen"],["modules","Modules"],["sections","Sections"],["quiz","Quiz"],["pre","Pre"],["post","Post"],["badges","Badges"],["flags","Needs attention"]];
+  $("#admTable").innerHTML = `<table class="t adm-t"><thead><tr>${cols.map(c => `<th><button class="adm-sort" data-k="${c[0]}" aria-label="Sort by ${c[1]}">${c[1]}${admSort.k === c[0] ? (admSort.d > 0 ? " \u25b2" : " \u25bc") : ""}</button></th>`).join("")}</tr></thead><tbody>${rows.map(l => { const fl = admFlags(l), d = admDays(l.lastSeen);
+    return `<tr><td><button class="adm-link" data-em="${esc(l.email)}">${esc(admName(l))}</button><div class="explain">${esc(l.email)}</div></td><td>${esc(l.role)}${l.grades ? `<div class="explain">${esc(l.grades)}</div>` : ""}</td><td>${esc(l.org)}</td><td>${l.lastSeen ? (d < 1 ? "today" : Math.floor(d) + " d ago") : "\u2014"}</td><td>${l.modulesDone.length}/4</td><td>${l.sectionsDone.length}</td><td>${l.quizTotal ? admPct(l.quizRight, l.quizTotal) + "%" : "\u2014"}</td><td>${l.tests.pre ? l.tests.pre.score + "/40" : "\u2014"}</td><td>${l.tests.post ? l.tests.post.score + "/40" : "\u2014"}</td><td>${l.badges.length}</td><td>${fl.length ? fl.map(f => `<span class="chip no">${esc(f)}</span>`).join(" ") : `<span class="chip ok">On track</span>`}</td></tr>`; }).join("") || `<tr><td colspan="11">No learners match.</td></tr>`}</tbody></table>`;
+  $("#admCount").textContent = `${rows.length} of ${ADM.learners.length} learners`;
+  document.querySelectorAll(".adm-sort").forEach(b => b.onclick = () => { const k = b.dataset.k; admSort = {k, d:admSort.k === k ? -admSort.d : (["name","role","org"].includes(k) ? 1 : -1)}; admRenderTable(); });
+  document.querySelectorAll(".adm-link").forEach(b => b.onclick = () => admLearner(b.dataset.em)); }
+function admRender(){
+  const L = ADM.learners, students = L.filter(l => l.role === "Student").length, active7 = L.filter(l => admDays(l.lastSeen) <= 7).length, pre = L.filter(l => l.tests.pre).length, done = L.filter(l => U1_MODS.every(m => l.modulesDone.includes(m))).length;
+  const qT = L.reduce((a, l) => a + l.quizTotal, 0), qR = L.reduce((a, l) => a + l.quizRight, 0), attention = L.filter(l => admFlags(l).length).length;
+  const sb = Object.keys(SB_NAMES).map(k => { const at = L.filter(l => l.sandbox[k]); return {k, attempted:at.length, passed:at.filter(l => l.sandbox[k].passed).length, tries:at.length ? (at.reduce((a, l) => a + l.sandbox[k].tries, 0) / at.length).toFixed(1) : "\u2014", sol:at.filter(l => l.sandbox[k].solution).length, more:at.filter(l => l.sandbox[k].more).length}; });
+  const S = SURVEY.u1, sv = ADM.surveys.filter(r => String(r.unit) === "1" || r.unit === "u1");
+  const sAvg = S.likert.map(([k, q], i) => { const v = sv.map(r => r.s[i]).filter(x => x != null && !isNaN(x)); return [q, v.length ? v.reduce((a, b) => a + b, 0) / v.length : 0, null, v.length]; });
+  $("#view").innerHTML = `<p class="crumb">Administrator</p><div class="adm-head"><h1>Teacher dashboard</h1><div class="controls"><button class="btn small" id="admRefresh">Refresh</button><button class="btn small" id="admCsv">Export CSV</button><button class="btn small" id="admOut">Sign out of admin</button></div></div>
+   <p class="explain">Data as of ${new Date(ADM.generatedAt).toLocaleString()}. Learner data is confidential (RA 10173): do not share screenshots that show names.</p>
+   <div class="adm-cards">${[["Enrolled", L.length, `${students} students`],["Active in last 7 days", active7, admPct(active7, L.length) + "% of enrolled"],["Pre-test done", pre, admPct(pre, L.length) + "%"],["Finished Unit 1", done, admPct(done, L.length) + "%"],["Quiz accuracy", qT ? admPct(qR, qT) + "%" : "\u2014", `${qT} answers`],["Need attention", attention, "see the table below"]].map(c => `<div class="adm-card"><span>${c[0]}</span><b>${c[1]}</b><small>${c[2]}</small></div>`).join("")}</div>
+   <div class="adm-grid"><section class="panel"><h2>Unit 1 progress</h2><p class="explain">Share of enrolled learners who finished each module.</p>${admBars(U1_MODS.map(m => [`Module ${m}`, L.filter(l => l.modulesDone.includes(m)).length, "var(--teal)"]), L.length, it => `${it[1]} (${admPct(it[1], L.length)}%)`)}</section>
+    <section class="panel"><h2>Active learners per day</h2>${admDaily(ADM.daily)}</section></div>
+   <section class="panel"><h2>Pre-test and post-test by competency</h2>${admCompChart(L)}</section>
+   <section class="panel"><h2>Sandbox challenges</h2><table class="t"><tr><th>Challenge</th><th>Attempted</th><th>Passed</th><th>Average tries</th><th>Opened explained solution</th><th>Asked for more tries</th></tr>${sb.map(r => `<tr><td>${SB_NAMES[r.k]}</td><td>${r.attempted}</td><td>${r.passed} (${admPct(r.passed, r.attempted)}%)</td><td>${r.tries}</td><td>${r.sol}</td><td>${r.more}</td></tr>`).join("")}</table><p class="explain">Many solution views or high average tries on one challenge suggest re-teaching that concept.</p></section>
+   <section class="panel"><h2>Unit 1 survey (${sv.length} response${sv.length === 1 ? "" : "s"})</h2>${sv.length ? admBars(sAvg.map(a => [a[0], a[1], "#1F3A5F", a[3]]), 5, it => it[3] ? it[1].toFixed(1) + " / 5" : "\u2014") + `<details><summary>Written answers (latest ${Math.min(15, sv.length)})</summary>${sv.slice(-15).reverse().map(r => `<div class="adm-quote"><b>${esc(r.role || "")}</b> ${r.o.filter(Boolean).map((t, i) => t ? `<p><i>${esc(S.open[i] ? S.open[i][1] : "")}</i> ${esc(t)}</p>` : "").join("")}</div>`).join("")}</details>` : `<p class="explain">No survey responses yet.</p>`}</section>
+   <section class="panel"><div class="adm-head"><h2>Learners</h2><span class="explain" id="admCount"></span></div>
+    <div class="controls"><input id="admQ" class="dinput" placeholder="Search name, email, or school" aria-label="Search learners" value="${esc(admQuery)}"><select id="admF" aria-label="Filter learners">${[["all","All learners"],["attention","Needs attention"],["nopre","No pre-test yet"],["done","Finished Unit 1"],["Student","Students"],["Teacher","Teachers"],["Professional","Professionals"]].map(o => `<option value="${o[0]}" ${admFilter === o[0] ? "selected" : ""}>${o[1]}</option>`).join("")}</select></div>
+    <div id="admTable" class="adm-tablewrap"></div></section>
+   ${ADM.reports.length ? `<section class="panel"><h2>Reported Sensi answers</h2>${ADM.reports.map(r => `<div class="adm-quote"><b>${esc(r.email)}</b> \u2022 Module ${esc(r.module)} \u2022 ${new Date(r.at).toLocaleDateString()}<p><i>Reason:</i> ${esc(r.reason)}</p><p><i>Question:</i> ${esc(r.question)}</p></div>`).join("")}<p class="explain">Full answers are in the AI_Reports tab of your Google Sheet.</p></section>` : ""}
+   <div id="admDrawer"></div>`;
+  admRenderTable();
+  $("#admQ").oninput = e => { admQuery = e.target.value; admRenderTable(); };
+  $("#admF").onchange = e => { admFilter = e.target.value; admRenderTable(); };
+  $("#admRefresh").onclick = () => { $("#view").querySelector("h1").textContent = "Teacher dashboard (refreshing\u2026)"; admLoad(); };
+  $("#admOut").onclick = async () => { await adminCall("admin_logout"); sessionStorage.removeItem("sti_admin"); renderMap(); toast("Signed out of admin."); location.hash = "#/home"; };
+  $("#admCsv").onclick = () => { const rows = admTableRows(), q = v => `"${String(v == null ? "" : v).replace(/"/g, '""')}"`;
+    const head = ["given_name","last_name","email","role","grade_levels","school_or_industry","last_seen","hours","visits","modules_done","sections_done","quiz_pct","pre_test","post_test","badges","needs_attention"];
+    const csv = [head.join(",")].concat(rows.map(l => [l.givenName, l.lastName, l.email, l.role, l.grades, l.org, l.lastSeen, l.hours, l.visits, l.modulesDone.length, l.sectionsDone.length, l.quizTotal ? admPct(l.quizRight, l.quizTotal) : "", l.tests.pre ? l.tests.pre.score : "", l.tests.post ? l.tests.post.score : "", l.badges.length, admFlags(l).join("; ")].map(q).join(","))).join("\n");
+    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv + "\n"], {type:"text/csv"})); a.download = `learners_${new Date().toISOString().slice(0, 10)}.csv`; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500); };
+}
+async function admLearner(em){
+  const l = ADM.learners.find(x => x.email === em); if (!l) return;
+  const dr = $("#admDrawer"), comps = ["C1","C2","C3","C4","C5","C6","C7","C8"], tot = [6,5,5,5,5,5,3,6];
+  dr.innerHTML = `<div class="adm-drawer" role="dialog" aria-label="Learner details"><div class="adm-dhead"><h2>${esc(admName(l))}</h2><button class="btn small" id="admClose">Close</button></div>
+   <p>${esc(l.email)} \u2022 ${esc(l.role)}${l.grades ? " \u2022 " + esc(l.grades) : ""} \u2022 ${esc(l.org)}${l.age ? " \u2022 age " + esc(l.age) : ""}</p>
+   <div class="adm-cards">${[["Hours", l.hours],["Visits", l.visits],["Modules", l.modulesDone.length + "/4"],["Quiz", l.quizTotal ? admPct(l.quizRight, l.quizTotal) + "%" : "\u2014"],["Sensi questions", l.aiQuestions],["Badges", l.badges.length]].map(c => `<div class="adm-card"><span>${c[0]}</span><b>${c[1]}</b></div>`).join("")}</div>
+   ${admFlags(l).length ? `<div class="callout mis"><b>Needs attention</b><p>${admFlags(l).map(esc).join(" \u2022 ")}</p></div>` : ""}
+   <h3>Pre-test and post-test</h3>${l.tests.pre || l.tests.post ? `<table class="t"><tr><th></th>${comps.map(c => `<th>${c}</th>`).join("")}<th>Total</th></tr>${["pre","post"].filter(k => l.tests[k]).map(k => `<tr><td>${k === "pre" ? "Pre" : "Post"}</td>${l.tests[k].comp.map((v, i) => `<td>${v}/${tot[i]}</td>`).join("")}<td><b>${l.tests[k].score}/40</b>${l.tests[k].focusLost ? `<div class="explain">left tab ${l.tests[k].focusLost}\u00d7</div>` : ""}</td></tr>`).join("")}</table>` : `<p class="explain">No tests taken yet.</p>`}
+   <h3>Sandbox</h3>${Object.keys(l.sandbox).length ? `<table class="t"><tr><th>Challenge</th><th>Tries</th><th>Passed</th><th>Solution viewed</th></tr>${Object.keys(l.sandbox).map(k => `<tr><td>${SB_NAMES[k] || k}</td><td>${l.sandbox[k].tries}</td><td>${l.sandbox[k].passed ? "Yes" : "Not yet"}</td><td>${l.sandbox[k].solution ? "Yes" : "No"}</td></tr>`).join("")}</table>` : `<p class="explain">No sandbox activity yet.</p>`}
+   <h3>Self-ratings</h3><p>${Object.keys(l.ratings).length ? Object.keys(l.ratings).sort().map(m => `Module ${esc(m)}: <b>${esc(l.ratings[m])}</b>`).join(" \u2022 ") : "None yet."}</p>
+   <h3>Badges</h3><p>${l.badges.length ? l.badges.map(b => `<span class="chip">${esc(b)}</span>`).join(" ") : "None yet."}</p>
+   <h3>Recent activity</h3><div id="admEv" class="explain">Loading\u2026</div></div>`;
+  anim($(".adm-drawer", dr), {opacity:[0, 1], x:[30, 0]}, {duration:.3}); $("#admClose").onclick = () => dr.innerHTML = "";
+  const r = await adminCall("admin_learner", {learner:em});
+  if (!document.body.contains($("#admEv"))) return;
+  $("#admEv").innerHTML = r.ok ? (r.events.length ? `<table class="t"><tr><th>When</th><th>Module</th><th>What</th><th>Detail</th></tr>${r.events.slice(0, 60).map(e => `<tr><td>${new Date(e.at).toLocaleString()}</td><td>${esc(e.module)}</td><td>${esc(e.type)}</td><td>${esc(e.item)} ${esc(e.value)}</td></tr>`).join("")}</table>` : "No activity yet.") + (r.aiQuestions.length ? `<h3>Recent Sensi questions</h3>${r.aiQuestions.map(q => `<div class="adm-quote"><b>${new Date(q.at).toLocaleDateString()} \u2022 Module ${esc(q.module)}</b><p>${esc(q.question)}</p></div>`).join("")}` : "") : "Could not load activity.";
 }
 
 /* ============ v5 FEATURES ============ */
@@ -3410,7 +3555,7 @@ function renderMap(){
   $("#map").innerHTML = `<div class="pill" id="pill"></div>${link("#/overview", "Course overview", `<span class="mapicon">\u2609</span>`)}${link("#/test/pre", "Pre-test" + (testDone("pre") ? " \u2713" : " (start here)"), `<span class="mapicon">\u2611</span>`)}` + COURSE.map(u => `<div class="unit"><div class="unit-title">${esc(u.title)}</div><div class="unit-sub">${esc(u.sub)}</div>
     ${u.modules.map(m => u.locked ? `<span class="mod-link locked">${ring(0)}${esc(m.id)} ${esc(m.title)}</span>` : `<a class="mod-link ${cur === m.id ? "active" : ""} ${preGate() ? "gated" : ""}" href="#/m/${m.id}">${preGate() ? `<span class="mapicon">\ud83d\udd12</span>` : ring(modulePct(m))}<span>${esc(m.id)} ${esc(m.title)}</span></a>`).join("")}
     ${u.id === "u1" ? link("#/survey/u1", "Unit 1 survey" + (prog.survey && prog.survey.u1 ? " \u2713" : ""), `<span class="mapicon">\u270e</span>`) : ""}</div>`).join("") +
-    link("#/test/post", "Post-test" + (testDone("post") ? " \u2713" : TEST_CFG.POSTTEST_OPEN ? "" : " (after the capstone)"), `<span class="mapicon">\u2611</span>`) + `<div class="map-foot">${link("#/badges", `My badges (${earned}/${BADGES.length})`, `<span class="mapicon">\u2b22</span>`)}${link("#/progress", "My progress", `<span class="mapicon">\u2197</span>`)}${link("#/home", "Course home", `<span class="mapicon">\u2302</span>`)}</div>`;
+    (isAdminEmail() ? link("#/admin", "Teacher dashboard" + (adminActive() ? " \u2022 admin" : ""), `<span class="mapicon">\u2637</span>`) : "") + link("#/test/post", "Post-test" + (testDone("post") ? " \u2713" : TEST_CFG.POSTTEST_OPEN ? "" : " (after the capstone)"), `<span class="mapicon">\u2611</span>`) + `<div class="map-foot">${link("#/badges", `My badges (${earned}/${BADGES.length})`, `<span class="mapicon">\u2b22</span>`)}${link("#/progress", "My progress", `<span class="mapicon">\u2197</span>`)}${link("#/home", "Course home", `<span class="mapicon">\u2302</span>`)}</div>`;
   const a = $("#map .mod-link.active"), pill = $("#pill");
   if (a && pill){ const top = a.offsetTop, hh = a.offsetHeight; pill.style.height = hh + "px"; if (pillTop != null && canAnim()) A(pill, {top:[pillTop + "px", top + "px"]}, SPRING); pill.style.top = top + "px"; pillTop = top; }
 }
@@ -3535,7 +3680,8 @@ function route(){
   renderWho();
   const h = location.hash, mm = h.match(/^#\/m\/([^?]+)(?:\?s=(.+))?/), sv = h.match(/^#\/survey\/(\w+)/), tm = h.match(/^#\/test\/(pre|post)/);
   if (!tm) testActive = false; $("#aiFab").hidden = guest || testActive;
-  if (tm) viewTest(tm[1]);
+  if (h === "#/admin") viewAdmin();
+  else if (tm) viewTest(tm[1]);
   else if (mm && preGate()) viewPreGate();
   else if (mm){ pendingAnchor = mm[2] || null; viewModule(mm[1]); }
   else if (h === "#/progress") viewProgress(); else if (h === "#/overview") viewOverview(); else if (h === "#/badges") viewBadges(); else if (sv) viewSurvey(sv[1]); else viewHome();
@@ -3545,7 +3691,7 @@ function route(){
 }
 function buildIndex(){ const out = [{t:"Course overview", sub:"Page", h:"#/overview"}];
   Object.values(MODULES).forEach(m => { out.push({t:`Module ${m.id}: ${m.title}`, sub:"Module", h:`#/m/${m.id}`}); m.sections.forEach(s => out.push({t:s.title, sub:`Module ${m.id}`, h:`#/m/${m.id}?s=${s.id}`})); });
-  out.push({t:"Coding sandbox (Module 1.2)", sub:"Practice", h:"#/m/1.2?s=errors"}, {t:"Coding sandbox (Module 1.3)", sub:"Practice", h:"#/m/1.3?s=p2"}, {t:"Wiring guide", sub:"Module 1.3", h:"#/m/1.3?s=wiring"}, {t:"Pre-test", sub:"Assessment", h:"#/test/pre"}, {t:"Post-test", sub:"Assessment", h:"#/test/post"}, {t:"My badges", sub:"Page", h:"#/badges"}, {t:"Unit 1 survey", sub:"Page", h:"#/survey/u1"}, {t:"My progress", sub:"Page", h:"#/progress"}, {t:"Course home", sub:"Page", h:"#/home"}, {t:"Settings", sub:"Page", h:"settings"});
+  out.push({t:"Coding sandbox (Module 1.2)", sub:"Practice", h:"#/m/1.2?s=errors"}, {t:"Coding sandbox (Module 1.3)", sub:"Practice", h:"#/m/1.3?s=p2"}, {t:"Wiring guide", sub:"Module 1.3", h:"#/m/1.3?s=wiring"}, ...(isAdminEmail() ? [{t:"Teacher dashboard", sub:"Admin", h:"#/admin"}] : []), {t:"Pre-test", sub:"Assessment", h:"#/test/pre"}, {t:"Post-test", sub:"Assessment", h:"#/test/post"}, {t:"My badges", sub:"Page", h:"#/badges"}, {t:"Unit 1 survey", sub:"Page", h:"#/survey/u1"}, {t:"My progress", sub:"Page", h:"#/progress"}, {t:"Course home", sub:"Page", h:"#/home"}, {t:"Settings", sub:"Page", h:"settings"});
   return out; }
 
 /* ---------- one-time UI wiring for v5 ---------- */
