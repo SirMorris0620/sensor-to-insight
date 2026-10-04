@@ -935,7 +935,7 @@ const REF = {
 };
 
 const COURSE = [
- {id:"u1", title:"Unit 1: Sensors and programming foundations", sub:"Days 1\u20132", modules:[
+ {id:"u1", title:"Unit 1: Sensors and programming foundations", sub:"Open now", modules:[
   {id:"1.1", title:"Launch and the IoT data lifecycle", minutes:90,
    objectives:["Define the Internet of Things and identify its layers in our course system.","Explain the six stages of the IoT data lifecycle using a classroom example (U1-O1).","Distinguish the four types of analytics and classify questions by type (U1-O1).","Write a data question your sensors can actually answer.","Describe the human role when AI can write code."],
    sections:[
@@ -1202,7 +1202,7 @@ const COURSE = [
      ${anat("A function with a parameter and a return value", [["float cToF(float c) {", "<code>float</code> before the name = the type of value it returns. <code>cToF</code> = its name. <code>(float c)</code> = one parameter named c."],["  return c * 9.0 / 5.0 + 32.0;", "<code>return</code> sends the answer back to whoever called the function."],["}", ""],["Serial.println(cToF(30.0));", "Calling the function with 30.0. It returns 86.0, which println prints as 86.00."]])}
      <p>Now practice predicting before running:</p>`, interactive:"primm"},
     {id:"solve", title:"How to solve a challenge: the engineering design process", html:`
-     <p>Every challenge in this course, from blinking an LED to your Day 10 capstone, is a problem to solve. Beginners often jump straight to typing code, get stuck, and feel lost. Engineers use a <b>process</b> instead. This course uses NASA's <b>Engineering Design Process (EDP)</b>, an iterative cycle used in NASA's education programs: engineers <b>ask</b> questions, <b>imagine</b> solutions, <b>plan</b> designs, <b>create</b> and <b>test</b> models, <b>improve</b> them, and <b>share</b> their ideas.</p>
+     <p>Every challenge in this course, from blinking an LED to your final capstone, is a problem to solve. Beginners often jump straight to typing code, get stuck, and feel lost. Engineers use a <b>process</b> instead. This course uses NASA's <b>Engineering Design Process (EDP)</b>, an iterative cycle used in NASA's education programs: engineers <b>ask</b> questions, <b>imagine</b> solutions, <b>plan</b> designs, <b>create</b> and <b>test</b> models, <b>improve</b> them, and <b>share</b> their ideas.</p>
      <table class="t"><tr><th>Step</th><th>Engineers ask…</th><th>In a coding challenge you…</th></tr>
      <tr><td><b>1. Ask</b></td><td>What is the problem? What are the requirements and limits?</td><td>Restate the task in your own words. List what the program must do, how it will be checked, and any rules (e.g., “no delay()”).</td></tr>
      <tr><td><b>2. Imagine</b></td><td>What are some possible solutions? What have others done?</td><td>Think of two ways to solve it. Look at similar code you have seen (P1, the drills) and pick the approach that best meets the requirements.</td></tr>
@@ -1249,7 +1249,7 @@ note: suggested alternative: 'Serial'</pre></div>
    checkpoint:{code:"U1-O2", task:"Complete the Core challenge and explain the code.", met:"Pattern repeats 5+ times; you point to setup, loop, a variable, and the loop structure.", upload:"Upload your code file (.ino or .py) and a short video or photo of the blinking pattern."},
    refs:["arduinoR4","espressif","esp8266","pico","arduinoIDE","espArduino","thonny","micropython","arduinoRef","arduinoConst","arduinoIf","arduinoFor","arduinoWhile","arduinoDelay","arduinoPrint","pyTutorial","pyControl","pyIO","mpTime","duboulay","parsons","wokwi","nasaEDP","jplEDP","polya","wing","primm","sweller"]
   }
-  ,{id:"1.3", title:"Reading sensors", minutes:150,
+  ,{id:"1.3", title:"Reading sensors", minutes:240,
    objectives:["Distinguish analog and digital signals and explain the voltage divider.","Explain how an ADC turns voltage into numbers and calculate readings for your board.","Wire an LDR and a DHT22 and convert raw readings to calibrated units (U1-O3).","Implement non-blocking timing and justify it over delay() (U1-O4).","Use a structured AI prompt and verify each claim against documentation (U1-O7)."],
    sections:[
     {id:"signals", title:"Analog and digital signals", html:`
@@ -1527,11 +1527,11 @@ note: suggested alternative: 'Serial'</pre></div>
    refs:["rfc4180","wickham","stevens","iso5725","jcgm","sheetsLimits","sheetsFn"]
   }
  ]},
- {id:"u2", title:"Unit 2: Connecting to the cloud", sub:"Days 3\u20134", locked:true, modules:[{id:"2.1",title:"Networks, HTTP, and JSON"},{id:"2.2",title:"The Apps Script logger"},{id:"2.3",title:"Device to cloud"},{id:"2.4",title:"Reliability"}]},
- {id:"la", title:"Python Lab A", sub:"Day 5", locked:true, modules:[{id:"A",title:"Python and Google Colab"}]},
- {id:"u3", title:"Unit 3: Making sense of the data", sub:"Days 6\u20137", locked:true, modules:[{id:"3.1",title:"Tidy data"},{id:"3.2",title:"Cleaning"},{id:"3.3",title:"Analysis"},{id:"3.4",title:"Mini investigation"}]},
- {id:"u4", title:"Unit 4: Acting on data and data science", sub:"Days 8\u20139", locked:true, modules:[{id:"4.1",title:"Alerts"},{id:"4.2",title:"Two-way control"},{id:"4.3",title:"Dashboard"},{id:"4.4",title:"Security and ethics"}]},
- {id:"u5", title:"Unit 5: Capstone", sub:"Day 10", locked:true, modules:[{id:"5",title:"Capstone prototype"}]}
+ {id:"u2", title:"Unit 2: Connecting to the cloud", sub:"Coming soon", locked:true, modules:[{id:"2.1",title:"Networks, HTTP, and JSON"},{id:"2.2",title:"The Apps Script logger"},{id:"2.3",title:"Device to cloud"},{id:"2.4",title:"Reliability"}]},
+ {id:"la", title:"Python Lab A", sub:"Coming soon", locked:true, modules:[{id:"A",title:"Python and Google Colab"}]},
+ {id:"u3", title:"Unit 3: Making sense of the data", sub:"Coming soon", locked:true, modules:[{id:"3.1",title:"Tidy data"},{id:"3.2",title:"Cleaning"},{id:"3.3",title:"Analysis"},{id:"3.4",title:"Mini investigation"}]},
+ {id:"u4", title:"Unit 4: Acting on data and data science", sub:"Coming soon", locked:true, modules:[{id:"4.1",title:"Alerts"},{id:"4.2",title:"Two-way control"},{id:"4.3",title:"Dashboard"},{id:"4.4",title:"Security and ethics"}]},
+ {id:"u5", title:"Unit 5: Capstone", sub:"Coming soon", locked:true, modules:[{id:"5",title:"Capstone prototype"}]}
 ];
 const MODULES = {}; COURSE.forEach(u => u.modules.forEach(m => { if (!u.locked) MODULES[m.id] = m; }));
 
@@ -3026,7 +3026,7 @@ repeat forever:
 };
 
 /* ============ PRE / POST TEST ============ */
-const TEST_CFG = { MINUTES: 45, REQUIRE_PRETEST: true, POSTTEST_OPEN: false };   // set POSTTEST_OPEN to true on Day 10
+const TEST_CFG = { MINUTES: 45, REQUIRE_PRETEST: true, POSTTEST_OPEN: false };   // set POSTTEST_OPEN to true when learners finish the capstone
 const COMP_NAMES = {C1:"Physical computing",C2:"IoT connectivity",C3:"Data engineering",C4:"Data cleaning",C5:"Analysis and communication",C6:"Data science",C7:"Automation and control",C8:"Human-centered AI"};
 let testActive = false;
 const testDone = t => !!(prog.tests && prog.tests[t]);
@@ -3034,12 +3034,12 @@ const preGate = () => TEST_CFG.REQUIRE_PRETEST && !testDone("pre");
 const fmtItem = s => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
 function viewTest(kind){
   const isPre = kind === "pre", name = isPre ? "Pre-test" : "Post-test";
-  if (!isPre && !TEST_CFG.POSTTEST_OPEN && !testDone("post")){ $("#view").innerHTML = `<p class="crumb">${name}</p><h1>${name}</h1><div class="callout tip"><b>Not open yet</b><p>The post-test opens on Day 10, after the capstone. Your teacher will tell you when to take it.</p></div>`; return; }
+  if (!isPre && !TEST_CFG.POSTTEST_OPEN && !testDone("post")){ $("#view").innerHTML = `<p class="crumb">${name}</p><h1>${name}</h1><div class="callout tip"><b>Not open yet</b><p>The post-test opens after the capstone. Your teacher will tell you when to take it.</p></div>`; return; }
   if (testDone(kind)) return testResult(kind);
   const saved = store.get(`sti_test_${kind}_${user.email}`, null);
   if (!saved){
     $("#view").innerHTML = `<p class="crumb">Assessment</p><h1>${name}</h1>
-     <p>${isPre ? "Before you start Unit 1, take this test to show what you already know. It is <b>not graded</b>: it gives you and your teacher a starting point so everyone can see how much you grow by Day 10." : "This is the same test you took on Day 1. Comparing the two shows how much you learned in each competency."}</p>
+     <p>${isPre ? "Before you start Unit 1, take this test to show what you already know. It is <b>not graded</b>: it gives you and your teacher a starting point so everyone can see how much you grow by the end of the course." : "This is the same test you took before Unit 1. Comparing the two shows how much you learned in each competency."}</p>
      <div class="test-rules"><div><b>40</b><span>multiple-choice questions</span></div><div><b>${TEST_CFG.MINUTES} min</b><span>time limit</span></div><div><b>8</b><span>competencies (C1\u2013C8)</span></div></div>
      <div class="callout mis"><b>Rules</b><ul><li>Work on your own, with no notes, websites, classmates, or AI tools. Sensi is switched off during the test.</li><li>It is fine to not know many answers${isPre ? ", especially now" : ""}. Choose your best guess rather than leaving a blank.</li><li>Your answers save on this device as you go. If the page closes, come back and continue; the timer keeps running.</li><li>You can submit only once.${isPre ? " You will not see the correct answers after the pre-test, so the post-test stays fair." : ""}</li><li>Leaving this tab is recorded for your teacher.</li></ul></div>
      <button class="btn primary big" id="tStart" style="max-width:320px">Start the ${name.toLowerCase()}</button>`;
@@ -3079,7 +3079,7 @@ function viewTest(kind){
 function testResult(kind){
   const t = prog.tests[kind], isPre = kind === "pre", res = t.result;
   let body = "";
-  if (isPre) body = `<div class="callout ex"><b>Pre-test complete</b><p>You answered ${t.answered} of 40 questions. Your results are saved for your teacher. You will see your growth after the post-test on Day 10.</p></div><a class="btn primary big" href="#/m/1.1" style="max-width:320px">Start Unit 1</a>`;
+  if (isPre) body = `<div class="callout ex"><b>Pre-test complete</b><p>You answered ${t.answered} of 40 questions. Your results are saved for your teacher. You will see your growth after the post-test at the end of the course.</p></div><a class="btn primary big" href="#/m/1.1" style="max-width:320px">Start Unit 1</a>`;
   else if (res && res.byComp){ const pre = res.pre || {};
     body = `<div class="callout ex"><b>Post-test score: ${res.score} / ${res.total}</b>${res.preScore != null ? `<p>Pre-test: ${res.preScore} / ${res.total}. Change: ${res.score - res.preScore >= 0 ? "+" : ""}${res.score - res.preScore}.</p>` : ""}</div>
      <table class="t"><tr><th>Competency</th><th>Pre-test</th><th>Post-test</th></tr>${Object.keys(COMP_NAMES).map(c => `<tr><td>${c} ${COMP_NAMES[c]}</td><td>${pre[c] != null ? pre[c] + " / " + res.compTotals[c] : "\u2014"}</td><td>${res.byComp[c]} / ${res.compTotals[c]}</td></tr>`).join("")}</table>`; }
@@ -3087,7 +3087,7 @@ function testResult(kind){
   $("#view").innerHTML = `<p class="crumb">Assessment</p><h1>${isPre ? "Pre-test" : "Post-test"}</h1>${body}`;
 }
 function viewPreGate(){
-  $("#view").innerHTML = `<p class="crumb">Unit 1</p><h1>Take the pre-test first</h1><p>Before you start the modules, take the 40-question pre-test (about 45 minutes). It is not graded; it shows where you are starting so you can see your growth by Day 10.</p><a class="btn primary big" href="#/test/pre" style="max-width:320px">Go to the pre-test</a>`;
+  $("#view").innerHTML = `<p class="crumb">Unit 1</p><h1>Take the pre-test first</h1><p>Before you start the modules, take the 40-question pre-test (about 45 minutes). It is not graded; it shows where you are starting so you can see your growth by the end of the course.</p><a class="btn primary big" href="#/test/pre" style="max-width:320px">Go to the pre-test</a>`;
 }
 
 /* ============ v5 FEATURES ============ */
@@ -3407,10 +3407,10 @@ function renderQuiz(m){
 function renderMap(){
   const h = location.hash, cur = (h.match(/^#\/m\/([^?]+)/) || [])[1], earned = Object.keys(prog.badges || {}).length;
   const link = (href, label, extra) => `<a class="mod-link ${h.split("?")[0] === href ? "active" : ""}" href="${href}">${extra || ""}<span>${label}</span></a>`;
-  $("#map").innerHTML = `<div class="pill" id="pill"></div>${link("#/overview", "Course overview", `<span class="mapicon">\u2609</span>`)}${link("#/test/pre", "Pre-test" + (testDone("pre") ? " \u2713" : " (start here)"), `<span class="mapicon">\u2611</span>`)}` + COURSE.map(u => `<div class="unit"><div class="unit-title">${esc(u.title)}</div><div class="unit-sub">${esc(u.sub)}${u.locked ? " \u2022 coming soon" : ""}</div>
+  $("#map").innerHTML = `<div class="pill" id="pill"></div>${link("#/overview", "Course overview", `<span class="mapicon">\u2609</span>`)}${link("#/test/pre", "Pre-test" + (testDone("pre") ? " \u2713" : " (start here)"), `<span class="mapicon">\u2611</span>`)}` + COURSE.map(u => `<div class="unit"><div class="unit-title">${esc(u.title)}</div><div class="unit-sub">${esc(u.sub)}</div>
     ${u.modules.map(m => u.locked ? `<span class="mod-link locked">${ring(0)}${esc(m.id)} ${esc(m.title)}</span>` : `<a class="mod-link ${cur === m.id ? "active" : ""} ${preGate() ? "gated" : ""}" href="#/m/${m.id}">${preGate() ? `<span class="mapicon">\ud83d\udd12</span>` : ring(modulePct(m))}<span>${esc(m.id)} ${esc(m.title)}</span></a>`).join("")}
     ${u.id === "u1" ? link("#/survey/u1", "Unit 1 survey" + (prog.survey && prog.survey.u1 ? " \u2713" : ""), `<span class="mapicon">\u270e</span>`) : ""}</div>`).join("") +
-    link("#/test/post", "Post-test" + (testDone("post") ? " \u2713" : TEST_CFG.POSTTEST_OPEN ? "" : " (Day 10)"), `<span class="mapicon">\u2611</span>`) + `<div class="map-foot">${link("#/badges", `My badges (${earned}/${BADGES.length})`, `<span class="mapicon">\u2b22</span>`)}${link("#/progress", "My progress", `<span class="mapicon">\u2197</span>`)}${link("#/home", "Course home", `<span class="mapicon">\u2302</span>`)}</div>`;
+    link("#/test/post", "Post-test" + (testDone("post") ? " \u2713" : TEST_CFG.POSTTEST_OPEN ? "" : " (after the capstone)"), `<span class="mapicon">\u2611</span>`) + `<div class="map-foot">${link("#/badges", `My badges (${earned}/${BADGES.length})`, `<span class="mapicon">\u2b22</span>`)}${link("#/progress", "My progress", `<span class="mapicon">\u2197</span>`)}${link("#/home", "Course home", `<span class="mapicon">\u2302</span>`)}</div>`;
   const a = $("#map .mod-link.active"), pill = $("#pill");
   if (a && pill){ const top = a.offsetTop, hh = a.offsetHeight; pill.style.height = hh + "px"; if (pillTop != null && canAnim()) A(pill, {top:[pillTop + "px", top + "px"]}, SPRING); pill.style.top = top + "px"; pillTop = top; }
 }
@@ -3421,7 +3421,7 @@ function viewHome(){
   const earned = BADGES.filter(b => (prog.badges || {})[b.id]);
   const surveyDue = done === mods.length && !(prog.survey && prog.survey.u1);
   $("#view").innerHTML = `<p class="crumb">Course home</p><h1>Welcome, ${esc(user.givenName || (user.name || "").split(" ")[0])}</h1>
-   <div class="bento">${preGate() ? `<a class="spot continue span6" href="#/test/pre"><span class="lbl">Step 1 before Unit 1</span><h3>Take the pre-test (40 questions, 45 minutes)</h3><span class="lbl">It is not graded. It shows your starting point so you can see your growth by Day 10.</span></a>` : ""}
+   <div class="bento">${preGate() ? `<a class="spot continue span6" href="#/test/pre"><span class="lbl">Step 1 before Unit 1</span><h3>Take the pre-test (40 questions, 45 minutes)</h3><span class="lbl">It is not graded. It shows your starting point so you can see your growth by the end of the course.</span></a>` : ""}
     <a class="spot continue span4" href="#/m/${next.id}"><span class="lbl">${modulePct(next) ? "Continue where you left off" : "Start here"}</span><h3>Module ${next.id}: ${esc(next.title)}</h3><span class="lbl">${next.minutes} minutes \u2022 ${Math.round(modulePct(next) * 100)}% done</span></a>
     <a class="spot span2" href="#/overview"><div class="lbl">New here?</div><h3>Course overview</h3><div class="lbl">What you will learn, the framework, and how you are assessed</div></a>
     <div class="spot span2"><div class="big" data-tick="${done}">0</div><div class="lbl">of ${mods.length} Unit 1 modules complete</div></div>
@@ -3488,13 +3488,19 @@ function viewSurvey(unit){
 /* ---------- Course overview ---------- */
 function viewOverview(){
   const comps = [["C1","Physical computing","Wire sensors and program boards in C++ and MicroPython."],["C2","IoT connectivity","Send data over Wi-Fi and HTTP to the cloud."],["C3","Data engineering","Design data flows, formats, and pipelines."],["C4","Data cleaning","Find and fix errors, gaps, and outliers honestly."],["C5","Analysis and communication","Summarize, chart, and tell a data story."],["C6","Data science","Build and test simple prediction and anomaly models."],["C7","Automation and control","Make systems act on data automatically."],["C8","Human-centered AI","Use AI as a partner you direct, verify, and are accountable for."]];
-  const days = [["1\u20132","Unit 1","Sensors and programming","#2A9D8F"],["3\u20134","Unit 2","Connecting to the cloud","#1F3A5F"],["5","Lab A","Python and Colab","#7C3AED"],["6\u20137","Unit 3 + Lab B","Cleaning and analysis","#E76F51"],["8\u20139","Unit 4 + Lab C","Automation and data science","#C9A227"],["10","Unit 5","Capstone","#15803D"]];
+  const units = [["Unit 1","Sensors and programming foundations","open","#2A9D8F"],["Unit 2","Connecting to the cloud","soon","#1F3A5F"],["Lab A","Python and Google Colab","soon","#7C3AED"],["Unit 3","Making sense of the data","soon","#E76F51"],["Unit 4","Acting on data and data science","soon","#C9A227"],["Unit 5","Capstone","soon","#15803D"]];
   $("#view").innerHTML = `<section class="ov-hero"><p class="crumb">Course overview</p><h1>From Sensor to Insight</h1><p class="lede2">IoT Data Analytics, Engineering, and Science with Human-Centered AI</p>
-    <p>In 10 days (80 hours) you will build a real Internet of Things system: sensors on a microcontroller send live data to Google Sheets, you clean and analyze it in Sheets and Python, your system acts on it automatically, and you present a data story. Along the way you learn to use AI as a partner you direct and check, not a shortcut you trust blindly.</p>
+    <p>Across five units you will build a real Internet of Things system: sensors on a microcontroller send live data to Google Sheets, you clean and analyze it in Sheets and Python, your system acts on it automatically, and you present a data story. Along the way you learn to use AI as a partner you direct and check, not a shortcut you trust blindly.</p>
     <div class="controls">${preGate() ? `<a class="btn shimmer" href="#/test/pre">Take the pre-test</a>` : `<a class="btn shimmer" href="#/m/1.1">Start Unit 1</a>`}<a class="btn" href="#ov-assess">How you are assessed</a></div></section>
    <h2>What this course offers</h2><div class="bento ov-offers">${[["Real hardware","Arduino Uno R4 WiFi, ESP32, ESP8266, or Raspberry Pi Pico W with temperature, humidity, and light sensors."],["Your own data","You collect it yourself, from a question you care about, instead of using someone else's dataset."],["The full data lifecycle","Ask, collect, clean, analyze, act, and share, the way professionals do."],["Industry tools","Arduino IDE, MicroPython, Google Sheets, Apps Script, and Python in Google Colab."],["AI literacy","Prompting frameworks (PARTS, Chain-of-Thought, Tree-of-Thought) and verification habits."],["Practice that checks itself","Interactive explainers, a coding sandbox, quizzes with explanations, and badges."]].map(o => `<div class="spot span2"><h3>${o[0]}</h3><p class="lbl">${o[1]}</p></div>`).join("")}</div>
-   <h2>The 10-day journey</h2>
-   <div class="journey">${days.map((d, i) => `<div class="jstep" style="--c:${d[3]}"><span class="jday">Day ${d[0]}</span><b>${d[1]}</b><span>${d[2]}</span></div>`).join("")}</div>
+   <h2>The course journey</h2>
+   <p>The course is released one unit at a time, with a new unit each week. Each unit builds on the one before, so complete them in order.</p>
+   <div class="journey">${units.map(u => `<div class="jstep" style="--c:${u[3]}"><span class="jday">${u[2] === "open" ? "Open now" : "Coming soon"}</span><b>${u[0]}</b><span>${u[1]}</span></div>`).join("")}</div>
+   <h3>Suggested plan for Unit 1 (about 11 hours)</h3>
+   <table class="t"><tr><th>Session</th><th>What you do</th><th>About</th></tr>
+   <tr><td><b>Session 1</b></td><td>Pre-test \u2192 Module 1.1 Launch and the IoT data lifecycle \u2192 Module 1.2 Board setup and programming basics</td><td>5 h 15 min</td></tr>
+   <tr><td><b>Session 2</b></td><td>Module 1.3 Reading sensors (including your 10-minute data recording) \u2192 Module 1.4 Your first dataset in Google Sheets \u2192 Unit 1 survey</td><td>6 h</td></tr></table>
+   <p class="explain">Record your sensor data early in Session 2 so you can analyze it in Module 1.4 the same day. Learning at your own pace? Split the sessions into shorter blocks; your progress is saved.</p>
    <h2>What you will learn: 8 competencies</h2><div class="comp-grid">${comps.map(c => `<div class="comp"><span class="ccode">${c[0]}</span><b>${c[1]}</b><p class="explain">${c[2]}</p></div>`).join("")}</div>
    <h2>The frameworks behind the course</h2>
    <h3>1. How you learn: the experiential learning cycle</h3>
@@ -3510,7 +3516,7 @@ function viewOverview(){
    <div class="lc-row">${["Ask","Imagine","Plan","Create","Test","Improve","Share"].map((s, i) => `<span class="lc-chip" style="--d:${i};background:#1F3A5F">${s}</span>`).join('<span class="lc-arr">\u2192</span>')}</div>
    <p>Every challenge, from your first blinking LED to the capstone, follows NASA's engineering design process. You learn it in Module 1.2 and use it in every sandbox challenge, where the explained solutions walk through the same steps.</p>
    <h2 id="ov-assess">How you are assessed</h2>
-   <table class="t"><tr><th>Assessment</th><th>When</th><th>What it shows</th></tr><tr><td>Pre-test and post-test (40 items, 45 minutes, no AI)</td><td>Day 1 before Unit 1, and Day 10</td><td>Your growth in each of the 8 competencies</td></tr><tr><td>Quizzes with explanations</td><td>Every module</td><td>Whether you understood the key ideas</td></tr><tr><td>Self-ratings</td><td>Every module</td><td>How confident you feel (compared with your results)</td></tr><tr><td>Competency checkpoints and uploads</td><td>Every module</td><td>Evidence your teacher reviews: Met or Not yet</td></tr><tr><td>Badges</td><td>When you meet a competency</td><td>A visible record of what you can do</td></tr><tr><td>Capstone rubric (7 criteria, 28 points)</td><td>Day 10</td><td>Hardware, logging, pipeline, analysis, automation, AI literacy, and data story</td></tr></table>
+   <table class="t"><tr><th>Assessment</th><th>When</th><th>What it shows</th></tr><tr><td>Pre-test and post-test (40 items, 45 minutes, no AI)</td><td>Before Unit 1, and after the capstone</td><td>Your growth in each of the 8 competencies</td></tr><tr><td>Quizzes with explanations</td><td>Every module</td><td>Whether you understood the key ideas</td></tr><tr><td>Self-ratings</td><td>Every module</td><td>How confident you feel (compared with your results)</td></tr><tr><td>Competency checkpoints and uploads</td><td>Every module</td><td>Evidence your teacher reviews: Met or Not yet</td></tr><tr><td>Badges</td><td>When you meet a competency</td><td>A visible record of what you can do</td></tr><tr><td>Capstone rubric (7 criteria, 28 points)</td><td>Unit 5</td><td>Hardware, logging, pipeline, analysis, automation, AI literacy, and data story</td></tr></table>
    <h2>What you need</h2><p>One board per team with a USB data cable, a breadboard, jumper wires, a DHT22 sensor, an LDR with a 10 k\u03a9 resistor, an LED with a 220 \u03a9 resistor, a laptop with Arduino IDE 2 or Thonny, and a Google account. iPad users can practice in the coding sandbox and the Wokwi simulator.</p>
    <div class="controls">${preGate() ? `<a class="btn primary big" href="#/test/pre" style="max-width:320px">Take the pre-test</a>` : `<a class="btn primary big" href="#/m/1.1" style="max-width:320px">Start Module 1.1</a>`}</div>
    <h2>References</h2><ol class="refs"><li>Kolb, D. A. (1984). Experiential learning: Experience as the source of learning and development. Prentice Hall.</li><li>${esc(REF.unesco[0])} <a href="${REF.unesco[1]}" target="_blank" rel="noopener">${REF.unesco[1]}</a></li><li>${esc(REF.longmagerko[0])} <a href="${REF.longmagerko[1]}" target="_blank" rel="noopener">${REF.longmagerko[1]}</a></li><li>${esc(REF.davenport[0])}</li></ol>`;
