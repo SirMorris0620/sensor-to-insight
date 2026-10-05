@@ -818,6 +818,16 @@ body.device-phone .nudge{bottom:calc(76px + env(safe-area-inset-bottom))}
 .ts-crumbs{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin-bottom:8px;font-size:.82rem}.ts-cr{background:none;border:1px solid var(--line);border-radius:999px;padding:2px 10px;cursor:pointer;color:var(--ink);font:inherit;font-size:.82rem}
 .ts-card{border:2px solid var(--teal);border-radius:14px;padding:14px 16px;background:var(--surface)}.ts-q{font-weight:700;font-size:1.08rem;margin:0 0 10px}.ts-fix{font-weight:700;font-size:1.05rem;margin:0 0 6px}
 .ts-opts{display:flex;flex-direction:column;gap:6px;align-items:stretch}.ts-opts .btn{text-align:left;white-space:normal}.ts-steps li{margin:4px 0}
+.ouD{flex-wrap:wrap}.ouD button{white-space:normal;flex:1 1 30%;min-width:0}
+/* v19: Unit 3 */
+.fd-s{color:#fff;border-radius:4px;padding:1px 6px;font-size:.82rem;font-weight:700}.fd-hi{background:#FDE68A!important;color:#14213D}.fd-done{opacity:.45}.fdC{min-width:56px;transition:background .3s}
+.ld-st{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}.ld-s{border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:.8rem;background:var(--surface)}.ld-s.on{background:var(--navy);color:#fff;border-color:var(--navy)}.ld-s.done{background:color-mix(in srgb,var(--teal) 18%,var(--surface))}.ld-ch{background:#FDE68A;color:#14213D}.ldLog li{margin:4px 0;font-size:.9rem}
+.mh td{cursor:pointer;white-space:nowrap}.mhR{font-weight:700;color:var(--muted)}.mh-sel{outline:3px solid var(--amber);outline-offset:-3px}.mh-ok{background:color-mix(in srgb,var(--teal) 25%,var(--surface))!important}.mhTypes .btn{white-space:normal}
+.pb-cell{border:1px solid var(--line);border-radius:10px;margin:10px 0;overflow:hidden;background:var(--surface)}.pb-cell.ran{border-color:var(--teal)}.pb-h{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid var(--line)}.pb-h b{flex:1}.pb-n{font-family:"JetBrains Mono",monospace;color:var(--muted);font-size:.85rem}
+.pb-code{margin:0;border-radius:0;max-height:260px;overflow:auto}.pb-out{padding:8px 10px;border-top:1px dashed var(--line)}.pb-o{background:var(--bg);border-radius:6px;padding:8px;overflow-x:auto;font-size:.8rem;margin:4px 0}.pb-w{font-size:.9rem;margin:.4em 0 0}
+.ps-flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0;font-size:.85rem}.ps-flow span[class^="ps-"]{border-radius:8px;padding:6px 10px;color:#fff;font-weight:700}.ps-b{background:#8D6E63}.ps-s{background:#78909C}.ps-g{background:#C9A227}.ps-m{background:#1F3A5F}.ps-rej td{background:color-mix(in srgb,var(--bad) 10%,var(--surface))}.psT{flex-wrap:wrap}
+.sb-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media (max-width:760px){.sb-grid{grid-template-columns:1fr}}.sb-f textarea{width:100%;box-sizing:border-box}.sb-ck{font-weight:700;color:var(--muted)}.sb-ck.ok{color:var(--teal)}
+.toD{margin:4px 0 10px}
 </style>
 </head>
 <body>
@@ -2502,6 +2512,474 @@ function applyReleases(){
 }
 applyReleases();
 
+/* ============ UNIT 3: MAKING SENSE OF THE DATA (data, programs, references) ============ */
+RELEASE.u3 = false;   // set to true to open Unit 3 to every learner (admins can preview it anytime)
+Object.assign(REF, {
+  hyndman: ["Hyndman, R. J., & Athanasopoulos, G. (2021). Forecasting: Principles and practice (3rd ed.). OTexts.","https://otexts.com/fpp3/"],
+  tukey: ["Tukey, J. W. (1977). Exploratory data analysis. Addison-Wesley.",""],
+  alduchov: ["Alduchov, O. A., & Eskridge, R. E. (1996). Improved Magnus form approximation of saturation vapor pressure. Journal of Applied Meteorology, 35(4), 601\u2013609.","https://doi.org/10.1175/1520-0450(1996)035<0601:IMFAOS>2.0.CO;2"],
+  reis: ["Reis, J., & Housley, M. (2022). Fundamentals of data engineering. O\u2019Reilly Media.",""],
+  wangstrong: ["Wang, R. Y., & Strong, D. M. (1996). Beyond accuracy: What data quality means to data consumers. Journal of Management Information Systems, 12(4), 5\u201333.","https://doi.org/10.1080/07421222.1996.11518099"],
+  pandasDocs: ["The pandas development team. (n.d.). pandas documentation.","https://pandas.pydata.org/docs/"],
+  colab: ["Google. (n.d.-m). Welcome to Colaboratory. Google Colab.","https://colab.research.google.com/"],
+  gQuery: ["Google. (n.d.-n). QUERY function. Google Docs Editors Help.","https://support.google.com/docs/answer/3093343"],
+  gCorrel: ["Google. (n.d.-o). CORREL. Google Docs Editors Help.","https://support.google.com/docs/answer/3093990"],
+  gForecast: ["Google. (n.d.-p). FORECAST. Google Docs Editors Help.","https://support.google.com/docs/answer/3094000"],
+  gasCustom: ["Google. (n.d.-q). Custom functions in Google Sheets. Google Apps Script guides.","https://developers.google.com/apps-script/guides/sheets/functions"],
+  yao: ["Yao, S., Yu, D., Zhao, J., Shafran, I., Griffiths, T. L., Cao, Y., & Narasimhan, K. (2023). Tree of thoughts: Deliberate problem solving with large language models. In Advances in Neural Information Processing Systems (Vol. 36).","https://arxiv.org/abs/2305.10601"],
+  arduinoPlotter: ["Arduino. (n.d.-k). Using the Serial Plotter tool. Arduino Documentation.","https://docs.arduino.cc/software/ide-v2/tutorials/ide-v2-serial-plotter/"],
+  knaflic: ["Knaflic, C. N. (2015). Storytelling with data: A data visualization guide for business professionals. Wiley.",""]
+});
+const MESSY_CSV = `timestamp,device_id,sensor,value,unit
+2026-10-05 09:00:00,team1-esp32,temp,29.4,C
+2026-10-05 09:00:00,team1-esp32,temp,29.4,C
+2026-10-05 09:00:30,Team1-ESP32 ,temp,29.6,C
+2026-10-05 09:01:00,team1-esp32,temp,,C
+2026-10-05 09:01:30,team1-esp32,temp,85.3,F
+2026-10-05 09:02:00,team1-esp32,temp,999,C
+2026-10-05 09:02:30,team1-esp32,temp, 29.9,C
+2026-10-05 09:03:00,team1-esp32,hum,71.2,pct
+2026-10-05 09:03:00,team1-esp32,humidity,71.5,%
+2026-10-05 09:04:30,team1-esp32,temp,30.1,C
+2026-10-05 09:05:00,team1-esp32,light,-4.0,pct
+05/10/2026 9:05:30,team1-esp32,temp,30.2,C`;
+const P5_CPP = String.raw`// P5 - Smoothing on the device: moving average + exponential moving average
+const int WINDOW = 5;
+float buffer[WINDOW];
+int idx = 0, filled = 0;
+
+float movingAverage(float x) {        // average of the last WINDOW readings
+  buffer[idx] = x;
+  idx = (idx + 1) % WINDOW;           // circular buffer
+  if (filled < WINDOW) filled++;
+  float sum = 0;
+  for (int i = 0; i < filled; i++) sum += buffer[i];
+  return sum / filled;
+}
+
+float emaValue = NAN;
+const float ALPHA = 0.3;              // 0-1: higher follows changes faster
+float ema(float x) {                  // exponential moving average
+  if (isnan(emaValue)) emaValue = x;
+  else emaValue = ALPHA * x + (1 - ALPHA) * emaValue;
+  return emaValue;
+}
+
+// In loop(), after reading lightPct (open Tools > Serial Plotter):
+// Serial.print("raw:"); Serial.print(lightPct);
+// Serial.print(",ma:"); Serial.print(movingAverage(lightPct));
+// Serial.print(",ema:"); Serial.println(ema(lightPct));`;
+const P5_PY = String.raw`# P5 - Smoothing on the device (Pico W)
+WINDOW = 5
+buf = []
+
+def moving_average(x):
+    buf.append(x)
+    if len(buf) > WINDOW:
+        buf.pop(0)
+    return sum(buf) / len(buf)
+
+ema_value = None
+ALPHA = 0.3
+
+def ema(x):
+    global ema_value
+    ema_value = x if ema_value is None else ALPHA * x + (1 - ALPHA) * ema_value
+    return ema_value
+
+# In the main loop (Thonny: View > Plotter):
+# print(light, moving_average(light), ema(light))`;
+const P6_SRC = String.raw`/**
+ * Dew point in °C from temperature (°C) and relative humidity (%).
+ * Magnus formula with Alduchov & Eskridge (1996) constants.
+ * @param {number} t Temperature in °C (cell or range)
+ * @param {number} rh Relative humidity in % (cell or range)
+ * @return Dew point in °C
+ * @customfunction
+ */
+function DEWPOINT(t, rh) {
+  if (Array.isArray(t)) return t.map((row, i) => [DEWPOINT(row[0], rh[i][0])]);
+  if (t === '' || rh === '' || rh <= 0) return '';
+  const a = 17.625, b = 243.04;
+  const g = Math.log(rh / 100) + (a * t) / (b + t);
+  return Math.round((b * g) / (a - g) * 10) / 10;
+}`;
+const P10_SRC = String.raw`// P10 - Mini ETL pipeline: Data (bronze) -> Clean/Rejected (silver) -> Hourly (gold)
+const RULES = {                       // data quality rules: plausible range per sensor
+  temp:  { min: -10, max: 60 },
+  hum:   { min: 0,   max: 100 },
+  light: { min: 0,   max: 100 }
+};
+
+function runPipeline() {
+  const ss = SpreadsheetApp.getActive();
+  const raw = ss.getSheetByName(DATA_SHEET).getDataRange().getValues().slice(1);   // EXTRACT
+
+  // TRANSFORM -> silver: validate, de-duplicate, standardize
+  const seen = new Set();
+  const clean = [], rejected = [];
+  raw.forEach(r => {
+    const [ts, device, sensor, value, unit] = r;
+    const key = new Date(ts).getTime() + '|' + device + '|' + sensor;
+    const rule = RULES[sensor];
+    let reason = '';
+    if (seen.has(key)) reason = 'duplicate';
+    else if (value === '' || isNaN(Number(value))) reason = 'missing';
+    else if (rule && (value < rule.min || value > rule.max)) reason = 'out_of_range';
+    seen.add(key);
+    if (reason) rejected.push([ts, device, sensor, value, unit, reason]);
+    else clean.push([new Date(ts), String(device).trim().toLowerCase(), sensor, Number(value), unit]);
+  });
+
+  // LOAD silver
+  writeTable_(ss, 'Clean', ['timestamp', 'device_id', 'sensor', 'value', 'unit'], clean);
+  writeTable_(ss, 'Rejected', ['timestamp', 'device_id', 'sensor', 'value', 'unit', 'reason'], rejected);
+
+  // TRANSFORM -> gold: hourly average, min, max per device and sensor
+  const groups = {};
+  clean.forEach(([ts, device, sensor, value]) => {
+    const hour = new Date(ts);
+    hour.setMinutes(0, 0, 0);
+    const k = hour.getTime() + '|' + device + '|' + sensor;
+    if (!groups[k]) groups[k] = { hour, device, sensor, sum: 0, n: 0, min: value, max: value };
+    const g = groups[k];
+    g.sum += value; g.n++;
+    g.min = Math.min(g.min, value); g.max = Math.max(g.max, value);
+  });
+  const gold = Object.values(groups).map(g =>
+    [g.hour, g.device, g.sensor, Math.round(g.sum / g.n * 10) / 10, g.min, g.max, g.n]);
+  writeTable_(ss, 'Hourly', ['hour', 'device_id', 'sensor', 'avg', 'min', 'max', 'readings'], gold);
+
+  // MONITOR: one log row per run
+  const log = ss.getSheetByName('PipelineLog') || ss.insertSheet('PipelineLog');
+  if (log.getLastRow() === 0) log.appendRow(['run_at', 'raw_rows', 'clean_rows', 'rejected_rows', 'quality_pct']);
+  const pct = raw.length ? Math.round(clean.length / raw.length * 1000) / 10 : 0;
+  log.appendRow([new Date(), raw.length, clean.length, rejected.length, pct]);
+}
+
+function writeTable_(ss, name, headers, rows) {
+  const sh = ss.getSheetByName(name) || ss.insertSheet(name);
+  sh.clearContents();
+  sh.getRange(1, 1, 1, headers.length).setValues([headers]);
+  if (rows.length) sh.getRange(2, 1, rows.length, headers.length).setValues(rows);
+}`;
+const LABB_OUT = {"1": "(no output: the data is loaded into df, 12 rows)", "2": "(12, 5)\ntimestamp    0\ndevice_id    0\nsensor       0\nvalue        1\nunit         0\ndtype: int64\n['team1-esp32' 'Team1-ESP32 ']\n['temp' 'hum' 'humidity' 'light']\n['C' 'F' 'pct' '%']", "3": "             timestamp    device_id sensor  value unit\n0  2026-10-05 09:00:00  team1-esp32   temp   29.4    C\n1  2026-10-05 09:00:00  team1-esp32   temp   29.4    C\n2  2026-10-05 09:00:30  team1-esp32   temp   29.6    C\n3  2026-10-05 09:01:00  team1-esp32   temp    NaN    C\n4  2026-10-05 09:01:30  team1-esp32   temp   85.3    F\n5  2026-10-05 09:02:00  team1-esp32   temp  999.0    C\n6  2026-10-05 09:02:30  team1-esp32   temp   29.9    C\n7  2026-10-05 09:03:00  team1-esp32    hum   71.2  pct\n8  2026-10-05 09:03:00  team1-esp32    hum   71.5  pct\n9  2026-10-05 09:04:30  team1-esp32   temp   30.1    C\n10 2026-10-05 09:05:00  team1-esp32  light   -4.0  pct\n11 2026-10-05 09:05:30  team1-esp32   temp   30.2    C", "4": "            timestamp    device_id sensor  value unit\n4 2026-10-05 09:01:30  team1-esp32   temp   29.6    C", "5": "Duplicates removed: 2", "6": "             timestamp    device_id sensor  value unit        reason\n3  2026-10-05 09:01:00  team1-esp32   temp    NaN    C       missing\n5  2026-10-05 09:02:00  team1-esp32   temp  999.0    C  out_of_range\n10 2026-10-05 09:05:00  team1-esp32  light   -4.0  pct  out_of_range", "7": "                     before  limit=2  short_only\ntimestamp\n2026-10-05 09:00:00    29.4    29.40       29.40\n2026-10-05 09:00:30    29.6    29.60       29.60\n2026-10-05 09:01:00     NaN    29.60       29.60\n2026-10-05 09:01:30    29.6    29.60       29.60\n2026-10-05 09:02:00     NaN    29.75       29.75\n2026-10-05 09:02:30    29.9    29.90       29.90\n2026-10-05 09:03:00     NaN    29.95         NaN\n2026-10-05 09:03:30     NaN    30.00         NaN\n2026-10-05 09:04:00     NaN      NaN         NaN\n2026-10-05 09:04:30    30.1    30.10       30.10\n2026-10-05 09:05:00     NaN    30.15       30.15\n2026-10-05 09:05:30    30.2    30.20       30.20", "8": "Raw rows: 12 | Clean rows: 7 | Rejected: 3\nQuality: 58%\n['team1-esp32'] ['temp' 'hum'] ['C' 'pct']", "9": "Z-score outliers (|z| > 3): 2\nIQR outliers: 2\nIQR fences: 28.79 to 31.49\nz-scores of the two outliers: 3.07 and -4.09"};
+const LABB_CELLS = [
+ ["Load Messy Monday (no upload needed)", "import pandas as pd, io\nraw_csv = \"\"\"" + MESSY_CSV + "\"\"\"\ndf = pd.read_csv(io.StringIO(raw_csv), dtype=str)   # read everything as text first\nraw_rows = len(df)", "Triple quotes make a multi-line string, so the dataset lives inside the notebook. io.StringIO makes the text behave like a file, and dtype=str reads every column as text first, so nothing is silently converted before you inspect it."],
+ ["Step 1: profile before changing anything", "print(df.shape)\ndisplay(df.isna().sum())\nprint(df[\"device_id\"].unique())\nprint(df[\"sensor\"].unique())\nprint(df[\"unit\"].unique())", "shape gives (rows, columns). isna() marks blank cells True, and sum() counts them per column. unique() lists the distinct values, revealing near-duplicates such as 'Team1-ESP32 ' and two names for humidity."],
+ ["Steps 2-3: fix types and standardize text", "df[\"device_id\"] = df[\"device_id\"].str.strip().str.lower()\ndf[\"sensor\"] = df[\"sensor\"].str.strip().replace({\"humidity\": \"hum\"})\ndf[\"unit\"] = df[\"unit\"].str.strip().replace({\"%\": \"pct\"})\ndf[\"value\"] = pd.to_numeric(df[\"value\"].str.strip(), errors=\"coerce\")  # blanks become NaN\n\n# Two date formats: parse each explicitly. Ask the data owner which one row 12 uses!\niso = pd.to_datetime(df[\"timestamp\"], format=\"%Y-%m-%d %H:%M:%S\", errors=\"coerce\")\ndmy = pd.to_datetime(df[\"timestamp\"], format=\"%d/%m/%Y %H:%M:%S\", errors=\"coerce\")\ndf[\"timestamp\"] = iso.fillna(dmy)\ndf", "The .str methods work on every value of a column at once (vectorized). replace uses a dictionary of old to new names from your data dictionary. to_numeric with errors='coerce' turns anything that is not a number into NaN instead of crashing. Dates are parsed with explicit formats (%Y year, %m month, %d day): rows that do not match become NaT, and fillna fills them from the second format."],
+ ["Step 3 continued: convert \u00b0F to \u00b0C", "f = df[\"unit\"] == \"F\"\ndf.loc[f, \"value\"] = ((df.loc[f, \"value\"] - 32) * 5 / 9).round(1)\ndf.loc[f, \"unit\"] = \"C\"\ndf.loc[f]", "f is a Boolean mask: True where the unit is F. df.loc[rows, column] selects only those rows, so only Fahrenheit values are converted (85.3 \u00b0F becomes 29.6 \u00b0C)."],
+ ["Step 4: remove duplicates (same time + device + sensor)", "before = len(df)\ndf = df.drop_duplicates(subset=[\"timestamp\", \"device_id\", \"sensor\"], keep=\"first\")\nprint(\"Duplicates removed:\", before - len(df))\n# Note: this also drops the second humidity reading at 09:03 (71.5).\n# Discuss: would averaging the two readings be better than keeping the first?", "Rows that match on all three listed columns are duplicates; keep='first' keeps the first one. Two rows go: the exact repeat at 09:00 and the second humidity reading at 09:03, which only became a duplicate after 'humidity' was renamed to 'hum'."],
+ ["Steps 5-6: reject missing and impossible values (same rules as P10)", "RULES = {\"temp\": (-10, 60), \"hum\": (0, 100), \"light\": (0, 100)}\n\ndef reason(row):\n    if pd.isna(row[\"value\"]):\n        return \"missing\"\n    lo, hi = RULES.get(row[\"sensor\"], (float(\"-inf\"), float(\"inf\")))\n    return \"\" if lo <= row[\"value\"] <= hi else \"out_of_range\"\n\ndf[\"reason\"] = df.apply(reason, axis=1)\nrejected = df[df[\"reason\"] != \"\"]\nclean = df[df[\"reason\"] == \"\"].drop(columns=\"reason\")\nrejected", "reason() receives one row and returns why it is rejected, or an empty string. RULES.get(sensor, default) looks up the plausible range. apply(reason, axis=1) runs the function on every row (axis=1 means row by row). Filtering with a mask splits the data into clean and rejected, and rejected rows keep their reason."],
+ ["Step 7: put temperature on a 30-second grid, then fill gaps carefully", "temp = clean[clean[\"sensor\"] == \"temp\"].set_index(\"timestamp\")[\"value\"].sort_index()\ntemp_grid = temp.resample(\"30s\").mean()          # one slot every 30 s; empty slots become NaN\n\n# Option A: limit=2 fills at most 2 slots of EVERY gap, even inside a long gap\nfilled_limit = temp_grid.interpolate(limit=2)\n\n# Option B: fill ONLY gaps of 1-2 slots; longer gaps stay fully empty\ngap_len = temp_grid.isna().groupby(temp_grid.notna().cumsum()).transform(\"sum\")\nshort_only = temp_grid.interpolate().where(temp_grid.notna() | (gap_len <= 2))\n\npd.DataFrame({\"before\": temp_grid, \"limit=2\": filled_limit, \"short_only\": short_only})", "resample('30s').mean() puts readings on a regular grid, so gaps become visible as NaN. Look closely at 09:03 to 09:04: limit=2 invented two values inside a 3-slot gap and left only the third empty. Option B measures each gap's length first and fills only short gaps, so the long gap stays honest. Always check what a function really does on your data."],
+ ["Step 8: validate and document", "print(f\"Raw rows: {raw_rows} | Clean rows: {len(clean)} | Rejected: {len(rejected)}\")\nprint(f\"Quality: {len(clean) / raw_rows:.0%}\")\nprint(clean[\"device_id\"].unique(), clean[\"sensor\"].unique(), clean[\"unit\"].unique())", "Re-profile after cleaning. :.0% formats a fraction as a whole percentage. One device ID, one name per sensor, and one unit per sensor confirm the standardization worked."],
+ ["Compare the z-score and IQR outlier rules", "# Use your Lab A data:  t = wide[\"temp\"].dropna()\n# Or this demo series of 30 temperature readings:\nt = pd.Series([29.4,29.5,29.6,29.5,29.7,29.8,29.6,29.9,30.0,29.8,29.9,30.1,30.0,30.2,30.1,\n               30.3,30.2,30.4,30.3,30.5,30.4,30.6,30.5,30.4,30.6,30.7,33.8,30.6,25.1,30.5])\nz = (t - t.mean()) / t.std()\nq1, q3 = t.quantile([0.25, 0.75])\niqr = q3 - q1\nprint(\"Z-score outliers (|z| > 3):\", (z.abs() > 3).sum())\nprint(\"IQR outliers:\", ((t < q1 - 1.5 * iqr) | (t > q3 + 1.5 * iqr)).sum())\nprint(f\"IQR fences: {q1 - 1.5 * iqr:.2f} to {q3 + 1.5 * iqr:.2f}\")\nprint(f\"z-scores of the two outliers: {z[26]:.2f} and {z[28]:.2f}\")", "The z-score says how many standard deviations a value is from the mean. The IQR rule uses quartiles, so it is not pulled around by the outliers themselves (Tukey, 1977). Here both flag 2 values, but 33.8 only just passes |z| > 3 (3.07): the big outliers inflated the standard deviation and almost hid themselves."]
+];
+
+const M31 = {id:"3.1", title:"Tidy data and reshaping", minutes:90,
+ rating:["I can tell long and wide data apart only with help.","I built the Wide tab with the QUERY formula.","I can explain why the logger stores long data and when to use a snapshot.","I can reshape data both ways and help a classmate fix their QUERY."],
+ objectives:["Explain the difference between long (tidy) and wide data, and why the logger stores one reading per row (U3-O1).","Reshape your log into a wide table with one row per timestamp and one column per sensor (U3-O1).","Make a snapshot so that live data does not shift your analysis (U3-O1)."],
+ sections:[
+  {id:"survival", title:"Before you start: your Unit 3 guide", html:`
+   <p>In Units 1 and 2 you built a system that <b>collects</b> data. Unit 3 is about <b>trusting</b> and <b>understanding</b> it: tidying, cleaning, summarizing, and finally telling a short story backed by numbers. There is less wiring and more thinking.</p>
+   <div class="callout ex"><b>You keep your prototype and your logger</b><p>Unit 3 uses the data your Unit 1 prototype is sending through your Unit 2 logger. Keep it running if you can: by the end of the unit you will analyze your own room. No hardware? Use the <b>virtual device</b> from Module 2.3, or the practice datasets in each module.</p></div>
+   <table class="t"><tr><th>Module</th><th>You will be able to\u2026</th><th>Hardest idea (explained slowly)</th></tr>
+   <tr><td><b>3.1</b></td><td>reshape your log into a table you can chart</td><td>long vs. wide data</td></tr>
+   <tr><td><b>3.2</b></td><td>find and fix problems in messy data, and smooth noise</td><td>outliers: z-score and IQR</td></tr>
+   <tr><td><b>Lab B</b></td><td>repeat the cleaning in Python so it can be rerun</td><td>pandas, one cell at a time</td></tr>
+   <tr><td><b>3.3</b></td><td>summarize, find relationships, and build a data pipeline</td><td>standard deviation and correlation</td></tr>
+   <tr><td><b>3.4</b></td><td>answer a real question about your room</td><td>writing a data story</td></tr></table>
+   ${tip("Statistics without fear", `<p>You will meet a few statistics words: mean, median, standard deviation, z-score, quartile, correlation. Each one gets a picture you can play with before any formula. If a formula looks scary, use the picture first: the formula is only a short way to write what the picture shows.</p>`)}`},
+  {id:"longwide", title:"Long (tidy) data and wide data", html:`
+   <p>Your Data tab stores <b>one reading per row</b>: each row has a time, a device, a sensor name, a value, and a unit. This shape is called <b>long</b> or <b>tidy</b> data: each variable is a column and each observation is a row (Wickham, 2014).</p>
+   <div class="two"><div><b>Long (how the logger stores it)</b><table class="t"><tr><th>timestamp</th><th>sensor</th><th>value</th></tr><tr><td>09:00:00</td><td>temp</td><td>29.4</td></tr><tr><td>09:00:00</td><td>hum</td><td>70.2</td></tr><tr><td>09:00:00</td><td>light</td><td>55.0</td></tr><tr><td>09:00:30</td><td>temp</td><td>29.5</td></tr><tr><td>\u2026</td><td>\u2026</td><td>\u2026</td></tr></table></div>
+   <div><b>Wide (one row per moment)</b><table class="t"><tr><th>timestamp</th><th>hum</th><th>light</th><th>temp</th></tr><tr><td>09:00:00</td><td>70.2</td><td>55.0</td><td>29.4</td></tr><tr><td>09:00:30</td><td>70.1</td><td>55.3</td><td>29.5</td></tr><tr><td>\u2026</td><td>\u2026</td><td>\u2026</td><td>\u2026</td></tr></table></div></div>
+   <table class="t"><tr><th></th><th>Long (tidy)</th><th>Wide</th></tr><tr><td>Adding a new sensor</td><td>Just new rows; nothing breaks</td><td>Needs a new column</td></tr><tr><td>Logging from many devices</td><td>Easy: one more device ID</td><td>Gets messy fast</td></tr><tr><td>Charting and comparing sensors</td><td>Harder</td><td>Easy: one column per line on a chart</td></tr><tr><td>Best for</td><td>Storing and collecting</td><td>Analyzing and charting</td></tr></table>
+   <p>So we <b>store long</b> and <b>reshape to wide</b> when we analyze. Reshaping long to wide is often called a <b>pivot</b>. Watch the fold below.</p>
+   ${selfexp("u31-long", "Why does the logger store long data instead of one column per sensor? Give one reason.")}
+   ${srcs([["Wickham (2014): Tidy data", REF.wickham[1]]])}`, interactive:"fold"},
+  {id:"build", title:"Guided build: the Wide tab and a snapshot", html:`
+   <ol><li>In your logger Sheet, create a new tab named <code>Wide</code>.</li>
+   <li>In cell <b>A1</b>, enter this formula, using your own device ID:<pre class="code">=QUERY(Data!A:E,"select A, max(D) where B='team3-esp32' group by A pivot C",1)</pre></li>
+   <li>Check that the columns read <code>timestamp | hum | light | temp</code>. Sensors are sorted alphabetically.</li>
+   <li><b>Make a snapshot:</b> select the whole Wide tab, copy it, create a tab named <code>Snapshot</code>, and use <b>Edit \u2192 Paste special \u2192 Values only</b>. Use Snapshot for the rest of the unit if your board is still logging.</li></ol>
+   <h3>Reading the QUERY formula piece by piece</h3>
+   <table class="t"><tr><th>Piece</th><th>Meaning</th></tr>
+   <tr><td><code>Data!A:E</code></td><td>Use columns A to E of the Data tab.</td></tr>
+   <tr><td><code>select A, max(D)</code></td><td>Show the timestamp (A) and a value (D). <code>max</code> is needed because QUERY must combine rows; with one reading per sensor per time, max simply returns that reading.</td></tr>
+   <tr><td><code>where B='team3-esp32'</code></td><td>Only your device. Text goes in single quotes.</td></tr>
+   <tr><td><code>group by A</code></td><td>One row per timestamp.</td></tr>
+   <tr><td><code>pivot C</code></td><td>Turn each sensor name in column C into its own column. This is the \u201cfold.\u201d</td></tr>
+   <tr><td><code>,1</code></td><td>The first row of the data is a header row.</td></tr></table>
+   <h3>Why a snapshot?</h3>
+   <p>While your board is logging, the Wide tab keeps growing. If you calculate an average at 10:00 and again at 10:05, you get different answers, and your chart and your written numbers no longer match. A <b>snapshot</b> freezes the data at one moment, so everything you report comes from the same rows. Professionals call this working on a fixed <b>version</b> of the data.</p>
+   ${mis(`<ul><li>A typo in the device ID (or capitals) gives an empty table: copy it from column B.</li><li>Using a comma inside the QUERY text in some regions: if you get a formula error, check that the formula uses commas between arguments, as shown.</li><li>Pasting normally instead of <b>Values only</b>: the snapshot would still be a live formula.</li></ul>`)}
+   ${srcs([["Google: QUERY", REF.gQuery[1]]])}`, interactive:"snapshot"},
+  {id:"drill", title:"Drill: tidy and wide data", html:`<p>Check your understanding.</p>`, interactive:"drill:u31"}
+ ],
+ quiz:[
+  {q:"Which describes long (tidy) data?", o:["One column per sensor","One row per reading, with a column naming the sensor","One row per day","Only numbers, no text"], a:1, e:"Each observation is a row and each variable is a column.", w:["That is wide data.","","Rows are readings, not days.","Tidy data includes text columns such as sensor and unit."]},
+  {q:"Why does the logger store long data?", o:["It uses less internet","New sensors and devices can be added without changing the columns","Charts need it","Google requires it"], a:1, e:"Long data is flexible for collecting; wide data is easier for charting.", w:["The internet use is about the same.","","Charts are actually easier with wide data.","Sheets accepts any layout."]},
+  {q:"In the QUERY formula, what does pivot C do?", o:["Sorts by column C","Turns each sensor name in column C into its own column","Deletes column C","Averages column C"], a:1, e:"pivot creates one column per distinct value.", w:["Sorting uses order by.","","Nothing is deleted.","Averages use avg()."]},
+  {q:"Why make a snapshot before analyzing?", o:["It makes the Sheet faster","So live data does not change your numbers while you work","It removes outliers","It converts units"], a:1, e:"A snapshot freezes the rows, so every number you report comes from the same data.", w:["Speed is not the reason.","","It copies values; it does not clean them.","It changes nothing in the values."]},
+  {q:"Your Wide tab is empty. What is the most likely cause?", o:["The board is off","The device ID in the formula does not exactly match column B","The Sheet is full","QUERY needs a new version"], a:1, e:"where B='...' must match exactly, including capitals.", w:["Old rows would still show.","","A full Sheet gives a different error.","Formulas do not need deploying."]}],
+ checkpoint:{code:"U3-O1", task:"Build the Wide tab and a Snapshot tab.", met:"Columns read timestamp, hum, light, temp; the snapshot contains values, not formulas.", upload:"Upload a screenshot of your Wide and Snapshot tabs."},
+ refs:["wickham","gQuery"]};
+
+const M32 = {id:"3.2", title:"Cleaning, outliers, and smoothing", minutes:150,
+ rating:["I can spot some problems in messy data with help.","I fixed most Messy Monday problems and logged them.","I can explain the 8 steps, the z-score and IQR rules, and the smoothing trade-off.","I cleaned my own data and can justify every decision to others."],
+ objectives:["Apply the 8-step cleaning workflow to a messy dataset and record every change in a cleaning log (U3-O2).","Detect outliers with the z-score and IQR rules, and decide whether to keep, flag, or reject each one (U3-O3).","Smooth noisy readings with a moving average and an exponential moving average, and explain the trade-off between smoothness and lag (U3-O4)."],
+ sections:[
+  {id:"why", title:"Why clean? Real data is messy", html:`
+   <p>Every real dataset has problems: a sensor glitch returns 999, a network retry sends the same reading twice, someone types <code>humidity</code> instead of <code>hum</code>. If you analyze messy data, your averages, charts, and conclusions can all be wrong, even if your formulas are perfect. Data people sum this up as \u201c<b>garbage in, garbage out</b>.\u201d</p>
+   <div class="callout mis"><b>The golden rule</b><p><b>Never edit the raw Data tab.</b> Clean a copy (or let a pipeline do it, in Module 3.3), and write down every change in a <b>cleaning log</b>. Then anyone can check what you did, and you can always go back to the original.</p></div>
+   <h3>The 8-step cleaning workflow</h3>
+   <ol><li><b>Profile:</b> count rows, blanks, distinct values, and min/max per sensor <i>before</i> changing anything.</li><li><b>Fix structure:</b> correct headers, split combined columns, make sure numbers are stored as numbers.</li><li><b>Standardize:</b> one name per sensor, one unit per sensor, one device ID format, one date format and time zone.</li><li><b>Remove duplicates:</b> the same reading sent twice (common after a network retry).</li><li><b>Handle missing values:</b> drop, carry forward, or fill in, using a written rule.</li><li><b>Handle outliers:</b> reject impossible values; <b>flag</b> (do not silently delete) unusual but possible ones.</li><li><b>Smooth and resample:</b> reduce noise and put readings on a regular time grid.</li><li><b>Validate and document:</b> profile again, compare before and after, and complete the cleaning log.</li></ol>
+   <p>Watch rows travel through the 8 stations below.</p>`, interactive:"laundry"},
+  {id:"messy", title:"Detective activity: Messy Monday", html:`
+   <p>This 12-row dataset has <b>11 planted problems</b>. Find them by tapping the cell where each problem is, then choosing what kind of problem it is. Every correct find is added to your cleaning log automatically, with a suggested fix.</p>
+   <p class="explain">Want to try in Google Sheets too? Copy the data below into cell A1 of a new Sheet and use <b>Data \u2192 Split text to columns</b>.</p>
+   <pre class="code">${MESSY_CSV}</pre>
+   <h3>Cleaning techniques in Google Sheets</h3>
+   <table class="t"><tr><th>Problem</th><th>Detect</th><th>Fix</th></tr>
+   <tr><td>Number stored as text</td><td><code>=ISNUMBER(D2)</code> is FALSE</td><td><code>=VALUE(TRIM(D2))</code></td></tr>
+   <tr><td>Inconsistent text</td><td><code>=UNIQUE(B2:B)</code> shows near-duplicates</td><td><code>=LOWER(TRIM(B2))</code></td></tr>
+   <tr><td>Inconsistent names or units</td><td><code>=UNIQUE(C2:C)</code></td><td>Find and replace with the data dictionary name</td></tr>
+   <tr><td>Mixed units (\u00b0F among \u00b0C)</td><td><code>=COUNTIF(E2:E,"F")</code></td><td><code>=IF(E2="F",ROUND((D2-32)*5/9,1),D2)</code></td></tr>
+   <tr><td>Duplicates</td><td><code>=COUNTIFS(A:A,A2,B:B,B2,C:C,C2)&gt;1</code></td><td><b>Data \u2192 Data cleanup \u2192 Remove duplicates</b></td></tr>
+   <tr><td>Missing value</td><td><code>=COUNTBLANK(D2:D)</code></td><td>Gap of 1\u20132 readings: <code>=(D2+D4)/2</code>; longer gaps: leave blank and note it</td></tr>
+   <tr><td>Time gap</td><td><code>=(A3-A2)*86400</code> (seconds between rows)</td><td>Report the gap instead of inventing data</td></tr>
+   <tr><td>Impossible value</td><td><code>=OR(D2&lt;-10,D2&gt;60)</code></td><td>Move to a Rejected tab with a reason</td></tr>
+   <tr><td>Mixed date formats</td><td>Dates that do not sort correctly</td><td><b>Format \u2192 Number \u2192 Date time</b>, or rebuild with <code>DATE()</code></td></tr></table>
+   ${tip("Discussion (10 minutes)", `<p>Is filling in a missing value honest? Decide as a team when filling a gap is reasonable, and when it hides a real problem.</p>`)}`, interactive:"messyhunt"},
+  {id:"stats0", title:"Concept clinic: mean, standard deviation, and z-scores", html:`
+   <p>To decide what counts as \u201cunusual,\u201d you need two ideas: the <b>centre</b> of the data and its <b>spread</b>.</p>
+   <table class="t"><tr><th>Idea</th><th>In plain words</th><th>Sheets</th></tr>
+   <tr><td><b>Mean</b> (average)</td><td>Add all values and divide by how many there are. Its weakness: one extreme value pulls it a lot.</td><td><code>=AVERAGE(D2:D)</code></td></tr>
+   <tr><td><b>Median</b></td><td>The middle value when sorted. Extreme values hardly move it.</td><td><code>=MEDIAN(D2:D)</code></td></tr>
+   <tr><td><b>Standard deviation</b> (SD)</td><td>The typical distance of readings from the mean. Small SD: readings are close together. Large SD: they are spread out.</td><td><code>=STDEV(D2:D)</code></td></tr>
+   <tr><td><b>z-score</b></td><td>How many SDs a reading is from the mean. z = 2 means \u201ctwo typical distances above the mean.\u201d</td><td><code>=(D2-AVERAGE(D$2:D))/STDEV(D$2:D)</code></td></tr></table>
+   ${ex("one z-score by hand", `<p>Temperatures have mean 30.0 \u00b0C and SD 0.5 \u00b0C. A reading of 31.2 \u00b0C has z = (31.2 \u2212 30.0) \u00f7 0.5 = <b>2.4</b>: it is 2.4 typical distances above the mean, so it is unusual. A reading of 29.8 \u00b0C has z = \u22120.4: perfectly normal.</p>`)}
+   <h3>Two rules for outliers</h3>
+   <table class="t"><tr><th>Rule</th><th>A reading is an outlier when\u2026</th><th>Strength</th><th>Weakness</th></tr>
+   <tr><td><b>z-score rule</b></td><td>|z| is greater than 2 (or 3, stricter)</td><td>Easy to explain</td><td>Big outliers inflate the SD and can hide themselves</td></tr>
+   <tr><td><b>IQR rule</b> (Tukey, 1977)</td><td>it is below Q1 \u2212 1.5 \u00d7 IQR or above Q3 + 1.5 \u00d7 IQR</td><td>Quartiles are not pulled by outliers</td><td>A little harder to compute by hand</td></tr></table>
+   <p><b>Quartiles:</b> sort the data and cut it into four equal parts. Q1 is the value a quarter of the way up, Q3 three quarters of the way up, and the <b>IQR</b> (interquartile range) is Q3 \u2212 Q1: the width of the middle half of the data. In Sheets: <code>=QUARTILE(D2:D,1)</code> and <code>=QUARTILE(D2:D,3)</code>.</p>
+   <h3>Keep, flag, or reject?</h3>
+   <table class="t"><tr><th>Decision</th><th>When</th><th>Example</th></tr><tr><td><b>Reject</b></td><td>The value is impossible</td><td>999 \u00b0C, \u22124 % light</td></tr><tr><td><b>Flag</b></td><td>Unusual but possible: keep it, mark it, explain it</td><td>A spike when a hand covered the sensor</td></tr><tr><td><b>Keep</b></td><td>It is real and important</td><td>The room really did heat up at noon</td></tr></table>
+   <p>Drag the readings and switch rules in the explorer below.</p>
+   ${selfexp("u32-outlier", "Your data has one reading of 33.8 \u00b0C when the rest are around 30 \u00b0C. Would you keep, flag, or reject it? What would you need to know first?")}
+   <p class="explain">Sources: Tukey (1977), <i>Exploratory Data Analysis</i>.</p>`, interactive:"outlierlab"},
+  {id:"smooth", title:"Concept clinic: smoothing noise, and the lag trade-off", html:`
+   <p>Sensor readings jitter: the LDR flickers by a few percent even when the light does not change. <b>Smoothing</b> replaces each reading with an average of nearby readings, so the real pattern shows through.</p>
+   <table class="t"><tr><th>Filter</th><th>How it works</th><th>Trade-off</th></tr>
+   <tr><td><b>Moving average</b> (window N)</td><td>The average of the last N readings, with equal weight</td><td>Bigger N: smoother, but slower to react to real changes (more <b>lag</b>)</td></tr>
+   <tr><td><b>Exponential moving average</b> (EMA, \u03b1)</td><td>New smooth value = \u03b1 \u00d7 new reading + (1 \u2212 \u03b1) \u00d7 old smooth value</td><td>Small \u03b1: smoother but slower; large \u03b1: faster but jittery. Needs only one stored number, which suits small boards (Hyndman &amp; Athanasopoulos, 2021)</td></tr>
+   <tr><td><b>Median</b> of N</td><td>The middle value of the last N readings</td><td>Removes single spikes completely, but shifts slightly on steady trends</td></tr></table>
+   ${ex("one EMA step by hand", `<p>\u03b1 = 0.3, the old smooth value is 55, and a new reading is 10 (a hand covers the LDR). New smooth value = 0.3 \u00d7 10 + 0.7 \u00d7 55 = 3 + 38.5 = <b>41.5</b>. It moves toward 10, but only part of the way: that is the lag.</p>`)}
+   <p>Play with the window size and \u03b1 below. Watch how the smooth lines handle the noise, the single spike, and the hand covering the sensor.</p>
+   ${selfexp("u32-smooth", "Why can too much smoothing be a problem for an alarm that must react quickly?")}
+   ${srcs([["Hyndman & Athanasopoulos (2021)", REF.hyndman[1]]])}`, interactive:"smoothlab"},
+  {id:"p5", title:"Program P5: smoothing on the device", html:`
+   <p>You can also smooth <b>on the board</b>, before sending. Add these functions to P2 (or P4) and plot raw and smoothed light together.</p>
+   <div class="seg seg-sm p4tabs" role="tablist"><button role="tab" data-p4="cpp" aria-selected="true">Uno R4 WiFi, ESP32, ESP8266 (C++)</button><button role="tab" data-p4="py" aria-selected="false">Pico W (MicroPython)</button></div>
+   <div class="p4pane" data-p4p="cpp">${code("cpp", P5_CPP, "Program P5 - Smoothing on the device (Arduino C++)")}</div>
+   <div class="p4pane" data-p4p="py" hidden>${code("python", P5_PY, "Program P5 - Smoothing on the device (MicroPython)")}</div>
+   <table class="t"><tr><th>Code</th><th>What it does and why</th></tr>
+   <tr><td><code>float buffer[WINDOW];</code></td><td>An array of 5 slots (indexes 0 to 4), the lockers from Module 2.1. In C++ its size is fixed.</td></tr>
+   <tr><td><code>idx = (idx + 1) % WINDOW;</code></td><td><code>%</code> gives the remainder: 0, 1, 2, 3, 4, then back to 0. The newest reading overwrites the oldest, like a carousel: a <b>circular buffer</b>.</td></tr>
+   <tr><td><code>if (filled &lt; WINDOW) filled++;</code></td><td>Counts real readings, so the first averages are not dragged toward 0 by empty slots.</td></tr>
+   <tr><td><code>emaValue = ALPHA * x + (1 - ALPHA) * emaValue;</code></td><td>The EMA formula in one line: it needs only one remembered number.</td></tr>
+   <tr><td><code>Serial.print("raw:"); \u2026</code></td><td>The <code>name:value,name:value</code> format draws one labeled line per name in <b>Tools \u2192 Serial Plotter</b>.</td></tr>
+   <tr><td><code>buf.pop(0)</code> (Python)</td><td>Removes the oldest reading so the list keeps only the last 5.</td></tr>
+   <tr><td><code>global ema_value</code> (Python)</td><td>Lets the function change the variable defined outside it.</td></tr></table>
+   <h3>Challenges</h3>
+   <ul><li><b>Core:</b> compare window sizes 3 and 10 in the Serial Plotter while waving your hand over the LDR. <b>Success check:</b> a 2-sentence note naming which window reacts faster, and why.</li><li><b>Extension:</b> write a median-of-5 filter and show that it removes a single spike that the moving average does not. <b>Success check:</b> a screenshot with 3 lines (raw, average, median) and one visible spike.</li></ul>
+   ${srcs([["Arduino: Serial Plotter", REF.arduinoPlotter[1]]])}`},
+  {id:"drill", title:"Drill: cleaning, outliers, and smoothing", html:`<p>Check your understanding.</p>`, interactive:"drill:u32"}
+ ],
+ quiz:[
+  {q:"What is the golden rule of data cleaning?", o:["Delete every outlier","Never edit the raw data; clean a copy and log every change","Always fill missing values","Clean before collecting"], a:1, e:"The raw data is your evidence; the cleaning log makes every decision checkable.", w:["Unusual but possible values should be flagged, not deleted.","","Long gaps should be reported, not invented.","You can only clean data you have collected."]},
+  {q:"A reading has z = \u22122.5. What does that mean?", o:["It is 2.5 \u00b0C below the mean","It is 2.5 standard deviations below the mean","It is impossible","It is the median"], a:1, e:"z counts standard deviations from the mean; the sign gives the direction.", w:["z has no units; it counts SDs.","","Unusual is not the same as impossible.","The median is a different idea."]},
+  {q:"Why is the IQR rule less affected by big outliers than the z-score rule?", o:["It uses quartiles, which outliers barely move","It ignores half the data","It uses the mean","It only works on temperatures"], a:0, e:"Outliers inflate the mean and SD, but the quartiles stay where they are.", w:["","It uses all the data to find the quartiles.","The mean is exactly what outliers pull.","It works on any numbers."]},
+  {q:"You increase a moving average window from 3 to 20. What happens?", o:["Smoother line, but it reacts later to real changes","Noisier line","No change","The data is deleted"], a:0, e:"Bigger windows average more readings: less noise, more lag.", w:["","A bigger window removes more noise.","The window size changes the result.","Smoothing never deletes data."]},
+  {q:"A DHT22 reads 999 \u00b0C once. What should you do?", o:["Keep it","Flag it as unusual","Reject it as impossible, with a reason in the log","Average it with its neighbours"], a:2, e:"999 \u00b0C is physically impossible indoors: reject it and record why.", w:["Keeping it would wreck every average.","Flagging is for unusual but possible values.","","Averaging would still spread the error."]}],
+ checkpoint:{code:"U3-O2, U3-O3, U3-O4", task:"Messy Monday detective (Core), an outlier decision, and the smoothing window comparison.", met:"9 of 11 problems found and logged; one justified keep/flag/reject decision; 2 sentences naming which window reacts faster and why.", upload:"Upload your cleaning log and your Serial Plotter screenshot (or smoothing lab screenshot)."},
+ refs:["wickham","tukey","hyndman","arduinoPlotter"]};
+
+const MB = {id:"B", title:"Python Lab B: cleaning with pandas", minutes:150,
+ rating:["I ran the cells but cannot explain them yet.","I ran every cell and can say which cleaning step each one does.","I can explain each pandas operation and why the result matches my Sheets cleaning.","I wrapped the cleaning into a function and used it on my own data."],
+ objectives:["Clean a messy dataset in pandas and reproduce your Sheets result (LB-O1).","Explain the purpose and parameters of each pandas operation used (LB-O2).","Accept or reject AI code-review suggestions with a stated reason (LB-O3)."],
+ sections:[
+  {id:"why", title:"Why clean with code?", html:`
+   <p>In Module 3.2 you cleaned Messy Monday by hand: 11 fixes. Tomorrow your logger will have new data with the same kinds of problems. Will you do all 11 fixes again, by hand, every day?</p>
+   <p>With code, you write each cleaning step <b>once</b>. Running the notebook again cleans tomorrow's data in seconds, and the code itself is a written record of every decision. This is called <b>reproducible</b> analysis.</p>
+   <table class="t"><tr><th></th><th>Cleaning in Sheets</th><th>Cleaning in Python</th></tr><tr><td>Good for</td><td>Seeing the data, small one-off fixes</td><td>Repeating the same cleaning on new data</td></tr><tr><td>Record of what you did</td><td>Your cleaning log (written by hand)</td><td>The code itself</td></tr><tr><td>New data tomorrow</td><td>Do the fixes again</td><td>Press Run all</td></tr></table>
+   <div class="callout ex"><b>Before this lab</b><p>This lab uses <b>Python Lab A</b> (Python and Google Colab basics): opening a notebook, running cells, and reading a table with pandas. The data is built into the notebook, so you do not need to upload anything.</p></div>
+   <h3>Getting started</h3>
+   <ol><li>Press <b>Download the notebook (.ipynb)</b> in the lab below.</li><li>Open <a href="https://colab.research.google.com/" target="_blank" rel="noopener">Google Colab</a> and choose <b>File \u2192 Upload notebook</b>. Name it <code>team#-python-lab-b</code>.</li><li>Run each cell in order with <b>Shift + Enter</b>, and compare your output with the expected output in the lab below.</li></ol>
+   <p class="explain">No Colab today? Press <b>Run</b> on each cell in the lab below to see what it does and what it prints.</p>
+   ${srcs([["Google Colab", REF.colab[1]],["pandas documentation", REF.pandasDocs[1]]])}`},
+  {id:"lab", title:"The notebook: one cleaning step per cell", html:`
+   <p>Each cell does one step of the 8-step workflow from Module 3.2. Before pressing <b>Run</b>, <b>predict</b> what the output will show, just as in the PRIMM drills.</p>`, interactive:"pandaslab"},
+  {id:"aireview", title:"AI activity: review AI suggestions about your cleaning code", html:`
+   <p>Professional programmers ask others to <b>review</b> their code. You will ask an AI to review a cleaning function, then decide which suggestions to accept, with a reason.</p>
+   <ol><li><b>Extension first (attempt):</b> wrap Cells 3 to 6 into one function, <code>clean_sensor_data(df)</code>, that returns <code>clean</code> and <code>rejected</code>.</li>
+   <li><b>Prompt:</b> \u201cYou are a careful data engineer reviewing beginner pandas code. Review this function for correctness, readability, and data-cleaning decisions. List up to 5 suggestions, each with a reason. Do not rewrite the whole function.\u201d Paste your function (no personal data).</li>
+   <li><b>Decide:</b> for each suggestion, write <i>accept</i> or <i>reject</i> and <b>why</b>. Test any accepted suggestion by rerunning the notebook.</li></ol>
+   <table class="t"><tr><th>#</th><th>AI suggestion</th><th>Accept or reject?</th><th>My reason (with evidence)</th></tr><tr><td>1</td><td></td><td></td><td></td></tr><tr><td>2</td><td></td><td></td><td></td></tr><tr><td>3</td><td></td><td></td><td></td></tr></table>
+   ${tip("A good reason uses evidence", `<p>\u201cRejected: the AI suggested <code>dropna()</code> on the whole table, but that would delete rows we want to keep in Rejected with a reason. I tested it: the Rejected table became empty.\u201d</p>`)}`},
+  {id:"challenges", title:"Challenges", html:`
+   <ul><li><b>Core:</b> run all cells, then write one sentence for each cell explaining which cleaning step it performs and which planted problem it fixes. <b>Success check:</b> 8 sentences, and at least 9 of the 11 problems matched to a cell.</li>
+   <li><b>Extension:</b> wrap Cells 3 to 6 into <code>clean_sensor_data(df)</code> that returns <code>clean</code> and <code>rejected</code>, then run it on your own team's data. <b>Success check:</b> one function call cleans both Messy Monday and your data without errors.</li>
+   <li><b>Extension:</b> instead of <code>keep="first"</code>, average duplicate readings with <code>df.groupby(["timestamp", "device_id", "sensor"], as_index=False)["value"].mean()</code>. <b>Success check:</b> the 09:03 humidity becomes 71.35, and you justify the choice in one sentence.</li></ul>
+   ${tip("Discussion (10 minutes)", `<p>Row 12's date, 05/10/2026, could mean 5 October or 10 May. What should a data team do when a value is ambiguous? Agree on a rule: ask the source, document the assumption, or reject.</p>`)}`},
+  {id:"drill", title:"Drill: pandas", html:`<p>Check your understanding.</p>`, interactive:"drill:uB"}
+ ],
+ quiz:[
+  {q:"Why does Cell 1 read every column with dtype=str?", o:["Text is faster","So nothing is converted before you inspect it","pandas cannot read numbers","To hide errors"], a:1, e:"Reading as text first lets you see problems (like ' 29.9') before deciding how to convert.", w:["Speed is not the reason.","","pandas reads numbers easily.","It makes problems visible, not hidden."]},
+  {q:"What does errors=\"coerce\" do in pd.to_numeric?", o:["Crashes on bad values","Turns values that are not numbers into NaN","Deletes the column","Rounds the numbers"], a:1, e:"Unconvertible values become NaN (missing), which a later step can handle.", w:["That is errors='raise', the default.","","Nothing is deleted.","It does not round."]},
+  {q:"In Cell 5, why are 2 rows removed, not 1?", o:["A bug","After 'humidity' became 'hum', the two 09:03 humidity readings match too","Two rows were blank","The 999 row was removed"], a:1, e:"Standardizing names first created a second duplicate: order of steps matters.", w:["It is expected behaviour.","","Blanks are handled in Cell 6.","999 is rejected in Cell 6."]},
+  {q:"What did running Cell 7 show about interpolate(limit=2)?", o:["It fills only gaps of 1 or 2 slots","It fills the first 2 slots of every gap, even inside longer gaps","It deletes gaps","It does nothing"], a:1, e:"limit counts slots filled per gap, not gap length; Option B fills only short gaps.", w:["That is what Option B does, not limit=2.","","Gaps stay as NaN or get filled; nothing is deleted.","It filled several slots."]},
+  {q:"Why is cleaning with code called reproducible?", o:["It is always correct","Running it again repeats exactly the same steps, and the code records every decision","It uses AI","It needs no data"], a:1, e:"Anyone can rerun and inspect the exact steps.", w:["Code can still contain wrong decisions; that is why we review it.","","AI is not required.","It cleans data, so it needs data."]}],
+ checkpoint:{code:"LB-O1, LB-O2, LB-O3", task:"Run all cells on Messy Monday; one sentence per cell; AI code review of clean_sensor_data().", met:"Clean, rejected, and quality % match your Sheets cleaning; 8 correct sentences; at least 1 accepted and 1 rejected suggestion, each with a reason.", upload:"Upload your notebook (.ipynb) or a screenshot of the final cell output."},
+ refs:["pandasDocs","colab","wickham","tukey"]};
+
+const M33 = {id:"3.3", title:"Analysis, charts, and a data pipeline", minutes:180,
+ rating:["I can calculate an average with help.","I built a summary box and a labeled chart.","I can explain standard deviation, correlation vs. causation, and my pipeline's layers.","I extended the pipeline or wrote my own custom function and can teach these ideas."],
+ objectives:["Compute descriptive statistics, correlation, and trend, and choose the right chart for each question (U3-O6).","Build and run an ETL pipeline that produces raw, clean, rejected, and hourly layers with a quality log (U3-O5).","Write a custom Sheets function in Apps Script (Program P6)."],
+ sections:[
+  {id:"stats", title:"Concept clinic: describing data with a few numbers", html:`
+   <p>A summary box answers \u201cwhat happened?\u201d in five numbers. This is <b>descriptive analytics</b> from Module 1.1.</p>
+   <table class="t"><tr><th>Statistic</th><th>Question it answers</th><th>Sheets formula (on the Wide tab)</th></tr>
+   <tr><td>Count</td><td>How many readings?</td><td><code>=COUNT(D2:D)</code></td></tr><tr><td>Mean</td><td>What is typical?</td><td><code>=AVERAGE(D2:D)</code></td></tr><tr><td>Median</td><td>What is typical, ignoring extremes?</td><td><code>=MEDIAN(D2:D)</code></td></tr><tr><td>Min, max, range</td><td>How low, how high, how far apart?</td><td><code>=MIN(D2:D)</code>, <code>=MAX(D2:D)</code>, <code>=MAX(D2:D)-MIN(D2:D)</code></td></tr><tr><td>Standard deviation</td><td>How spread out?</td><td><code>=STDEV(D2:D)</code></td></tr></table>
+   <p>Move the readings in the explorer below, and add an extreme reading. Watch which numbers move a lot (mean, range, SD) and which barely move (median).</p>
+   ${selfexp("u33-stats", "When would you report the median instead of the mean for your room's temperature?")}`, interactive:"statslab"},
+  {id:"corr", title:"Concept clinic: correlation is not causation", html:`
+   <p><b>Correlation</b> measures how closely two measurements move together, from \u22121 to +1 (in Sheets: <code>=CORREL(B2:B, D2:D)</code>).</p>
+   <table class="t"><tr><th>r</th><th>Meaning</th><th>Example</th></tr><tr><td>close to +1</td><td>When one goes up, the other goes up</td><td>Temperature and time of day in the morning</td></tr><tr><td>close to 0</td><td>No straight-line relationship</td><td>Temperature and your device ID</td></tr><tr><td>close to \u22121</td><td>When one goes up, the other goes down</td><td>Temperature and humidity in an air-conditioned room</td></tr></table>
+   <p><b>Correlation is not causation.</b> Temperature and humidity may fall together because a <i>third factor</i>, the air conditioner, changes both. Before claiming that one thing causes another, ask: could something else be causing both?</p>
+   <p>Change the strength in the scatter plot below, then reveal the hidden third factor.</p>
+   ${selfexp("u33-corr", "Ice cream sales and heat-stroke cases rise together. Does ice cream cause heat stroke? Explain using the idea of a third factor.")}
+   ${srcs([["Google: CORREL", REF.gCorrel[1]]])}`, interactive:"corrlab"},
+  {id:"charts", title:"Choosing the right chart", html:`
+   <table class="t"><tr><th>Your question</th><th>Chart</th><th>Why</th></tr>
+   <tr><td>How did temperature change over the day?</td><td><b>Line chart</b></td><td>Time on the x-axis; the line shows change</td></tr>
+   <tr><td>Do temperature and humidity move together?</td><td><b>Scatter plot</b></td><td>One dot per moment; the shape shows the relationship</td></tr>
+   <tr><td>Which side of the room is warmer?</td><td><b>Column chart</b></td><td>Compares groups side by side</td></tr>
+   <tr><td>How are the readings spread?</td><td><b>Histogram</b></td><td>Shows how many readings fall in each range</td></tr></table>
+   <h3>Every chart needs</h3>
+   <ul><li>A title that states the finding, for example \u201cThe window side was 1.8 \u00b0C warmer after lunch\u201d.</li><li>Axis labels <b>with units</b> (\u00b0C, %, time).</li><li>A legend if there is more than one line.</li><li>An honest scale: a temperature axis that starts at 29 \u00b0C makes a 0.5 \u00b0C change look huge. Decide on purpose, and say so.</li></ul>
+   <h3>Formula cookbook</h3>
+   <table class="t"><tr><th>Purpose</th><th>Formula</th></tr>
+   <tr><td>Average temperature (long data)</td><td><code>=AVERAGEIF(Data!C:C,"temp",Data!D:D)</code></td></tr>
+   <tr><td>Highest temperature</td><td><code>=MAXIFS(Data!D:D,Data!C:C,"temp")</code></td></tr>
+   <tr><td>Hourly average</td><td><code>=QUERY(Data!A:E,"select hour(A), avg(D) where C='temp' group by hour(A) label hour(A) 'hour', avg(D) 'avg_temp_C'",1)</code></td></tr>
+   <tr><td>5-point moving average</td><td><code>=AVERAGE(D2:D6)</code>, then drag down</td></tr>
+   <tr><td>Z-score and outlier flag</td><td><code>=(D2-AVERAGE(D$2:D))/STDEV(D$2:D)</code> and <code>=IF(ABS(F2)&gt;2,"OUTLIER","")</code></td></tr>
+   <tr><td>Correlation</td><td><code>=CORREL(B2:B,D2:D)</code></td></tr>
+   <tr><td>Trend (\u00b0C per day)</td><td><code>=SLOPE(D2:D,A2:A)</code></td></tr>
+   <tr><td>Forecast 1 hour ahead</td><td><code>=FORECAST(MAX(A2:A)+1/24,D2:D,A2:A)</code></td></tr>
+   <tr><td>Mini chart in a cell</td><td><code>=SPARKLINE(D2:D200)</code></td></tr></table>
+   <h3>Challenges</h3>
+   <ul><li><b>Core:</b> build a summary box (count, average, minimum, maximum, standard deviation) for temperature, plus one line chart. <b>Success check:</b> 5 correct formulas and 1 chart with a title and axis units.</li></ul>
+<p class="explain">Further reading: Knaflic (2015), <i>Storytelling with Data</i>.</p>`, interactive:"drill:u33"},
+  {id:"pipeline", title:"Data engineering: build a mini ETL pipeline (P10)", html:`
+   <p>So far you cleaned by hand (3.2) and with Python (Lab B). Now your <b>logger</b> will clean itself. A <b>pipeline</b> is a program that moves data through stages automatically:</p>
+   <table class="t"><tr><th>Layer</th><th>Tab</th><th>What it holds</th></tr><tr><td><b>Bronze</b> (raw)</td><td>Data</td><td>Every reading exactly as it arrived (never edited)</td></tr><tr><td><b>Silver</b> (clean)</td><td>Clean and Rejected</td><td>Valid readings, and rejected ones <i>with a reason</i></td></tr><tr><td><b>Gold</b> (summary)</td><td>Hourly</td><td>Average, min, and max per hour, ready for charts</td></tr><tr><td><b>Monitor</b></td><td>PipelineLog</td><td>One row per run: how many rows, and the quality %</td></tr></table>
+   <p><b>ETL</b> means Extract, Transform, Load. Our design stores raw data first and transforms it later, which is called <b>ELT</b> (Reis &amp; Housley, 2022). P10 rebuilds the silver and gold layers from all raw rows each time: a <b>full refresh</b>.</p>
+   <h3>Data quality, checked by the pipeline</h3>
+   <table class="t"><tr><th>Dimension</th><th>Question</th><th>How P10 checks it</th></tr><tr><td>Validity</td><td>Is the value allowed?</td><td>Plausible range per sensor (RULES)</td></tr><tr><td>Completeness</td><td>Is anything missing?</td><td>Blank or non-numeric values rejected as missing</td></tr><tr><td>Uniqueness</td><td>Is anything counted twice?</td><td>Same time + device + sensor rejected as duplicate</td></tr><tr><td>Consistency</td><td>Is it written the same way?</td><td>Device IDs trimmed and lowercased</td></tr></table>
+   <p class="explain">Dimensions adapted from Wang and Strong (1996).</p>
+   <p>Run the pipeline in the simulator below before adding P10 to your own logger.</p>
+   ${srcs([["Wang & Strong (1996)", REF.wangstrong[1]]])}`, interactive:"pipelinesim"},
+  {id:"p10", title:"Program P10 in your logger", html:`
+   <ol><li>Open your logger's Apps Script, add P10 below P3, and save.</li><li>Choose <code>runPipeline</code> in the toolbar and click <b>Run</b>. Four tabs appear: Clean, Rejected, Hourly, PipelineLog.</li><li>Test the rules: send <code>temp_C=999</code> from your browser (Module 2.2), run the pipeline again, and find the row in Rejected with reason <code>out_of_range</code>.</li><li>Point your analysis formulas at <code>Clean</code> instead of <code>Data</code>, and compare the averages.</li></ol>
+   <p class="explain">You do not need a new deployment: you run P10 from the editor, not through the web app URL.</p>
+   ${code("javascript", P10_SRC, "Program P10 - Mini ETL pipeline (add to Code.gs)")}
+   <table class="t"><tr><th>Code</th><th>What it does and why</th></tr>
+   <tr><td><code>const RULES = { temp: { min: -10, max: 60 }, \u2026 };</code></td><td>The quality rules written as data (an object of objects). A new sensor needs one new line, not new logic.</td></tr>
+   <tr><td><code>getDataRange().getValues().slice(1)</code></td><td><b>Extract:</b> every row of Data as a 2-D array; <code>slice(1)</code> drops the header.</td></tr>
+   <tr><td><code>const seen = new Set();</code></td><td>A Set remembers unique values and answers \u201chave I seen this before?\u201d quickly.</td></tr>
+   <tr><td><code>const [ts, device, sensor, value, unit] = r;</code></td><td><b>Destructuring:</b> unpacks the 5 cells of a row into named variables.</td></tr>
+   <tr><td><code>const key = \u2026 + '|' + device + '|' + sensor;</code></td><td>A fingerprint of time + device + sensor. The same fingerprint twice means a duplicate.</td></tr>
+   <tr><td><code>if (seen.has(key)) \u2026 else if \u2026 else if \u2026</code></td><td>Checks run in order, and the first failure wins, so each rejected row gets exactly one reason.</td></tr>
+   <tr><td><code>String(device).trim().toLowerCase()</code></td><td><b>Transform (standardize):</b> \u201c Team1-ESP32 \u201d and \u201cteam1-esp32\u201d become the same.</td></tr>
+   <tr><td><code>hour.setMinutes(0, 0, 0);</code></td><td>Rounds a timestamp down to the start of its hour: the key for hourly groups.</td></tr>
+   <tr><td><code>g.sum += value; g.n++; \u2026</code></td><td>Keeps a running total, count, minimum, and maximum per group in one pass.</td></tr>
+   <tr><td><code>log.appendRow([new Date(), raw.length, \u2026, pct]);</code></td><td><b>Monitor:</b> one row per run, so a falling quality % is easy to spot.</td></tr>
+   <tr><td><code>function writeTable_(\u2026)</code></td><td>Creates or clears a tab, then writes headers and all rows in one batch.</td></tr></table>
+   <h3>Challenges</h3>
+   <ul><li><b>Core:</b> add a rule for <code>rssi</code> (\u221295 to \u221220) and prove it rejects a bad test value. <b>Success check:</b> 1 new rule and 1 rejected row with the right reason. (Try it in the simulator above first.)</li>
+   <li><b>Extension:</b> make the pipeline <b>incremental</b>: store the last processed row number with PropertiesService and process only new rows. <b>Success check:</b> a second run with no new data adds 0 rows to Clean.</li>
+   <li><b>Boss Challenge:</b> build the Hourly table with one QUERY formula instead of code, then discuss when a formula is better than a script. <b>Success check:</b> the formula matches P10's averages for 3 hours.</li></ul>
+   ${tip("Discussion (15 minutes)", `<p>Should we delete outliers, flag them, or keep them, and who decides? Argue one position using a real row from your own Rejected tab.</p>`)}
+   <p class="explain">Further reading: Reis and Housley (2022), <i>Fundamentals of Data Engineering</i>.</p>`},
+  {id:"p6", title:"Program P6: your own Sheets function", html:`
+   <p>Apps Script can add new functions to Sheets. P6 adds <code>=DEWPOINT(temp, humidity)</code>: the temperature at which the air becomes saturated and water starts to condense (dew on a cold glass). A high dew point feels sticky.</p>
+   <ol><li>Add P6 to Code.gs and save.</li><li>In the Wide tab, type <code>=DEWPOINT(D2:D, B2:B)</code> in an empty column.</li></ol>
+   ${code("javascript", P6_SRC, "Program P6 - DEWPOINT custom function")}
+   <table class="t"><tr><th>Code</th><th>What it does and why</th></tr>
+   <tr><td><code>/** \u2026 @customfunction */</code></td><td>A JSDoc comment. <code>@customfunction</code> makes Sheets show the function in autocomplete; <code>@param</code> lines document each input and its unit.</td></tr>
+   <tr><td><code>if (Array.isArray(t)) return t.map(\u2026)</code></td><td>Given a range, Sheets passes a 2-D array. <code>map</code> handles each row by calling DEWPOINT on one value: the function calls itself (<b>recursion</b>).</td></tr>
+   <tr><td><code>if (t === '' || rh === '' || rh &lt;= 0) return '';</code></td><td>Blank or impossible inputs give a blank, not an error.</td></tr>
+   <tr><td><code>const a = 17.625, b = 243.04;</code></td><td>The Magnus constants recommended by Alduchov and Eskridge (1996).</td></tr>
+   <tr><td><code>Math.log(rh / 100)</code></td><td>The natural logarithm of humidity as a fraction.</td></tr>
+   <tr><td><code>Math.round(\u2026 * 10) / 10</code></td><td>Rounds to 1 decimal place.</td></tr></table>
+   <p>Check the formula with the calculator below: it shows each step for any temperature and humidity.</p>
+   <ul><li><b>Extension:</b> write <code>COMFORT(t, rh)</code> that returns \u201cComfortable\u201d, \u201cWarm\u201d, or \u201cHot\u201d using thresholds you justify in a comment. <b>Success check:</b> it works on a full range.</li></ul>
+   ${srcs([["Apps Script: custom functions", REF.gasCustom[1]],["Alduchov & Eskridge (1996)", REF.alduchov[1]]])}`, interactive:"dewcalc"}
+ ],
+ quiz:[
+  {q:"Which statistic barely changes when one extreme reading is added?", o:["Mean","Median","Range","Standard deviation"], a:1, e:"The median is the middle value; one extreme value hardly moves it.", w:["The mean is pulled toward the extreme value.","","The range jumps to include the extreme.","The SD grows with the extreme value."]},
+  {q:"CORREL of temperature and humidity is \u22120.85. What can you conclude?", o:["Higher temperature causes lower humidity","They tend to move in opposite directions; something else might cause both","They are unrelated","The sensor is broken"], a:1, e:"Strong negative correlation, but correlation alone does not prove cause.", w:["Correlation does not prove causation.","","\u22120.85 is a strong relationship.","A relationship is not evidence of a fault."]},
+  {q:"Which chart best shows how temperature changed during the day?", o:["Pie chart","Line chart","Scatter plot","Column chart"], a:1, e:"Line charts show change over time.", w:["Pie charts show parts of a whole.","","Scatter plots show relationships between two measurements.","Column charts compare groups."]},
+  {q:"In P10, where does a reading of 999 \u00b0C end up?", o:["Clean","Rejected, with reason out_of_range","Hourly","It is deleted"], a:1, e:"It fails the temp rule (\u221210 to 60) and is kept in Rejected with its reason.", w:["It fails validation.","","Only clean rows reach Hourly.","Rejected rows are kept, never silently deleted."]},
+  {q:"What is the gold layer in our pipeline?", o:["The raw Data tab","The Clean tab","The Hourly summary tab","The PipelineLog"], a:2, e:"Gold holds summaries ready for charts and decisions.", w:["That is bronze.","That is silver.","","That is the monitor."]}],
+ checkpoint:{code:"U3-O5, U3-O6", task:"Run P10 with the temp_C=999 test; build a summary box and a labeled line chart.", met:"4 tabs created and the test row appears in Rejected with out_of_range; 5 correct formulas and 1 chart with a title and units.", upload:"Upload screenshots of your Rejected tab and your summary box with chart."},
+ refs:["wangstrong","reis","gCorrel","gForecast","gQuery","gasCustom","alduchov","knaflic"]};
+
+const M34 = {id:"3.4", title:"Mini investigation and data story", minutes:120,
+ rating:["I collected data but have not written my story yet.","I wrote a data story with a number and a chart.","My story has all six parts and an honest limitation.","I completed the Boss Challenge forecast and helped another team improve their story."],
+ objectives:["Answer one comparison question with your own data (U3-O6).","Write a one-page data story with a question, a numeric finding, a recommendation, and a limitation (U3-O7).","Use a Tree-of-Thought prompt to compare cleaning strategies and decide based on your own evidence (U3-O8)."],
+ sections:[
+  {id:"task", title:"Your investigation", html:`
+   <p>Choose one question that your sensors can answer by <b>comparing</b> two places or two times, for example:</p>
+   <ul><li>Is the window side of the room warmer than the door side?</li><li>Does the room get warmer after lunch than before?</li><li>Does turning on the electric fan change the humidity?</li><li>Is the classroom brighter in the morning or the afternoon?</li></ul>
+   <h3>Plan your data collection</h3>
+   <ol><li>Use two devices (one in each place), or move one device halfway through. Keep the <b>same interval</b> (30 s) for both.</li><li>Log for at least <b>45 minutes</b>. Write down the start and end time and anything unusual (a door opened, the aircon was switched off).</li><li>Run your pipeline (P10), make a snapshot, and analyze <b>Clean</b> data only.</li><li>Compare the two groups with the same statistic, for example the mean temperature of each.</li></ol>
+   ${tip("A fair comparison", `<p>Change only one thing: the place, or the time. If both devices are not the same model, swap them for half the time to check that the difference is not caused by the sensors themselves.</p>`)}`},
+  {id:"story", title:"Write your data story", html:`
+   <p>A <b>data story</b> turns numbers into a message someone can act on. It has six parts:</p>
+   <ol><li><b>Question</b> in one sentence.</li><li><b>Data:</b> devices, location, interval, duration, number of readings.</li><li><b>Finding</b> with a number and unit, for example \u201cThe window side averaged 1.8 \u00b0C warmer.\u201d</li><li><b>Chart</b> that shows the finding, with a title and units.</li><li><b>Recommendation</b> based on the finding.</li><li><b>Limitation:</b> one honest reason the result could be wrong.</li></ol>
+   ${ex("a strong finding vs. a weak one", `<p><b>Weak:</b> \u201cThe window side is hotter.\u201d (No number, no comparison, no time.)<br><b>Strong:</b> \u201cFrom 12:00 to 13:00, the window side averaged 31.4 \u00b0C, 1.8 \u00b0C warmer than the door side (29.6 \u00b0C), based on 120 readings each.\u201d</p>`)}
+   <p>Build your story in the builder below. It checks each part as you write, and you can print it as a one-page handout.</p>`, interactive:"storybuilder"},
+  {id:"tot", title:"AI activity: Tree-of-Thought cleaning decision", html:`
+   <p>Your investigation probably has at least one hard cleaning decision: a gap, a spike, or a suspicious stretch of readings. A <b>Tree-of-Thought</b> prompt asks AI to explore several strategies as separate branches, judge each one, and only then compare them (Yao et al., 2023). <b>You</b> make the final decision, using your own evidence.</p>`, interactive:"totlab"},
+  {id:"boss", title:"Boss Challenge: forecast the end of the day", html:`
+   <p>Use your hourly averages to predict the room temperature at the end of the school day, then check it against the real value.</p>
+   <ol><li>Build the hourly average table (Hourly tab from P10, or the hourly QUERY from Module 3.3).</li><li>In Sheets: <code>=FORECAST(target_hour, avg_temps, hours)</code> fits a straight trend line and reads it at the target hour.</li><li>Write down your prediction <b>before</b> the end of the day, then compare it with the real reading.</li></ol>
+   <p><b>Success check:</b> prediction, actual value, and the difference in \u00b0C are all reported, with one sentence on why they differ. Try the forecast explorer first.</p>
+   ${srcs([["Google: FORECAST", REF.gForecast[1]]])}`, interactive:"forecastlab"},
+  {id:"drill", title:"Drill: data stories", html:`<p>Check your understanding.</p>`, interactive:"drill:u34"}
+ ],
+ quiz:[
+  {q:"Which is the strongest finding for a data story?", o:["The window side is hotter.","It felt warm by the window.","From 12:00 to 13:00 the window side averaged 1.8 \u00b0C warmer (120 readings each).","Temperature changes a lot."], a:2, e:"A strong finding has a number, a unit, a comparison, a time, and the amount of data.", w:["No number or comparison.","A feeling, not data.","","Too vague to act on."]},
+  {q:"Why should a data story include a limitation?", o:["To fill space","To be honest about why the result could be wrong, so readers trust it appropriately","Teachers require it","To hide errors"], a:1, e:"Stating limitations is part of honest, trustworthy analysis.", w:["It has a real purpose.","","It matters beyond grading.","It reveals uncertainty, not hides it."]},
+  {q:"Two devices of different models give different averages. What is a fair check?", o:["Ignore it","Swap the devices for half the time","Use only the higher one","Delete one device's data"], a:1, e:"If the difference follows the devices, it is the sensors, not the places.", w:["It could be a sensor difference.","","That biases the result.","That loses evidence."]},
+  {q:"In a Tree-of-Thought prompt, what does the AI do?", o:["Gives one quick answer","Explores several strategies as separate branches, evaluates each, then compares","Decides for you","Cleans the data automatically"], a:1, e:"Branching and evaluating makes the reasoning visible; you still decide.", w:["That is a plain prompt.","","The human makes the final decision.","It reasons about strategies; it does not touch your data."]},
+  {q:"FORECAST predicted 31.0 \u00b0C at 15:00; the real value was 29.5 \u00b0C. What is the best reaction?", o:["The data is wrong","Report the 1.5 \u00b0C difference and explain it (for example, the aircon came on)","Hide the result","Change the prediction"], a:1, e:"Comparing predictions with reality, and explaining the gap, is how forecasts improve.", w:["A straight-line forecast cannot know about new events.","","Hiding results is dishonest.","Predictions are written before checking, never changed after."]}],
+ checkpoint:{code:"U3-O7, U3-O8", task:"One-page data story; Tree-of-Thought cleaning decision.", met:"All 6 parts present and the finding includes a number with units; 3 strategies compared and a final decision justified with your own evidence.", upload:"Upload your data story (printed to PDF) and your Tree-of-Thought decision."},
+ refs:["knaflic","gForecast","yao","hyndman"]};
+
+/* Register Unit 3 (3.1, 3.2, Python Lab B, 3.3, 3.4) */
+const UNIT3_MODULES = [M31, M32, MB, M33, M34];
+(function(){ const prev = applyReleases;
+  applyReleases = function(){ prev(); const u = COURSE.find(x => x.id === "u3"); if (!u) return; u.modules = UNIT3_MODULES;
+    const open = RELEASE.u3 || adminPreviewOn(); u.locked = !open; u.sub = RELEASE.u3 ? "Open now" : open ? "Admin preview (not yet released)" : "Coming soon";
+    UNIT3_MODULES.forEach(m => { if (open) MODULES[m.id] = m; else delete MODULES[m.id]; }); };
+  applyReleases(); })();
+
 const TEST_ITEMS = [{"n": 1, "q": "A sketch uses `delay(2000)` inside `loop()` between sensor readings. What is the main problem?", "o": ["It uses too much memory.", "It works only on ESP32 boards.", "The board cannot do anything else during the 2-second wait.", "It makes each reading less accurate."], "part": "Physical computing", "c": "C1"}, {"n": 2, "q": "The ESP32's analog-to-digital converter is 12-bit. What is the largest raw value `analogRead()` can return?", "o": ["255", "1023", "65535", "4095"], "part": "Physical computing", "c": "C1"}, {"n": 3, "q": "An LDR on an Uno R4 WiFi gives a raw reading of 512 (10-bit, maximum 1023). Using raw ÷ 1023 × 100, the light level is about:", "o": ["50%", "25%", "51.2%", "100%"], "part": "Physical computing", "c": "C1"}, {"n": 4, "q": "This code runs inside `loop()`, which repeats about every 1 ms: `if (now - lastRead >= 2000) { lastRead = now; readSensor(); }`. How often is `readSensor()` called?", "o": ["Every 1 ms", "About every 2 seconds", "Only once", "Never"], "part": "Physical computing", "c": "C1"}, {"n": 5, "q": "Why does the course connect the ESP32's light sensor to GPIO 34 instead of an ADC2 pin?", "o": ["ADC2 pins are output-only.", "GPIO 34 has a higher resolution.", "ADC2 pins cannot be read while Wi-Fi is running.", "ADC2 pins use 5 V."], "part": "Physical computing", "c": "C1"}, {"n": 6, "q": "`dht.readTemperature()` returns `NaN`. What should the program do?", "o": ["Send 0 °C to the cloud.", "Restart the Wi-Fi connection.", "Reuse yesterday's value.", "Skip logging this reading and report the error."], "part": "Physical computing", "c": "C1"}, {"n": 7, "q": "In `.../exec?key=abc&device_id=team1&temp_C=29.4`, what does the part after `?` do?", "o": ["Passes named values to the server.", "Encrypts the data.", "Names the Wi-Fi network.", "Sets the serial baud rate."], "part": "IoT connectivity", "c": "C2"}, {"n": 8, "q": "A device receives the reply `ERR:key` from the Apps Script logger. What is the most likely cause?", "o": ["The Wi-Fi password is wrong.", "The DHT22 is disconnected.", "The API key in the device code does not match the key stored in the script.", "The Sheet is full."], "part": "IoT connectivity", "c": "C2"}, {"n": 9, "q": "After editing the Apps Script code, the device still gets the old behavior. Why?", "o": ["The Sheet needs refreshing.", "The deployment still points to the old version of the code.", "The device must use a new URL after every edit.", "The browser cache is full."], "part": "IoT connectivity", "c": "C2"}, {"n": 10, "q": "What does an HTTP status code of 302 mean?", "o": ["Success", "Unauthorized", "Server error", "The response is at another address (redirect)."], "part": "IoT connectivity", "c": "C2"}, {"n": 11, "q": "Why does the course add the timestamp on the server instead of on the device?", "o": ["The boards have no reliable clock, so server time makes all readings comparable.", "Timestamps make requests faster.", "Devices are not allowed to send dates.", "Google Sheets cannot store device times."], "part": "IoT connectivity", "c": "C2"}, {"n": 12, "q": "Which statement best describes the bronze (raw) layer of the course pipeline?", "o": ["It holds only hourly averages.", "It is deleted after each pipeline run.", "It keeps every reading exactly as received and is never edited by hand.", "It contains only rows that passed quality checks."], "part": "Data engineering", "c": "C3"}, {"n": 13, "q": "A device sends 3 readings every 30 seconds. How many rows does it add per day?", "o": ["2,880", "8,640", "86,400", "1,440"], "part": "Data engineering", "c": "C3"}, {"n": 14, "q": "The course stores raw data first and transforms it later with P10. This approach is called:", "o": ["ETL", "Streaming", "Batching", "ELT"], "part": "Data engineering", "c": "C3"}, {"n": 15, "q": "What is `LockService` used for in the logger?", "o": ["Preventing two simultaneous requests from overwriting each other's rows", "Encrypting the data", "Hiding the Sheet from viewers", "Speeding up Wi-Fi"], "part": "Data engineering", "c": "C3"}, {"n": 16, "q": "The `PipelineLog` quality percentage falls from 98% to 60% over two runs. What is the best first step?", "o": ["Delete the `Rejected` tab.", "Loosen the quality rules so more rows pass.", "Open the `Rejected` tab to see which reasons and devices increased.", "Ignore it, because quality always varies."], "part": "Data engineering", "c": "C3"}, {"n": 17, "q": "Two rows have the same timestamp, device, sensor, and value. This is a:", "o": ["missing value", "duplicate", "outlier", "unit mismatch"], "part": "Data cleaning", "c": "C4"}, {"n": 18, "q": "One reading is 85.3 with unit F among Celsius readings. The correct cleaned value is about:", "o": ["29.6 °C", "85.3 °C", "47.4 °C", "The row should be deleted."], "part": "Data cleaning", "c": "C4"}, {"n": 19, "q": "For a set of temperatures, Q1 = 28 °C and Q3 = 30 °C. Using the IQR rule, the upper fence is:", "o": ["31 °C", "32 °C", "36 °C", "33 °C"], "part": "Data cleaning", "c": "C4"}, {"n": 20, "q": "A temperature log has a single missing reading between 29.6 °C and 29.8 °C. Following the course rule, what is the best action?", "o": ["Replace it with 0.", "Delete the whole day's data.", "Interpolate it as about 29.7 °C and record the change in the cleaning log.", "Replace it with 999."], "part": "Data cleaning", "c": "C4"}, {"n": 21, "q": "Which practice follows the course's golden rule of cleaning?", "o": ["Edit the raw `Data` tab directly to save time.", "Clean in a copy or through the pipeline, and record every change in a cleaning log.", "Delete any value that looks unusual.", "Clean only the values that support the expected result."], "part": "Data cleaning", "c": "C4"}, {"n": 22, "q": "Which chart best shows how classroom temperature changes during one day?", "o": ["Line chart", "Pie chart", "Bar chart of devices", "A table only"], "part": "Analysis and communication", "c": "C5"}, {"n": 23, "q": "Temperature and humidity in a room have a correlation of r = 0.85. Which conclusion is valid?", "o": ["Temperature causes humidity to rise.", "85% of humidity is explained by temperature.", "There is a strong positive linear association, which does not prove cause.", "There is no relationship."], "part": "Analysis and communication", "c": "C5"}, {"n": 24, "q": "Increasing a moving-average window from 3 to 10 readings makes the line:", "o": ["noisier", "react faster to changes", "unchanged", "smoother but slower to react to real changes"], "part": "Analysis and communication", "c": "C5"}, {"n": 25, "q": "Which finding sentence meets the course's data story standard?", "o": ["\"The room is hot.\"", "\"The window side averaged 1.8 °C warmer than the door side over 45 minutes.\"", "\"We collected a lot of data.\"", "\"The sensors worked well.\""], "part": "Analysis and communication", "c": "C5"}, {"n": 26, "q": "A team's device ID (for example, `team3-esp32`) is which level of measurement?", "o": ["Nominal", "Ordinal", "Interval", "Ratio"], "part": "Analysis and communication", "c": "C5"}, {"n": 27, "q": "Why is a forecasting model compared with a baseline that predicts \"next value = current value\"?", "o": ["Baselines are always the best model.", "It makes the model train faster.", "A model is useful only if it beats the simplest reasonable prediction.", "It removes the need for test data."], "part": "Data science", "c": "C6"}, {"n": 28, "q": "How should time-series sensor data be split into training and test sets?", "o": ["Shuffle randomly, then split 70/30.", "Train on the earlier 70%, test on the later 30%.", "Use the same rows for training and testing.", "Train on the latest data and test on the earliest."], "part": "Data science", "c": "C6"}, {"n": 29, "q": "A feature is the rolling mean of the current and previous 4 readings, and the model predicts the current reading. What is the problem?", "o": ["Concept drift", "Underfitting", "Too few features", "Data leakage"], "part": "Data science", "c": "C6"}, {"n": 30, "q": "On the test set, a model's MAE is 0.35 °C and the baseline's MAE is 0.30 °C. What should the team conclude?", "o": ["The baseline is more accurate, so the model is not useful yet.", "The model is more accurate.", "They are equally accurate.", "MAE cannot compare them."], "part": "Data science", "c": "C6"}, {"n": 31, "q": "An anomaly detector flagged 12 readings: 5 were real events and 7 were false alarms. What is the main risk of keeping this setting?", "o": ["Data leakage", "Missing every real event", "Alert fatigue, so people start ignoring the flags", "Overfitting the training set"], "part": "Data science", "c": "C6"}, {"n": 32, "q": "In P8, why does the device itself sound the buzzer when it is too hot, instead of waiting for the cloud?", "o": ["Cloud decisions cost money.", "The safety action still works if Wi-Fi or the cloud is down.", "Apps Script cannot read thresholds.", "Buzzers cannot be controlled remotely."], "part": "Automation and control", "c": "C7"}, {"n": 33, "q": "What is the purpose of the 30-minute cooldown in `checkAlerts()`?", "o": ["To save battery", "To make alerts faster", "To delete old data", "To avoid repeated alerts that people learn to ignore"], "part": "Automation and control", "c": "C7"}, {"n": 34, "q": "The published dashboard's page source contains the same API key the devices use to log data. What is the main risk, and the fix?", "o": ["Anyone could write fake readings; use a separate read-only key for the dashboard.", "The page will load slowly; shorten the key.", "There is no risk, because the page is on GitHub.", "The chart will break; remove the chart."], "part": "Automation and control", "c": "C7"}, {"n": 35, "q": "In Google's PARTS prompting framework, the letters stand for:", "o": ["Purpose, Audience, Rules, Tone, Summary", "Persona, Answer, Review, Test, Submit", "Persona, Act, Recipient, Theme, Structure", "Plan, Ask, Revise, Test, Share"], "part": "Human-centered AI", "c": "C8"}, {"n": 36, "q": "A team must choose among three possible cleaning strategies. Which prompting technique fits best?", "o": ["Chain-of-Thought only", "Tree-of-Thought", "A one-word prompt", "No prompt; let the AI decide"], "part": "Human-centered AI", "c": "C8"}, {"n": 37, "q": "Chain-of-Thought prompting is most useful in this course when you need to:", "o": ["generate many creative options", "avoid explaining reasoning", "make the AI respond faster", "debug or explain code through visible steps you can check"], "part": "Human-centered AI", "c": "C8"}, {"n": 38, "q": "An AI gives you code that compiles. According to the human-in-the-loop rules, what must happen before you use it?", "o": ["You can explain every line, have tested it with edge cases, and have checked unfamiliar functions in official documentation.", "Submit it, because it compiles.", "Ask a second AI to approve it.", "Rename the variables so it looks original."], "part": "Human-centered AI", "c": "C8"}, {"n": 39, "q": "An AI wrote this line for an ESP32, where `raw` is an `int`: `float pct = raw / 4095 * 100;`. What is wrong?", "o": ["Nothing; it is correct.", "4095 should be 1023.", "Integer division makes the result 0 for almost every reading; use `4095.0`.", "A `float` cannot store percentages."], "part": "Human-centered AI", "c": "C8"}, {"n": 40, "q": "Which of these should never be pasted into an AI tool?", "o": ["A public error message", "The device's API key or Wi-Fi password", "A question about `millis()`", "The course pin map"], "part": "Human-centered AI", "c": "C8"}];
 </script>
 <script>
@@ -2819,6 +3297,7 @@ Serial.println(a % b);   // line 3</pre>
     g.fillStyle = cssv("--muted") || "#5B6B7F"; g.font = "10px sans-serif"; g.fillText("waiting\u2026", X(.7), lane[0] + 4);
     presses.forEach(pr => { const x = X(pr.t); [0, 1].forEach(k => { const hit = k === 1 || pr.seen; g.fillStyle = hit ? "#2A9D8F" : "#C2410C"; g.beginPath(); g.arc(x, lane[k] - 20 - pr.r, 6, 0, 7); g.fill();
       g.fillStyle = "#fff"; g.font = "bold 9px sans-serif"; g.fillText(hit ? "\u2713" : "\u2717", x - 3, lane[k] - 17 - pr.r); }); pr.r *= .85; });
+    if (!running && t === 0){ g.fillStyle = "rgba(255,255,255,.82)"; g.fillRect(p - 4, 4, w + 8, H - 8); g.fillStyle = "#14213D"; g.font = "bold 13px sans-serif"; g.textAlign = "center"; g.fillText("Press “Start the race”, then press the button as often as you like.", p + w / 2, H / 2 - 4); g.font = "11px sans-serif"; g.fillStyle = "#5B6B7F"; g.fillText("Teal blocks = moments when each board reads its sensor.", p + w / 2, H / 2 + 14); g.textAlign = "start"; }
     if (t > 0){ g.strokeStyle = "#E9C46A"; g.lineWidth = 2; g.beginPath(); g.moveTo(X(Math.min(t, D)), 6); g.lineTo(X(Math.min(t, D)), H - 6); g.stroke(); g.lineWidth = 1; }
   }
   draw(0);
@@ -2925,8 +3404,8 @@ INTERACTIVES.dht = function(el){
       ? `<rect x="95" y="20" width="110" height="150" rx="10" fill="#F8FAFC" stroke="#94A3B8" stroke-width="2"/>${Array.from({length:15}, (_, i) => `<rect x="${108 + (i % 5) * 18}" y="${44 + Math.floor(i / 5) * 30}" width="12" height="20" rx="2" fill="#CBD5E1"/>`).join("")}<text x="150" y="160" text-anchor="middle" font-size="11" fill="#64748B">AM2302</text>`
       : `<rect x="60" y="30" width="180" height="140" rx="8" fill="#1E40AF"/><rect x="85" y="40" width="80" height="110" rx="8" fill="#F8FAFC" stroke="#94A3B8"/>${Array.from({length:9}, (_, i) => `<rect x="${95 + (i % 3) * 22}" y="${55 + Math.floor(i / 3) * 30}" width="14" height="20" rx="2" fill="#CBD5E1"/>`).join("")}
          <rect x="185" y="60" width="34" height="12" rx="4" fill="#E7D3A8"/><text x="202" y="88" text-anchor="middle" font-size="9" fill="#fff">10 k\u03a9</text><rect x="192" y="100" width="20" height="12" rx="2" fill="#FBBF24"/><text x="202" y="126" text-anchor="middle" font-size="9" fill="#fff">capacitor</text><circle cx="202" cy="145" r="5" fill="#22C55E"/><text x="202" y="162" text-anchor="middle" font-size="9" fill="#fff">LED</text>`;
-    const x0 = mode === "bare" ? 113 : 110, gap = mode === "bare" ? 25 : 40;
-    svg.innerHTML = body + P.map((p, i) => `<g class="dpin" data-i="${i}" tabindex="0" role="button" aria-label="${p[0]} pin"><rect x="${x0 + i * gap - 3}" y="${mode === "bare" ? 170 : 170}" width="6" height="56" rx="2" fill="#9CA3AF"/><circle cx="${x0 + i * gap}" cy="232" r="11" fill="${p[2]}"/><text x="${x0 + i * gap}" y="252" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor">${p[0]}</text></g>`).join("");
+    const x0 = mode === "bare" ? 102 : 110, gap = mode === "bare" ? 32 : 40;
+    svg.innerHTML = body + P.map((p, i) => `<g class="dpin" data-i="${i}" tabindex="0" role="button" aria-label="${p[0]} pin"><rect x="${x0 + i * gap - 3}" y="${mode === "bare" ? 170 : 170}" width="6" height="56" rx="2" fill="#9CA3AF"/><circle cx="${x0 + i * gap}" cy="232" r="11" fill="${p[2]}"/><text x="${x0 + i * gap}" y="${mode === "bare" && i % 2 ? 258 : 250}" text-anchor="middle" font-size="10" font-weight="700" fill="currentColor">${p[0]}</text></g>`).join("");
     svg.querySelectorAll(".dpin").forEach(g => { const f = () => { svg.querySelectorAll(".dpin").forEach(x => x.classList.toggle("on", x === g)); const p = P[+g.dataset.i]; $(".dhtpin", el).innerHTML = `<b>${p[0]}</b>: ${p[1]}`; pop(g, 1.15); }; g.onclick = f; g.onkeydown = e => { if (e.key === "Enter" || e.key === " ") f(); }; });
     $(".dhtpin", el).textContent = mode === "bare" ? "Bare sensor: 4 pins (VCC, DATA, NC, GND). You must add a 10 k\u03a9 pull-up. Tap a pin." : "Module: 3 pins. The pull-up resistor, a filter capacitor, and often an LED are already on the board. Tap a pin.";
     anim(svg, {opacity:[0, 1], scale:[.97, 1]}, {duration:.3});
@@ -3196,7 +3675,7 @@ INTERACTIVES.ldrlab = function(el){
   el.innerHTML = bench("LDR explorer: light in, resistance out", `<div class="controls"><label>Light <input type="range" class="lxS" min="-1" max="4" step="0.05" value="2.4"></label><b class="mono lxV"></b>
     <button class="btn small" data-lx="0">Covered (about 1 lux)</button><button class="btn small" data-lx="2.5">Classroom (about 300 lux)</button><button class="btn small" data-lx="3.4">Flashlight (about 2,500 lux)</button></div>
    <div class="two"><div><svg class="ldrin" viewBox="0 0 300 220" aria-label="Inside the LDR"><rect x="20" y="40" width="260" height="160" rx="16" fill="#F1E3C1" stroke="#9A7B4F" stroke-width="2"/><rect x="30" y="50" width="16" height="140" rx="4" fill="#B8BDC6"/><rect x="254" y="50" width="16" height="140" rx="4" fill="#B8BDC6"/>
-     <path d="M46 62 H240 V92 H60 V122 H240 V152 H60 V182 H254" fill="none" stroke="#C2410C" stroke-width="12" stroke-linejoin="round" opacity=".85"/><g class="phot"></g><g class="elec"></g><text x="150" y="30" text-anchor="middle" font-size="11" fill="currentColor">photons \u2193</text><text x="150" y="214" text-anchor="middle" font-size="10" fill="currentColor">CdS track between two electrodes</text></svg>
+     <path d="M46 62 H240 V92 H60 V122 H240 V152 H60 V182 H254" fill="none" stroke="#C2410C" stroke-width="12" stroke-linejoin="round" opacity=".85"/><g class="phot"></g><g class="elec"></g><text x="150" y="11" text-anchor="middle" font-size="11" fill="currentColor">light (photons) \u2193</text><text x="150" y="214" text-anchor="middle" font-size="10" fill="currentColor">CdS track between two electrodes</text></svg>
      <div class="kv"><span>Free charge carriers</span><b class="lxE"></b><span>LDR resistance</span><b class="lxR"></b><span>V<sub>out</sub> (with 10 k\u03a9)</span><b class="lxVo"></b></div></div>
     <div><canvas class="lxchart" aria-label="Resistance versus light on a log scale" style="width:100%;height:220px;display:block;background:var(--surface);border:1px solid var(--line);border-radius:10px"></canvas><p class="explain">Both axes are logarithmic: each grid step is 10\u00d7. On log scales the LDR's curve is almost a straight line (gamma \u2248 0.7).</p>
      <button class="btn small lxResp">Show the response time (slowed 20\u00d7)</button><p class="explain lxRn"></p></div></div>`);
@@ -3209,7 +3688,7 @@ INTERACTIVES.ldrlab = function(el){
     g.strokeStyle = "#C2410C"; g.lineWidth = 2.5; g.beginPath(); for (let e = -1; e <= 4; e += 0.05){ const l = Math.pow(10, e), X = x(l), Y = y(lux2R(l)); e === -1 ? g.moveTo(X, Y) : g.lineTo(X, Y); } g.stroke(); g.lineWidth = 1;
     g.fillStyle = "#2A9D8F"; g.beginPath(); g.arc(x(lux), y(lux2R(lux)), 6, 0, 7); g.fill(); }
   function scene(lux){ const n = Math.round(Math.min(40, Math.max(0, (Math.log10(lux) + 1) * 8))); let ph = "", el2 = "";
-    for (let i = 0; i < n; i++){ const X = 40 + (i * 53) % 220; ph += `<line x1="${X}" y1="${8 + (i * 7) % 18}" x2="${X}" y2="${30 + (i * 7) % 18}" stroke="#EAB308" stroke-width="2.5" class="pl" style="animation-delay:${(i % 8) * .12}s"/>`; el2 += `<circle cx="${50 + (i * 37) % 190}" cy="${62 + ((i * 3) % 5) * 30}" r="3.2" fill="#2563EB" class="el" style="animation-delay:${(i % 6) * .15}s"/>`; }
+    for (let i = 0; i < n; i++){ const X = 40 + (i * 53) % 220; ph += `<line x1="${X}" y1="${18 + (i * 7) % 8}" x2="${X}" y2="${32 + (i * 7) % 8}" stroke="#EAB308" stroke-width="2.5" class="pl" style="animation-delay:${(i % 8) * .12}s"/>`; el2 += `<circle cx="${50 + (i * 37) % 190}" cy="${62 + ((i * 3) % 5) * 30}" r="3.2" fill="#2563EB" class="el" style="animation-delay:${(i % 6) * .15}s"/>`; }
     $(".phot", el).innerHTML = ph; $(".elec", el).innerHTML = el2; return n; }
   function upd(){ const e = +$(".lxS", el).value, lux = Math.pow(10, e), R = lux2R(lux), V = 3.3 * 10000 / (R + 10000), n = scene(lux);
     $(".lxV", el).textContent = (lux < 1 ? lux.toFixed(1) : Math.round(lux).toLocaleString()) + " lux"; $(".lxE", el).textContent = n === 0 ? "almost none" : n < 12 ? "few" : n < 26 ? "many" : "very many";
@@ -3242,21 +3721,29 @@ INTERACTIVES.urlparts = function(el){
 };
 INTERACTIVES.httpletter = function(el){
   const SC = {ok:["Correct URL and key","200 OK","OK:3","#2A9D8F","The script ran and saved 3 rows."], key:["Wrong key","200 OK","ERR:key","#C9A227","HTTP worked (200), but the script refused: the key did not match. Read the reply text, not just the status."], nf:["Typo in the URL","404 Not Found","(an error page)","#E76F51","No program exists at that address. Check the /exec URL."], auth:["Access not set to Anyone","401 / 403","(a sign-in page)","#E76F51","Google wants a sign-in, which a board cannot do. Redeploy with access: Anyone."], err:["Bug in the script","500 Server error","(error message)","#B91C1C","The script crashed while running. Check the Executions log in Apps Script."]};
-  el.innerHTML = bench("HTTP as a letter", `<div class="controls">${Object.keys(SC).map((k, i) => `<button class="btn small hlS ${i ? "" : "primary"}" data-s="${k}">${SC[k][0]}</button>`).join("")}</div>
-   <svg class="hlsvg" viewBox="0 0 640 210" role="img" aria-label="A request letter travels to the server and a reply card returns"><rect x="20" y="70" width="120" height="80" rx="12" fill="#1F3A5F"/><text x="80" y="115" text-anchor="middle" fill="#fff" font-weight="700" font-size="13">Board</text><text x="80" y="134" text-anchor="middle" fill="#9FB0C4" font-size="10">client</text>
-    <rect x="500" y="70" width="120" height="80" rx="12" fill="#2A9D8F"/><text x="560" y="108" text-anchor="middle" fill="#fff" font-weight="700" font-size="13">Apps Script</text><text x="560" y="127" text-anchor="middle" fill="#E6F4F1" font-size="10">server</text>
-    <path d="M140 100 H500" stroke="var(--line)" stroke-width="2" stroke-dasharray="6 6"/><path d="M500 125 H140" stroke="var(--line)" stroke-width="2" stroke-dasharray="6 6"/>
-    <g class="hlLetter" opacity="0"><rect x="-34" y="-20" width="68" height="40" rx="4" fill="#fff" stroke="#1F3A5F" stroke-width="2"/><path d="M-34 -20 L0 4 L34 -20" fill="none" stroke="#1F3A5F" stroke-width="2"/><text y="34" text-anchor="middle" font-size="10" fill="currentColor">GET request</text></g>
-    <g class="hlCard" opacity="0"><rect x="-44" y="-22" width="88" height="44" rx="6" class="hlCardBg" fill="#2A9D8F"/><text class="hlCode" y="-4" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">200 OK</text><text class="hlBody" y="12" text-anchor="middle" font-size="11" fill="#fff">OK:3</text></g></svg>
-   <div class="panel hlInfo">Choose a situation, then watch the letter and the reply card.</div>`);
-  const L = $(".hlLetter", el), C = $(".hlCard", el); let t0 = null, raf = null;
-  const run = k => { const s = SC[k]; cancelAnimationFrame(raf); $(".hlCode", el).textContent = s[1]; $(".hlBody", el).textContent = s[2]; $(".hlCardBg", el).setAttribute("fill", s[3]); $(".hlInfo", el).innerHTML = "Sending\u2026";
-    const dur = reduceMotion() ? 1 : 1400; t0 = performance.now();
-    (function f(n){ const t = Math.min(1, (n - t0) / dur); L.setAttribute("opacity", t < .5 ? 1 : 0); L.setAttribute("transform", `translate(${170 + 300 * Math.min(1, t * 2)},100)`);
-      C.setAttribute("opacity", t >= .5 ? 1 : 0); C.setAttribute("transform", `translate(${470 - 300 * Math.max(0, (t - .5) * 2)},125)`);
-      if (t < 1 && alive(el)) raf = requestAnimationFrame(f); else { $(".hlInfo", el).innerHTML = `<b>${esc(s[1])}</b> \u2022 reply: <code>${esc(s[2])}</code><br>${esc(s[4])}`; logEvent(currentModule, "httpletter", "activity", "used"); } })(t0); };
-  el.querySelectorAll(".hlS").forEach(b => b.onclick = () => { el.querySelectorAll(".hlS").forEach(x => x.classList.toggle("primary", x === b)); run(b.dataset.s); });
-  run("ok");
+  let sel = null, busy = false;
+  el.innerHTML = bench("HTTP as a letter", `<p class="explain"><b>1.</b> Choose a situation. <b>2.</b> Predict what reply comes back. <b>3.</b> Press <b>Send the letter</b>.</p>
+   <div class="controls hlOpts">${Object.keys(SC).map(k => `<button class="btn small hlS" data-s="${k}">${SC[k][0]}</button>`).join("")}</div>
+   <svg class="hlsvg" viewBox="0 0 640 230" role="img" aria-label="A request letter travels to the server and a reply card returns">
+    <rect x="16" y="60" width="124" height="110" rx="12" fill="#1F3A5F"/><text x="78" y="110" text-anchor="middle" fill="#fff" font-weight="700" font-size="14">Board</text><text x="78" y="130" text-anchor="middle" fill="#9FB0C4" font-size="11">client</text>
+    <rect x="500" y="60" width="124" height="110" rx="12" fill="#2A9D8F"/><text x="562" y="108" text-anchor="middle" fill="#fff" font-weight="700" font-size="14">Apps Script</text><text x="562" y="128" text-anchor="middle" fill="#E6F4F1" font-size="11">server</text>
+    <path d="M140 40 H500" stroke="var(--line)" stroke-width="2" stroke-dasharray="6 6"/><text x="320" y="30" text-anchor="middle" font-size="11" fill="currentColor">request \u2192</text>
+    <path d="M500 196 H140" stroke="var(--line)" stroke-width="2" stroke-dasharray="6 6"/><text x="320" y="224" text-anchor="middle" font-size="11" fill="currentColor">\u2190 reply</text>
+    <g class="hlLetter" opacity="0"><rect x="-30" y="-17" width="60" height="34" rx="4" fill="#fff" stroke="#1F3A5F" stroke-width="2"/><path d="M-30 -17 L0 4 L30 -17" fill="none" stroke="#1F3A5F" stroke-width="2"/></g>
+    <g class="hlCard" opacity="0"><rect x="-56" y="-22" width="112" height="44" rx="6" class="hlCardBg" fill="#2A9D8F"/><text class="hlCode" y="-4" text-anchor="middle" font-size="11" font-weight="700" fill="#fff"></text><text class="hlBody" y="13" text-anchor="middle" font-size="11" fill="#fff"></text></g>
+    <text class="hlIdle" x="320" y="120" text-anchor="middle" font-size="13" fill="currentColor" opacity=".75">Choose a situation above, then press Send.</text></svg>
+   <div class="controls"><button class="btn primary hlGo" disabled>Send the letter</button></div>
+   <div class="panel hlInfo" aria-live="polite">No letter sent yet.</div>`);
+  const Lt = $(".hlLetter", el), C = $(".hlCard", el);
+  el.querySelectorAll(".hlS").forEach(b => b.onclick = () => { if (busy) return; sel = b.dataset.s; el.querySelectorAll(".hlS").forEach(x => x.classList.toggle("primary", x === b)); $(".hlGo", el).disabled = false;
+    Lt.setAttribute("opacity", 1); Lt.setAttribute("transform", "translate(178,40)"); C.setAttribute("opacity", 0); $(".hlIdle", el).setAttribute("opacity", 0);
+    $(".hlInfo", el).innerHTML = `<b>Situation:</b> ${esc(SC[sel][0])}. What status code and reply text do you predict? Then press <b>Send the letter</b>.`; });
+  $(".hlGo", el).onclick = () => { if (!sel || busy) return; busy = true; const s = SC[sel]; $(".hlCode", el).textContent = s[1]; $(".hlBody", el).textContent = s[2]; $(".hlCardBg", el).setAttribute("fill", s[3]); $(".hlInfo", el).textContent = "Sending\u2026";
+    const dur = reduceMotion() ? 1 : 1800, t0 = performance.now();
+    (function f(n){ const t = Math.min(1, (n - t0) / dur);
+      Lt.setAttribute("opacity", t < .5 ? 1 : 0); Lt.setAttribute("transform", `translate(${178 + 284 * Math.min(1, t * 2)},40)`);
+      C.setAttribute("opacity", t >= .5 ? 1 : 0); C.setAttribute("transform", `translate(${452 - 254 * Math.max(0, (t - .5) * 2)},196)`);
+      if (t < 1 && alive(el)) requestAnimationFrame(f); else { busy = false; $(".hlInfo", el).innerHTML = `<b>${esc(s[1])}</b> \u2022 reply: <code>${esc(s[2])}</code><br>${esc(s[4])}<br><span class="explain">Was your prediction right? Try another situation.</span>`; logEvent(currentModule, "httpletter", "activity", "used"); } })(t0); };
 };
 INTERACTIVES.jsonx = function(el){
   const data = {latitude:14.6, longitude:121.0, current:{time:"2026-10-05T09:30", temperature_2m:31.2, relative_humidity_2m:68}, current_units:{temperature_2m:"\u00b0C", relative_humidity_2m:"%"}};
@@ -3312,23 +3799,36 @@ INTERACTIVES.deploylab = function(el){
   draw();
 };
 INTERACTIVES.knock = function(el){
-  const steps = [["Read sensors", "temp 29.4 \u00b0C, hum 70 %, light 55.2 %", 0],["Build the URL", "\u2026/exec?key=\u2026&device_id=team3-esp32&temp_C=29.4&hum_pct=70&light_pct=55.2", 0],["Knock: HTTPS GET to script.google.com", "The request travels encrypted over Wi-Fi and the internet.", 1],["Rows saved", "doGet runs: key OK, 3 tidy rows written to the Data tab.", 2],["302 redirect", "Google replies: \u201cyour reply text is at script.googleusercontent.com.\u201d", 3],["Knock again", "The board (or urequests) follows the forwarding address.", 4],["Reply received", "Serial Monitor: Reply: OK:3", 5]];
-  let i = -1, timer = null;
-  el.innerHTML = bench("The journey of one reading", `<svg class="knsvg" viewBox="0 0 640 200" role="img" aria-label="A board sends a request to Google, is redirected, and receives a reply"><rect x="10" y="70" width="110" height="70" rx="10" fill="#1F3A5F"/><text x="65" y="110" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">Board</text>
-    <rect x="260" y="20" width="160" height="60" rx="10" fill="#2A9D8F"/><text x="340" y="47" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">script.google.com</text><text x="340" y="64" text-anchor="middle" fill="#E6F4F1" font-size="10">runs doGet</text>
-    <rect x="260" y="130" width="160" height="60" rx="10" fill="#5B6B7F"/><text x="340" y="157" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">googleusercontent</text><text x="340" y="174" text-anchor="middle" fill="#E5E7EB" font-size="10">holds the reply text</text>
-    <rect x="510" y="60" width="120" height="90" rx="10" fill="#C9A227"/><text x="570" y="82" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">Data tab</text><g class="knRows"></g>
-    <circle class="knDot" r="9" fill="#E9C46A" stroke="#14213D" stroke-width="2" cx="65" cy="105"/><g class="knTag" opacity="0"><rect x="-26" y="-12" width="52" height="24" rx="5" fill="#E76F51"/><text y="5" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">302</text></g></svg>
-   <div class="panel knInfo">Press Play or Step.</div><div class="controls"><button class="btn primary knPlay">Play</button><button class="btn knStep">Step</button><button class="btn knReset">Reset</button></div>`);
-  const pos = [[65,105],[65,105],[340,50],[340,50],[340,50],[340,160],[65,105]];
-  const show = () => { const s = steps[i]; $(".knInfo", el).innerHTML = `<b>Step ${i + 1} of ${steps.length}: ${esc(s[0])}</b><br><span class="mono">${esc(s[1])}</span>`; const [x, y] = pos[i];
-    const d = $(".knDot", el); anim(d, {cx:[+d.getAttribute("cx"), x], cy:[+d.getAttribute("cy"), y]}, {duration:.6}); d.setAttribute("cx", x); d.setAttribute("cy", y);
-    $(".knTag", el).setAttribute("opacity", i === 4 ? 1 : 0); $(".knTag", el).setAttribute("transform", "translate(440,100)");
-    $(".knRows", el).innerHTML = i >= 3 ? ["temp 29.4","hum 70","light 55.2"].map((t, k) => `<text x="570" y="${104 + k * 15}" text-anchor="middle" font-size="10" fill="#fff">${t}</text>`).join("") : "";
+  const steps = [["Read sensors","temp 29.4 \u00b0C, hum 70 %, light 55.2 %","b"],["Build the URL","\u2026/exec?key=\u2026&device_id=team3-esp32&temp_C=29.4&hum_pct=70&light_pct=55.2","b"],["Knock: HTTPS GET to script.google.com","The request travels encrypted over Wi-Fi and the internet.","s"],["Rows saved","doGet runs: key OK, 3 tidy rows written to the Data tab.","s"],["302 redirect","Google replies: \u201cyour reply text is at script.googleusercontent.com.\u201d","b"],["Knock again","The board (or urequests) follows the forwarding address.","u"],["Reply received","Serial Monitor: Reply: OK:3","b"]];
+  const P = {b:[150,105], s:[238,50], u:[238,160]}; let i = -1, timer = null;
+  el.innerHTML = bench("The journey of one reading", `<p class="explain">Press <b>Play</b> to watch the whole trip, or <b>Step</b> to go one step at a time.</p>
+   <svg class="knsvg" viewBox="0 0 640 210" role="img" aria-label="A board sends a request to Google, is redirected, and receives a reply"><defs><marker id="kna" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#94A3B8"/></marker></defs>
+    <rect x="10" y="70" width="120" height="70" rx="10" fill="#1F3A5F"/><text x="70" y="102" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">Board</text><text class="knBoardTxt" x="70" y="122" text-anchor="middle" fill="#9FB0C4" font-size="10">waiting</text>
+    <rect x="260" y="20" width="170" height="60" rx="10" fill="#2A9D8F"/><text x="345" y="46" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">script.google.com</text><text x="345" y="64" text-anchor="middle" fill="#E6F4F1" font-size="10">runs doGet</text>
+    <rect x="260" y="130" width="170" height="60" rx="10" fill="#5B6B7F"/><text x="345" y="156" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">googleusercontent</text><text x="345" y="174" text-anchor="middle" fill="#E5E7EB" font-size="10">holds the reply text</text>
+    <rect x="500" y="55" width="130" height="100" rx="10" fill="#C9A227"/><text x="565" y="76" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">Data tab</text><g class="knRows"></g>
+    <path class="knP knP1" d="M132 95 L256 55" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5 5" fill="none" marker-end="url(#kna)" opacity=".25"/>
+    <path class="knP knP2" d="M432 50 L496 85" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5 5" fill="none" marker-end="url(#kna)" opacity=".25"/>
+    <path class="knP knP3" d="M256 66 L134 104" stroke="#E76F51" stroke-width="2" stroke-dasharray="5 5" fill="none" marker-end="url(#kna)" opacity=".25"/>
+    <path class="knP knP4" d="M132 118 L256 158" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5 5" fill="none" marker-end="url(#kna)" opacity=".25"/>
+    <path class="knP knP5" d="M256 172 L134 128" stroke="#2A9D8F" stroke-width="2" stroke-dasharray="5 5" fill="none" marker-end="url(#kna)" opacity=".25"/>
+    <g class="knTag" opacity="0"><rect x="-22" y="-11" width="44" height="22" rx="5" fill="#E76F51"/><text y="4" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">302</text></g>
+    <circle class="knDot" r="8" fill="#E9C46A" stroke="#14213D" stroke-width="2" cx="150" cy="105" opacity="0"/></svg>
+   <div class="panel knInfo">Step 0 of ${steps.length}: nothing has happened yet.</div><div class="controls"><button class="btn primary knPlay">Play</button><button class="btn knStep">Step</button><button class="btn knReset">Reset</button></div>`);
+  const dot = $(".knDot", el), path = n => el.querySelector(".knP" + n);
+  const lightPaths = on => el.querySelectorAll(".knP").forEach((p, k) => p.setAttribute("opacity", on.includes(k + 1) ? 1 : .25));
+  const show = () => { const s = steps[i], [x, y] = P[s[2]]; $(".knInfo", el).innerHTML = `<b>Step ${i + 1} of ${steps.length}: ${esc(s[0])}</b><br><span class="mono">${esc(s[1])}</span>`;
+    dot.setAttribute("opacity", 1); anim(dot, {cx:[+dot.getAttribute("cx"), x], cy:[+dot.getAttribute("cy"), y]}, {duration:.6}); dot.setAttribute("cx", x); dot.setAttribute("cy", y);
+    lightPaths({2:[1], 3:[1,2], 4:[3], 5:[4], 6:[5]}[i] || []);
+    $(".knTag", el).setAttribute("opacity", i === 4 ? 1 : 0); $(".knTag", el).setAttribute("transform", "translate(195,70)");
+    $(".knBoardTxt", el).textContent = i === 0 ? "reading sensors" : i === 1 ? "building URL" : i === 6 ? "Reply: OK:3" : "waiting for reply";
+    $(".knRows", el).innerHTML = i >= 3 ? ["temp 29.4","hum 70","light 55.2"].map((t, k) => `<text x="565" y="${100 + k * 16}" text-anchor="middle" font-size="11" fill="#fff">${t}</text>`).join("") : "";
     if (i === steps.length - 1){ clearInterval(timer); timer = null; logEvent(currentModule, "knock", "activity", "done"); } };
   const step = () => { if (i < steps.length - 1){ i++; show(); } };
-  $(".knStep", el).onclick = step; $(".knPlay", el).onclick = () => { clearInterval(timer); if (i >= steps.length - 1) i = -1; step(); timer = setInterval(() => alive(el) ? step() : clearInterval(timer), 1500); };
-  $(".knReset", el).onclick = () => { clearInterval(timer); i = -1; $(".knRows", el).innerHTML = ""; $(".knTag", el).setAttribute("opacity", 0); $(".knDot", el).setAttribute("cx", 65); $(".knDot", el).setAttribute("cy", 105); $(".knInfo", el).textContent = "Press Play or Step."; };
+  const reset = () => { clearInterval(timer); timer = null; i = -1; $(".knRows", el).innerHTML = ""; $(".knTag", el).setAttribute("opacity", 0); dot.setAttribute("opacity", 0); dot.setAttribute("cx", 150); dot.setAttribute("cy", 105); lightPaths([]); $(".knBoardTxt", el).textContent = "waiting"; $(".knInfo", el).textContent = `Step 0 of ${steps.length}: nothing has happened yet.`; };
+  $(".knStep", el).onclick = () => { clearInterval(timer); timer = null; step(); };
+  $(".knPlay", el).onclick = () => { clearInterval(timer); if (i >= steps.length - 1) reset(); step(); timer = setInterval(() => alive(el) ? step() : clearInterval(timer), 1800); };
+  $(".knReset", el).onclick = reset;
 };
 INTERACTIVES.reqbuilder = function(el){
   const tasks = [["Core: send temp, hum, light, and the raw light value", ["temp_C","hum_pct","light_pct","light_raw"]],["Extension: add Wi-Fi signal strength", ["temp_C","hum_pct","light_pct","rssi_dBm"]]]; let k = 0;
@@ -3348,13 +3848,14 @@ INTERACTIVES.reqbuilder = function(el){
   load();
 };
 INTERACTIVES.outage = function(el){
-  const D = [["A: connects once in setup()", "Connects at start-up only. After an outage it never reconnects."],["B: reconnects before every send (P4)", "Calls connectWiFi() before each send, so it recovers on its own."],["C: reconnects + buffers 10 readings", "Also stores readings during the outage and sends them when Wi-Fi returns."]]; let d = 1;
-  el.innerHTML = bench("Outage simulator", `<div class="seg seg-sm ouD" role="tablist">${D.map((x, i) => `<button role="tab" data-i="${i}" aria-selected="${i === 1}">${x[0].split(":")[0]}</button>`).join("")}</div><p class="ouDesc"></p>
+  const D = [["A: connects once in setup()", "Connects at start-up only. After an outage it never reconnects."],["B: reconnects before every send (P4)", "Calls connectWiFi() before each send, so it recovers on its own."],["C: reconnects + buffers 10 readings", "Also stores readings during the outage and sends them when Wi-Fi returns."]]; let d = null;
+  el.innerHTML = bench("Outage simulator", `<p class="explain"><b>Choose a firmware design</b> and predict: will logging recover after the Wi-Fi outage, and will any readings be lost?</p><div class="seg seg-sm ouD" role="tablist">${D.map((x, i) => `<button role="tab" data-i="${i}" aria-selected="false">${x[0]}</button>`).join("")}</div><p class="ouDesc"></p>
    <div class="controls"><label>Outage starts at minute <input type="range" class="ouS" min="2" max="8" value="4"></label><b class="ouSv mono"></b><label>lasts <input type="range" class="ouL" min="1" max="4" value="2"></label><b class="ouLv mono"></b></div>
    <canvas class="race ouC" style="height:110px" aria-label="Rows arriving in the Sheet over 12 minutes"></canvas><div class="panel ouInfo"></div>`);
-  const draw = () => { const s = +$(".ouS", el).value, L = +$(".ouL", el).value; $(".ouSv", el).textContent = s; $(".ouLv", el).textContent = L + " min"; $(".ouDesc", el).textContent = D[d][1];
+  const draw = () => { const s = +$(".ouS", el).value, L = +$(".ouL", el).value; $(".ouSv", el).textContent = s; $(".ouLv", el).textContent = L + " min"; $(".ouDesc", el).textContent = d === null ? "" : D[d][1];
     const cv = $(".ouC", el), {g, W, H} = hiDPI(cv), X = m => 20 + m / 12 * (W - 40); g.clearRect(0, 0, W, H);
     g.fillStyle = "rgba(231,111,81,.15)"; g.fillRect(X(s), 6, X(s + L) - X(s), H - 30); g.fillStyle = "#E76F51"; g.font = "10px sans-serif"; g.fillText("Wi-Fi down", X(s) + 4, 18);
+    if (d === null){ g.fillStyle = cssv("--muted") || "#5B6B7F"; g.font = "12px sans-serif"; g.fillText("Choose design A, B, or C above to see what happens.", 24, H / 2); [0, 2, 4, 6, 8, 10, 12].forEach(m => { g.font = "10px sans-serif"; g.fillText(m + " min", X(m) - 10, H - 8); }); $(".ouInfo", el).textContent = "No design chosen yet."; return; }
     let sent = 0, lost = 0, late = 0, buf = 0;
     for (let t = 0; t < 12; t += 0.5){ const down = t >= s && t < s + L; let dot = null;
       if (d === 0){ if (t < s) dot = "#2A9D8F"; else lost++; }
@@ -3781,6 +4282,313 @@ INTERACTIVES.troubleshoot = function(el){
         $(".ts-fb", el).onclick = () => { if (typeof openFeedback === "function"){ openFeedback("reply"); setTimeout(() => { const m = $("#fbMsg"); if (m){ m.value = "Troubleshooting flowchart: " + path.slice(1).map((p, i) => (TS[path[i]].o || []).find(o => o[1] === p)?.[0] || p).join(" > ") + " > Fix tried: " + (TS[path[path.length - 1]].fix || "") + "\nWhat I see now: "; m.focus(); } const t = document.querySelector('#fbDlg input[value="broken"]'); if (t) t.checked = true; }, 50); } }; }; }
     anim(card, {opacity:[0, 1], x:[10, 0]}, {duration:.25}); };
   render();
+};
+
+/* ============ UNIT 3 INTERACTIVES (part 1: 3.1 and 3.2) ============ */
+const U3C = {temp:"#E76F51", hum:"#2563EB", light:"#C9A227"};
+INTERACTIVES.fold = function(el){
+  const T = ["09:00:00","09:00:30","09:01:00"], V = {temp:[29.4,29.5,29.5], hum:[70.2,70.1,70.0], light:[55.0,55.3,54.8]}, S = ["temp","hum","light"];
+  const longRows = []; T.forEach((t, i) => S.forEach(s => longRows.push([t, s, V[s][i]])));
+  let folded = false, busy = false;
+  el.innerHTML = bench("Fold long data into wide data", `<p class="explain">Each colour is one sensor. Press <b>Fold</b> and follow the colours.</p>
+   <div class="two"><div><b>Long (Data tab)</b><table class="t fdL"><tr><th>timestamp</th><th>sensor</th><th>value</th></tr>${longRows.map((r, i) => `<tr data-i="${i}"><td>${r[0]}</td><td><span class="fd-s" style="background:${U3C[r[1]]}">${r[1]}</span></td><td>${r[2]}</td></tr>`).join("")}</table></div>
+   <div><b>Wide (Wide tab)</b><table class="t fdW"><tr><th>timestamp</th><th>hum</th><th>light</th><th>temp</th></tr>${T.map((t, i) => `<tr><td>${t}</td>${["hum","light","temp"].map(s => `<td class="fdC" data-k="${t}|${s}"></td>`).join("")}</tr>`).join("")}</table><p class="explain fdN">9 long rows will become 3 wide rows.</p></div></div>
+   <div class="controls"><button class="btn primary fdGo">Fold (pivot)</button><button class="btn fdReset">Reset</button></div>`);
+  $(".fdGo", el).onclick = async () => { if (busy || folded) return; busy = true;
+    for (let i = 0; i < longRows.length; i++){ const r = longRows[i], tr = el.querySelector(`.fdL tr[data-i="${i}"]`), c = el.querySelector(`.fdC[data-k="${r[0]}|${r[1]}"]`);
+      tr.classList.add("fd-hi"); c.textContent = r[2]; c.style.background = U3C[r[1]] + "33"; pop(c, 1.15);
+      $(".fdN", el).textContent = `${r[0]} ${r[1]} = ${r[2]} goes to row ${r[0]}, column ${r[1]}.`;
+      await new Promise(res => setTimeout(res, reduceMotion() ? 30 : 450)); tr.classList.remove("fd-hi"); tr.classList.add("fd-done"); }
+    $(".fdN", el).innerHTML = "Done: one row per timestamp, one column per sensor. QUERY's <code>pivot C</code> does exactly this."; folded = true; busy = false; logEvent(currentModule, "fold", "activity", "done"); };
+  $(".fdReset", el).onclick = () => { if (busy) return; folded = false; el.querySelectorAll(".fdC").forEach(c => { c.textContent = ""; c.style.background = ""; }); el.querySelectorAll(".fdL tr").forEach(t => t.classList.remove("fd-done")); $(".fdN", el).textContent = "9 long rows will become 3 wide rows."; };
+};
+INTERACTIVES.snapshot = function(el){
+  let live = [29.4,29.6,29.5], snap = null, timer = null, t = 3;
+  el.innerHTML = bench("Live data vs. a snapshot", `<p class="explain">Press <b>Start logging</b>. The live table keeps growing, so its average keeps changing. Take a snapshot to freeze the numbers you report.</p>
+   <div class="two"><div><b>Live (Wide tab)</b><div class="snL"></div></div><div><b>Snapshot (values only)</b><div class="snS"><p class="explain">No snapshot yet.</p></div></div></div>
+   <div class="controls"><button class="btn primary snGo">Start logging</button><button class="btn snTake">Take a snapshot</button></div><p class="explain snN"></p>`);
+  const tbl = (a, hl) => `<table class="t"><tr><th>#</th><th>temp</th></tr>${a.slice(-6).map((v, i) => `<tr class="${hl && i === Math.min(a.length, 6) - 1 ? "fd-hi" : ""}"><td>${a.length - Math.min(a.length, 6) + i + 1}</td><td>${v.toFixed(1)}</td></tr>`).join("")}</table><p><b>Average: ${(a.reduce((x, y) => x + y, 0) / a.length).toFixed(2)} \u00b0C</b> (${a.length} rows)</p>`;
+  const draw = hl => { $(".snL", el).innerHTML = tbl(live, hl); };
+  $(".snGo", el).onclick = () => { if (timer){ clearInterval(timer); timer = null; $(".snGo", el).textContent = "Start logging"; return; } $(".snGo", el).textContent = "Pause logging";
+    timer = setInterval(() => { if (!alive(el)) return clearInterval(timer); t++; live.push(+(29.5 + Math.sin(t / 3) * .6 + (Math.random() - .5) * .2).toFixed(1)); draw(true); }, 1500); };
+  $(".snTake", el).onclick = () => { snap = live.slice(); $(".snS", el).innerHTML = tbl(snap) + `<p class="explain">Frozen at ${snap.length} rows: these numbers will not change.</p>`; $(".snN", el).textContent = "Keep logging and compare: the live average moves, the snapshot average stays put. Report numbers from the snapshot."; logEvent(currentModule, "snapshot", "activity", "done"); };
+  draw();
+};
+const LAUNDRY = [["Profile","Count rows, blanks, and distinct values before changing anything.",[["09:00","team1-esp32","temp","29.4","C"],["09:00","team1-esp32","temp","29.4","C"],["09:01","Team1-ESP32 ","temp","","C"],["09:01:30","team1-esp32","temp","85.3","F"],["09:02","team1-esp32","temp","999","C"]],"5 rows, 1 blank value, 2 device ID spellings, 2 units."],
+ ["Fix structure","Make sure numbers are stored as numbers.",null,"Values checked: all numeric or blank."],
+ ["Standardize","One device ID format, one unit per sensor.",[["09:00","team1-esp32","temp","29.4","C"],["09:00","team1-esp32","temp","29.4","C"],["09:01","team1-esp32","temp","","C"],["09:01:30","team1-esp32","temp","29.6","C"],["09:02","team1-esp32","temp","999","C"]],"Device ID trimmed and lowercased; 85.3 \u00b0F converted to 29.6 \u00b0C."],
+ ["Remove duplicates","The same reading sent twice.",[["09:00","team1-esp32","temp","29.4","C"],["09:01","team1-esp32","temp","","C"],["09:01:30","team1-esp32","temp","29.6","C"],["09:02","team1-esp32","temp","999","C"]],"1 duplicate removed (network retry)."],
+ ["Handle missing","Decide with a written rule.",null,"Blank at 09:01: rejected as missing (rule: no guessing in this practice)."],
+ ["Handle outliers","Reject impossible values; flag unusual ones.",[["09:00","team1-esp32","temp","29.4","C"],["09:01:30","team1-esp32","temp","29.6","C"]],"999 \u00b0C rejected as impossible; blank row moved to Rejected."],
+ ["Smooth and resample","Reduce noise; put readings on a regular grid.",null,"Readings averaged into 1-minute slots."],
+ ["Validate and document","Profile again and complete the cleaning log.",null,"5 raw rows \u2192 2 clean, 3 rejected (quality 40%). Every change is in the log."]];
+INTERACTIVES.laundry = function(el){
+  let i = -1, rows = LAUNDRY[0][2], log = [];
+  el.innerHTML = bench("The data laundry: 8 cleaning stations", `<div class="ld-st">${LAUNDRY.map((s, k) => `<span class="ld-s" data-k="${k}">${k + 1}. ${s[0]}</span>`).join("")}</div>
+   <div class="two"><div><b class="ldT">Rows before cleaning</b><div class="ldRows"></div></div><div><b>Cleaning log</b><ol class="ldLog"></ol></div></div>
+   <div class="controls"><button class="btn primary ldNext">Next station</button><button class="btn ldReset">Reset</button></div>`);
+  const drawRows = (prev) => { $(".ldRows", el).innerHTML = `<table class="t"><tr><th>time</th><th>device</th><th>sensor</th><th>value</th><th>unit</th></tr>${rows.map(r => `<tr>${r.map((c, j) => `<td class="${prev && !prev.some(p => p[j] === c && p[0] === r[0]) ? "ld-ch" : ""}">${esc(c === "" ? "(blank)" : c)}</td>`).join("")}</tr>`).join("")}</table>`; };
+  const step = () => { if (i >= LAUNDRY.length - 1) return; i++; const S = LAUNDRY[i], prev = rows; if (S[2]) rows = S[2];
+    el.querySelectorAll(".ld-s").forEach((s, k) => { s.classList.toggle("on", k === i); s.classList.toggle("done", k < i); });
+    $(".ldT", el).textContent = `After station ${i + 1}: ${S[0]}`; drawRows(i ? prev : null); log.push(`<b>${S[0]}:</b> ${S[3]}`); $(".ldLog", el).innerHTML = log.map(x => `<li>${x}</li>`).join("");
+    pop(el.querySelector(`.ld-s[data-k="${i}"]`), 1.1); if (i === LAUNDRY.length - 1){ $(".ldNext", el).disabled = true; logEvent(currentModule, "laundry", "activity", "done"); } };
+  $(".ldNext", el).onclick = step; $(".ldReset", el).onclick = () => { i = -1; rows = LAUNDRY[0][2]; log = []; $(".ldLog", el).innerHTML = ""; $(".ldNext", el).disabled = false; el.querySelectorAll(".ld-s").forEach(s => s.classList.remove("on", "done")); $(".ldT", el).textContent = "Rows before cleaning"; drawRows(); };
+  drawRows();
+};
+const MESSY_KEY = [[2,null,"dup","Exact duplicate of row 1","Remove (network retry)"],[3,1,"text","Device ID with capitals and a trailing space","=LOWER(TRIM(B))"],[4,3,"missing","Missing value","Reject, or interpolate a 1-reading gap with a written rule"],[5,4,"unit","Temperature in \u00b0F","Convert: (85.3 \u2212 32) \u00d7 5/9 = 29.6 \u00b0C"],[6,3,"impossible","Impossible value 999 \u00b0C","Reject as out of range"],[7,3,"numtext","Number stored as text (leading space)","=VALUE(TRIM(D))"],[9,2,"name","Sensor named 'humidity' instead of 'hum'","Rename to the data dictionary name"],[9,4,"unit","Unit '%' instead of 'pct'","Rename to 'pct'"],[10,0,"gap","Time gap: 09:03:00 jumps to 09:04:30","Report the gap; do not invent readings"],[11,3,"impossible","Negative light (\u22124 %)","Reject as out of range"],[12,0,"date","Different date format (05/10/2026)","Rebuild as 2026-10-05; confirm day/month with the source"]];
+const MESSY_TYPES = [["dup","Duplicate row"],["text","Inconsistent text"],["missing","Missing value"],["unit","Wrong or inconsistent unit"],["impossible","Impossible value"],["numtext","Number stored as text"],["name","Inconsistent sensor name"],["gap","Time gap"],["date","Different date format"]];
+INTERACTIVES.messyhunt = function(el){
+  const rows = MESSY_CSV.split("\n").slice(1).map(l => l.split(",")); const K = "sti_messy_" + (user ? user.email : "g"); let found = store.get(K, []), sel = null;
+  el.innerHTML = bench("Messy Monday detective", `<p class="explain"><b>1.</b> Tap a cell that looks wrong (tap a row number for whole-row problems). <b>2.</b> Choose the problem type. Find at least 9 of the 11.</p>
+   <div class="adm-tablewrap"><table class="t mh"><tr><th>#</th>${["timestamp","device_id","sensor","value","unit"].map(h => `<th>${h}</th>`).join("")}</tr>${rows.map((r, i) => `<tr><td class="mhR" data-r="${i + 1}">${i + 1}</td>${r.map((c, j) => `<td class="mhC" data-r="${i + 1}" data-c="${j}">${c === "" ? "<i>(blank)</i>" : esc(c).replace(/^ /, "\u2423").replace(/ $/, "\u2423")}</td>`).join("")}</tr>`).join("")}</table></div>
+   <div class="panel mhPick" hidden><b class="mhWhat"></b><div class="controls mhTypes">${MESSY_TYPES.map(t => `<button class="btn small mhT" data-t="${t[0]}">${t[1]}</button>`).join("")}</div></div>
+   <div class="feedback mhFb"></div><div class="kv"><span>Problems found</span><b class="mhN"></b></div><b>Your cleaning log</b><div class="mhLog"></div>
+   <div class="controls"><button class="btn small mhReset">Start over</button><button class="btn small mhHint">Hint</button></div>`);
+  const keyOf = (r, c) => MESSY_KEY.findIndex(k => k[0] === r && (k[1] === null ? c === null : k[1] === c));
+  const draw = () => { $(".mhN", el).textContent = `${found.length} of 11`; el.querySelectorAll(".mhC, .mhR").forEach(td => td.classList.remove("mh-ok"));
+    found.forEach(i => { const k = MESSY_KEY[i]; const td = k[1] === null ? el.querySelector(`.mhR[data-r="${k[0]}"]`) : el.querySelector(`.mhC[data-r="${k[0]}"][data-c="${k[1]}"]`); if (td) td.classList.add("mh-ok"); });
+    $(".mhLog", el).innerHTML = found.length ? `<table class="t"><tr><th>Row</th><th>Problem found</th><th>Action</th></tr>${found.slice().sort((a, b) => MESSY_KEY[a][0] - MESSY_KEY[b][0]).map(i => `<tr><td>${MESSY_KEY[i][0]}</td><td>${esc(MESSY_KEY[i][3])}</td><td>${esc(MESSY_KEY[i][4])}</td></tr>`).join("")}</table>` : `<p class="explain">Empty so far.</p>`;
+    if (found.length >= 9 && act("messyhunt") !== "core"){ logEvent(currentModule, "messyhunt", "activity", "core"); confetti(); $(".mhFb", el).className = "feedback mhFb ok"; $(".mhFb", el).textContent = found.length === 11 ? "All 11 found! Bonus: row 9 also repeats row 8's humidity at the same time." : "Core challenge met (9 or more). Can you find the rest?"; } };
+  el.querySelectorAll(".mhC, .mhR").forEach(td => td.onclick = () => { sel = {r:+td.dataset.r, c:td.dataset.c === undefined ? null : +td.dataset.c}; el.querySelectorAll(".mh-sel").forEach(x => x.classList.remove("mh-sel")); td.classList.add("mh-sel");
+    $(".mhPick", el).hidden = false; $(".mhWhat", el).textContent = sel.c === null ? `Row ${sel.r}: what is wrong with this whole row?` : `Row ${sel.r}, ${["timestamp","device_id","sensor","value","unit"][sel.c]}: what kind of problem is it?`; });
+  el.querySelectorAll(".mhT").forEach(b => b.onclick = () => { if (!sel) return; const i = keyOf(sel.r, sel.c), fb = $(".mhFb", el);
+    if (i >= 0 && MESSY_KEY[i][2] === b.dataset.t){ if (!found.includes(i)){ found.push(i); store.set(K, found); } fb.className = "feedback mhFb ok"; fb.textContent = `Correct: ${MESSY_KEY[i][3]}. Added to your log.`; logEvent(currentModule, "messy_" + MESSY_KEY[i][0], "messy_found", MESSY_KEY[i][2]); }
+    else if (i >= 0){ fb.className = "feedback mhFb no"; fb.textContent = "Right place, wrong problem type. Look again: what exactly is different about this cell?"; shake(b); }
+    else { fb.className = "feedback mhFb no"; fb.textContent = sel.c === null ? "Nothing is wrong with this whole row. Look at its individual cells." : "This cell looks fine. Compare it with the cells above and below it."; shake(b); }
+    $(".mhPick", el).hidden = true; el.querySelectorAll(".mh-sel").forEach(x => x.classList.remove("mh-sel")); sel = null; draw(); });
+  $(".mhReset", el).onclick = () => { found = []; store.set(K, found); $(".mhFb", el).textContent = ""; draw(); };
+  $(".mhHint", el).onclick = () => { const left = MESSY_KEY.map((k, i) => i).filter(i => !found.includes(i)); if (!left.length) return; const k = MESSY_KEY[left[0]]; $(".mhFb", el).className = "feedback mhFb"; $(".mhFb", el).textContent = `Hint: look at row ${k[0]}${k[1] === null ? " as a whole, and compare it with the row above" : ", column " + ["timestamp","device_id","sensor","value","unit"][k[1]]}.`; };
+  draw();
+};
+INTERACTIVES.outlierlab = function(el){
+  let data = [29.4,29.5,29.6,29.5,29.7,29.8,29.6,29.9,30.0,29.8,29.9,30.1,30.0,30.2,30.1,30.3,30.2,30.4,30.3,30.5,30.4,30.6,30.5,30.4,30.6,30.7,33.8,30.6,25.1,30.5], rule = "z";
+  el.innerHTML = bench("Outlier explorer: z-score vs. IQR", `<div class="seg seg-sm olR" role="tablist"><button data-r="z" aria-selected="true">z-score rule</button><button data-r="iqr" aria-selected="false">IQR rule</button></div>
+   <div class="controls olZ"><label>Flag when |z| &gt; <select class="olK"><option>2</option><option selected>3</option></select></label></div>
+   <canvas class="race olC" style="height:150px" aria-label="Readings on a number line with outlier limits"></canvas>
+   <div class="controls"><button class="btn small olAdd">Add a spike (35.0)</button><button class="btn small olRem">Remove the two big outliers</button><button class="btn small olReset">Reset data</button></div>
+   <div class="kv olKv"></div><div class="panel olN"></div>`);
+  const q = (a, p) => { const s = a.slice().sort((x, y) => x - y), h = (s.length - 1) * p, lo = Math.floor(h); return s[lo] + (s[Math.ceil(h)] - s[lo]) * (h - lo); };
+  const draw = () => { const n = data.length, m = data.reduce((a, b) => a + b, 0) / n, sd = Math.sqrt(data.reduce((a, b) => a + (b - m) ** 2, 0) / (n - 1)), k = +$(".olK", el).value, q1 = q(data, .25), q3 = q(data, .75), iqr = q3 - q1;
+    const lo = rule === "z" ? m - k * sd : q1 - 1.5 * iqr, hi = rule === "z" ? m + k * sd : q3 + 1.5 * iqr, flagged = data.filter(v => v < lo || v > hi);
+    const cv = $(".olC", el), {g, W, H} = hiDPI(cv), mn = Math.min(24, ...data), mx = Math.max(36, ...data), X = v => 20 + (v - mn) / (mx - mn) * (W - 40); g.clearRect(0, 0, W, H);
+    g.fillStyle = "rgba(42,157,143,.12)"; g.fillRect(X(lo), 18, X(hi) - X(lo), H - 50);
+    if (rule === "iqr"){ g.strokeStyle = "#1F3A5F"; g.lineWidth = 2; g.strokeRect(X(q1), H / 2 - 22, X(q3) - X(q1), 30); g.lineWidth = 1; g.fillStyle = "#1F3A5F"; g.font = "10px sans-serif"; g.fillText("Q1", X(q1) - 6, H / 2 - 26); g.fillText("Q3", X(q3) - 6, H / 2 - 26); }
+    else { g.strokeStyle = "#1F3A5F"; g.beginPath(); g.moveTo(X(m), 14); g.lineTo(X(m), H - 30); g.stroke(); g.fillStyle = "#1F3A5F"; g.font = "10px sans-serif"; g.fillText("mean", X(m) - 12, 12); }
+    g.strokeStyle = "#E76F51"; g.setLineDash([4, 4]); [lo, hi].forEach(v => { g.beginPath(); g.moveTo(X(v), 14); g.lineTo(X(v), H - 30); g.stroke(); }); g.setLineDash([]);
+    const seen = {}; data.forEach(v => { const key = v.toFixed(1); seen[key] = (seen[key] || 0) + 1; const out = v < lo || v > hi; g.fillStyle = out ? "#DC2626" : "#2A9D8F"; g.beginPath(); g.arc(X(v), H / 2 - 7 + (seen[key] - 1) * -8 + 4, 5, 0, 7); g.fill(); });
+    g.fillStyle = cssv("--muted") || "#5B6B7F"; g.font = "10px sans-serif"; for (let t = Math.ceil(mn); t <= mx; t += 2) g.fillText(t + " \u00b0C", X(t) - 12, H - 8);
+    $(".olKv", el).innerHTML = `<span>Mean / SD</span><b>${m.toFixed(2)} / ${sd.toFixed(2)}</b><span>Q1 / Q3 / IQR</span><b>${q1.toFixed(2)} / ${q3.toFixed(2)} / ${iqr.toFixed(2)}</b><span>Limits (dashed)</span><b>${lo.toFixed(2)} to ${hi.toFixed(2)} \u00b0C</b><span>Flagged</span><b>${flagged.length}: ${flagged.map(v => v.toFixed(1)).join(", ") || "none"}</b>`;
+    $(".olN", el).innerHTML = rule === "z" ? `The shaded zone is the mean \u00b1 ${k} SD. Notice: the two big outliers make the SD large (${sd.toFixed(2)}), which widens the zone, so outliers can partly <b>hide themselves</b>. Try removing them and compare the SD.` : `The box is the middle half of the data (Q1 to Q3). The fences sit 1.5 \u00d7 IQR beyond the box. Quartiles hardly move when you add a spike, so this rule is more robust.`;
+    if (!act("outlierlab")) logEvent(currentModule, "outlierlab", "activity", "used"); };
+  el.querySelectorAll(".olR button").forEach(b => b.onclick = () => { rule = b.dataset.r; el.querySelectorAll(".olR button").forEach(x => x.setAttribute("aria-selected", x === b)); $(".olZ", el).hidden = rule !== "z"; draw(); });
+  $(".olK", el).onchange = draw; $(".olAdd", el).onclick = () => { data.push(35.0); draw(); }; $(".olRem", el).onclick = () => { data = data.filter(v => v !== 33.8 && v !== 25.1); draw(); };
+  $(".olReset", el).onclick = () => { data = [29.4,29.5,29.6,29.5,29.7,29.8,29.6,29.9,30.0,29.8,29.9,30.1,30.0,30.2,30.1,30.3,30.2,30.4,30.3,30.5,30.4,30.6,30.5,30.4,30.6,30.7,33.8,30.6,25.1,30.5]; draw(); };
+  draw(); addEventListener("resize", () => { if (alive(el)) draw(); });
+};
+INTERACTIVES.smoothlab = function(el){
+  const N = 100, raw = []; let seed = 7; const rnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+  for (let i = 0; i < N; i++){ let v = 55 + (rnd() - .5) * 8; if (i >= 45 && i < 70) v = 10 + (rnd() - .5) * 4; if (i === 25) v = 95; raw.push(+v.toFixed(1)); }
+  el.innerHTML = bench("Smoothing lab: noise, a spike, and a hand over the sensor", `<div class="sliders"><label>Moving average window <input type="range" class="smW" min="1" max="20" value="5"></label><b class="mono smWv"></b><label>EMA \u03b1 <input type="range" class="smA" min="0.05" max="1" step="0.05" value="0.3"></label><b class="mono smAv"></b></div>
+   <div class="controls"><label class="chk"><input type="checkbox" class="smMed"><span>Show median of 5</span></label></div>
+   <canvas class="race smC" style="height:220px" aria-label="Raw and smoothed light readings"></canvas>
+   <div class="adm-legend"><span><i style="background:#94A3B8"></i>Raw</span><span><i style="background:#2A9D8F"></i>Moving average</span><span><i style="background:#E9A23B"></i>EMA</span><span class="smML" hidden><i style="background:#7C3AED"></i>Median of 5</span></div><div class="panel smN"></div>`);
+  const ma = w => raw.map((v, i) => { const s = raw.slice(Math.max(0, i - w + 1), i + 1); return s.reduce((a, b) => a + b, 0) / s.length; });
+  const ema = a => { let e = null; return raw.map(v => e = e === null ? v : a * v + (1 - a) * e); };
+  const med = () => raw.map((v, i) => { const s = raw.slice(Math.max(0, i - 4), i + 1).sort((x, y) => x - y); return s[Math.floor(s.length / 2)]; });
+  const lagTo = (s, target) => { for (let i = 45; i < 70; i++) if (s[i] <= target) return i - 45; return ">25"; };
+  const draw = () => { const w = +$(".smW", el).value, a = +$(".smA", el).value, showM = $(".smMed", el).checked; $(".smWv", el).textContent = w + " readings"; $(".smAv", el).textContent = a.toFixed(2); $(".smML", el).hidden = !showM;
+    const A = ma(w), E = ema(a), M = med(), cv = $(".smC", el), {g, W, H} = hiDPI(cv), X = i => 30 + i / (N - 1) * (W - 40), Y = v => H - 20 - v / 100 * (H - 30); g.clearRect(0, 0, W, H);
+    g.fillStyle = "rgba(231,111,81,.1)"; g.fillRect(X(45), 4, X(70) - X(45), H - 24); g.fillStyle = "#E76F51"; g.font = "10px sans-serif"; g.fillText("hand covers LDR", X(46), 14); g.fillText("spike", X(25) - 10, Y(95) - 8);
+    const line = (s, c, lw) => { g.strokeStyle = c; g.lineWidth = lw; g.beginPath(); s.forEach((v, i) => i ? g.lineTo(X(i), Y(v)) : g.moveTo(X(i), Y(v))); g.stroke(); };
+    line(raw, "#CBD5E1", 1.2); line(A, "#2A9D8F", 2.5); line(E, "#E9A23B", 2.5); if (showM) line(M, "#7C3AED", 2); g.lineWidth = 1;
+    g.fillStyle = cssv("--muted") || "#5B6B7F"; [0, 50, 100].forEach(v => g.fillText(v + " %", 2, Y(v) + 3));
+    $(".smN", el).innerHTML = `After the hand covers the sensor, the moving average needs <b>${lagTo(A, 32.5)}</b> more reading${lagTo(A, 32.5) === 1 ? "" : "s"} and the EMA <b>${lagTo(E, 32.5)}</b> more reading${lagTo(E, 32.5) === 1 ? "" : "s"} to get halfway down: that delay is the <b>lag</b>. The spike pushes the moving average up to ${Math.max(...A.slice(25, 25 + w)).toFixed(0)} %${showM ? `, while the median ignores it completely (${Math.max(...M.slice(25, 30)).toFixed(0)} %)` : ""}. Bigger window or smaller \u03b1: smoother, but slower.`;
+    if (!act("smoothlab")) logEvent(currentModule, "smoothlab", "activity", "used"); };
+  el.querySelectorAll("input").forEach(x => x.oninput = draw); draw(); addEventListener("resize", () => { if (alive(el)) draw(); });
+};
+Object.assign(DRILLS, {
+ u31:[
+  {t:"mcq", q:"A table has columns timestamp, temp, hum, light. Which format is it?", o:["Long (tidy)","Wide","Raw","JSON"], a:1, e:"One column per sensor is wide.", w:["Long data has a sensor column and a value column.","","Raw describes where data came from, not its shape.","JSON is a text format."]},
+  {t:"input", q:"Long data has 3 sensors logged at 40 timestamps. How many rows does it have?", ans:["120"], e:"One row per reading: 3 \u00d7 40 = 120. The wide version has 40 rows."},
+  {t:"mcq", q:"In =QUERY(Data!A:E,\"select A, max(D) where B='t3' group by A pivot C\",1), which part makes one column per sensor?", o:["select A","where B='t3'","group by A","pivot C"], a:3, e:"pivot turns each distinct value of C into its own column.", w:["select chooses what to show.","where filters rows.","group by makes one row per timestamp.",""]},
+  {t:"mcq", q:"Your average changed between 10:00 and 10:05 although you did nothing. Why?", o:["A bug in AVERAGE","The board kept logging, so new rows entered the range","The Sheet rounded differently","The snapshot changed"], a:1, e:"Live data grows; use a snapshot for reporting.", w:["AVERAGE is reliable.","","Rounding is consistent.","A snapshot never changes."]}],
+ u32:[
+  {t:"mcq", q:"Which problem is ' 29.9' (with a leading space) in the value column?", o:["Missing value","Number stored as text","Outlier","Duplicate"], a:1, e:"The space makes Sheets treat it as text; =VALUE(TRIM()) fixes it.", w:["It has a value.","","29.9 is a normal reading.","It is not repeated."]},
+  {t:"input", q:"Mean 30.0 \u00b0C, SD 0.5 \u00b0C. What is the z-score of 31.0 \u00b0C?", ans:["2","2.0"], e:"(31.0 \u2212 30.0) \u00f7 0.5 = 2."},
+  {t:"input", q:"Q1 = 29.8 and Q3 = 30.4. What is the upper IQR fence? (1 decimal)", ans:["31.3"], e:"IQR = 0.6; upper fence = 30.4 + 1.5 \u00d7 0.6 = 31.3."},
+  {t:"input", q:"EMA with \u03b1 = 0.5: old smooth value 40, new reading 20. What is the new smooth value?", ans:["30"], e:"0.5 \u00d7 20 + 0.5 \u00d7 40 = 30."},
+  {t:"mcq", q:"A single spike of 95 % appears in steady 55 % light readings. Which filter removes it completely?", o:["Moving average of 5","EMA with \u03b1 = 0.3","Median of 5","None"], a:2, e:"The spike is never the middle value, so the median ignores it.", w:["The average still includes the spike.","The EMA still moves toward it.","","The median does."]}],
+ uB:[
+  {t:"mcq", q:"What does df[\"device_id\"].str.strip().str.lower() do?", o:["Deletes the column","Removes spaces at both ends and lowercases every device ID","Sorts the IDs","Counts the IDs"], a:1, e:".str applies text methods to every value at once.", w:["Nothing is deleted.","","Sorting uses sort_values.","Counting uses value_counts."]},
+  {t:"mcq", q:"What does df.isna().sum() show?", o:["The total of all values","How many blank values each column has","The number of rows","The duplicates"], a:1, e:"isna marks blanks True; sum counts the Trues per column.", w:["It counts blanks, not values.","","Rows come from len(df) or shape.","Duplicates use duplicated()."]},
+  {t:"input", q:"After Cell 6, how many rows are rejected in Messy Monday?", ans:["3"], e:"The missing value, 999 \u00b0C, and \u22124 % light."},
+  {t:"mcq", q:"Why parse the dates with two explicit formats instead of letting pandas guess?", o:["It is faster","Guessing could read 05/10 as 10 May without warning; explicit formats make the assumption visible","pandas cannot guess","To remove the time"], a:1, e:"Ambiguous dates must be handled deliberately and documented.", w:["Speed is not the reason.","","pandas can guess, which is the risk.","The time is kept."]}],
+ u33:[
+  {t:"mcq", q:"Question: \u201cWhich side of the room is warmer?\u201d Best chart?", o:["Line chart","Scatter plot","Column chart comparing the two sides","Pie chart"], a:2, e:"Columns compare groups.", w:["Lines show change over time.","Scatter shows a relationship between two measurements.","","Pie charts show parts of a whole."]},
+  {t:"mcq", q:"Question: \u201cDoes humidity drop when temperature rises?\u201d Best chart?", o:["Scatter plot of temp vs. humidity","Pie chart","Column chart","Table only"], a:0, e:"Each dot is one moment; the pattern shows the relationship.", w:["","Pie charts show parts of a whole.","Columns compare groups, not relationships.","A chart shows the pattern much faster."]},
+  {t:"mcq", q:"Question: \u201cHow did light change through the morning?\u201d Best chart?", o:["Line chart over time","Scatter plot","Pie chart","Histogram"], a:0, e:"Time on the x-axis: a line chart.", w:["","Scatter needs two measurements, not time.","Pie charts show parts of a whole.","A histogram shows spread, not change over time."]},
+  {t:"input", q:"Temperatures: 29, 30, 30, 31, 45. What is the median?", ans:["30"], e:"Sorted, the middle value is 30. The mean (33) is pulled up by 45."}],
+ u34:[
+  {t:"mcq", q:"Which part is missing? \u201cQuestion: is the window side warmer? Finding: 1.8 \u00b0C warmer. Chart. Recommendation: move the reading corner. Limitation: one day only.\u201d", o:["Question","Data (devices, interval, duration, readings)","Finding","Limitation"], a:1, e:"The Data part tells readers how the evidence was collected.", w:["The question is there.","","The finding has a number and unit.","The limitation is there."]},
+  {t:"mcq", q:"Which is a good limitation?", o:["Our data is perfect.","We logged on one sunny day only; a cloudy day could differ.","The chart is nice.","Temperature matters."], a:1, e:"A limitation names a real reason the result might not hold.", w:["No data is perfect.","","That is not a limitation.","That is not specific."]},
+  {t:"mcq", q:"FORECAST fits what kind of line?", o:["A straight trend line","A curve through every point","A moving average","A random line"], a:0, e:"FORECAST uses linear regression: one straight line.", w:["","That would be overfitting.","Moving averages smooth; they do not extrapolate.","It is calculated, not random."]}]
+});
+
+/* ============ UNIT 3 INTERACTIVES (part 2: Lab B, 3.3, 3.4) ============ */
+INTERACTIVES.pandaslab = function(el){
+  const ran = new Set();
+  el.innerHTML = bench("Python Lab B notebook", `<div class="controls"><button class="btn primary pbDl">Download the notebook (.ipynb)</button><a class="btn" href="https://colab.research.google.com/" target="_blank" rel="noopener">Open Google Colab</a><button class="btn pbAll">Run all</button></div>
+   <p class="explain">In Colab: <b>File \u2192 Upload notebook</b>, then choose the downloaded file. Outputs below are what Colab shows; small formatting differences are normal.</p>
+   <div class="pbCells">${LABB_CELLS.map((c, i) => `<div class="pb-cell" data-i="${i}"><div class="pb-h"><span class="pb-n">[${i + 1}]</span><b>${esc(c[0])}</b><button class="btn small primary pbRun">Run</button></div><pre class="code pb-code">${esc(c[1])}</pre><div class="pb-out" hidden><span class="explain">Output</span><pre class="pb-o">${esc(LABB_OUT[i + 1] || "")}</pre><p class="pb-w"><b>What happened:</b> ${esc(c[2])}</p></div></div>`).join("")}</div>
+   <div class="panel pbN">Run each cell in order. Before pressing Run, predict what it will print.</div>`);
+  const run = i => { const cell = el.querySelector(`.pb-cell[data-i="${i}"]`); if (i > 0 && !ran.has(i - 1)){ toast("Run the cells in order: run cell " + i + " first.", "warn"); return false; }
+    cell.querySelector(".pb-out").hidden = false; cell.querySelector(".pb-n").textContent = `[${i + 1}] \u2713`; cell.classList.add("ran"); anim(cell.querySelector(".pb-out"), {opacity:[0, 1], y:[6, 0]}, {duration:.25}); ran.add(i);
+    $(".pbN", el).textContent = ran.size === LABB_CELLS.length ? "All cells run. Clean: 7 rows, rejected: 3, quality 58%. Now compare with your Sheets cleaning from Module 3.2." : `${ran.size} of ${LABB_CELLS.length} cells run.`;
+    if (ran.size === LABB_CELLS.length) logEvent(currentModule, "pandaslab", "activity", "done"); return true; };
+  el.querySelectorAll(".pbRun").forEach((b, i) => b.onclick = () => run(i));
+  $(".pbAll", el).onclick = () => { for (let i = 0; i < LABB_CELLS.length; i++) if (!ran.has(i)) run(i); };
+  $(".pbDl", el).onclick = () => { const cells = [{cell_type:"markdown", metadata:{}, source:["# Python Lab B: cleaning Messy Monday with pandas\n", "From Sensor to Insight. Run each cell in order (Shift + Enter). Each cell is one step of the 8-step cleaning workflow."]}];
+    LABB_CELLS.forEach((c, i) => { cells.push({cell_type:"markdown", metadata:{}, source:[`## Cell ${i + 1}: ${c[0]}\n`, c[2]]}); cells.push({cell_type:"code", execution_count:null, metadata:{}, outputs:[], source:c[1].split("\n").map((l, k, a) => k < a.length - 1 ? l + "\n" : l)}); });
+    const nb = {nbformat:4, nbformat_minor:5, metadata:{kernelspec:{name:"python3", display_name:"Python 3"}, language_info:{name:"python"}}, cells};
+    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(nb, null, 1)], {type:"application/x-ipynb+json"})); a.download = "python-lab-b.ipynb"; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+    logEvent(currentModule, "pandaslab", "notebook_download", "1"); toast("Notebook downloaded. Upload it in Colab: File \u2192 Upload notebook."); };
+};
+INTERACTIVES.statslab = function(el){
+  let vals = [29.6,29.8,30.0,30.1,30.2,30.3,30.4,30.6], extra = null;
+  el.innerHTML = bench("Statistics explorer", `<p class="explain">Each dot is one temperature reading. Drag the slider to move the last reading, or add an extreme reading.</p>
+   <div class="sliders"><label>Last reading <input type="range" class="stS" min="25" max="40" step="0.1" value="30.6"></label><b class="mono stSv"></b></div>
+   <div class="controls"><button class="btn small stX">Add an extreme reading (45.0)</button><button class="btn small stR">Remove it</button></div>
+   <canvas class="race stC" style="height:110px" aria-label="Readings as dots with mean and median"></canvas>
+   <div class="adm-legend"><span><i style="background:#E76F51"></i>Mean</span><span><i style="background:#2563EB"></i>Median</span><span><i style="background:rgba(42,157,143,.25)"></i>Mean \u00b1 1 SD</span></div><div class="kv stKv"></div><div class="panel stN"></div>`);
+  let base = null;
+  const draw = () => { vals[vals.length - 1] = +$(".stS", el).value; $(".stSv", el).textContent = vals[vals.length - 1].toFixed(1) + " \u00b0C"; const a = extra === null ? vals.slice() : vals.concat([extra]), n = a.length, s = a.slice().sort((x, y) => x - y);
+    const mean = a.reduce((x, y) => x + y, 0) / n, med = n % 2 ? s[(n - 1) / 2] : (s[n / 2 - 1] + s[n / 2]) / 2, sd = Math.sqrt(a.reduce((x, y) => x + (y - mean) ** 2, 0) / (n - 1)), mn = s[0], mx = s[n - 1];
+    if (!base) base = {mean, med, sd};
+    const cv = $(".stC", el), {g, W, H} = hiDPI(cv), X = v => 20 + (v - 24) / (46 - 24) * (W - 40); g.clearRect(0, 0, W, H);
+    g.fillStyle = "rgba(42,157,143,.18)"; g.fillRect(X(mean - sd), 10, X(mean + sd) - X(mean - sd), H - 40);
+    a.forEach((v, i) => { g.fillStyle = "#14213D"; g.beginPath(); g.arc(X(v), H / 2 + ((i % 3) - 1) * 9, 5, 0, 7); g.fill(); });
+    [[mean, "#E76F51"], [med, "#2563EB"]].forEach(([v, c]) => { g.strokeStyle = c; g.lineWidth = 2.5; g.beginPath(); g.moveTo(X(v), 6); g.lineTo(X(v), H - 30); g.stroke(); }); g.lineWidth = 1;
+    g.fillStyle = cssv("--muted") || "#5B6B7F"; g.font = "10px sans-serif"; for (let t = 25; t <= 45; t += 5) g.fillText(t + " \u00b0C", X(t) - 12, H - 8);
+    $(".stKv", el).innerHTML = `<span>Count</span><b>${n}</b><span>Mean</span><b>${mean.toFixed(2)} \u00b0C</b><span>Median</span><b>${med.toFixed(2)} \u00b0C</b><span>Min / max / range</span><b>${mn.toFixed(1)} / ${mx.toFixed(1)} / ${(mx - mn).toFixed(1)} \u00b0C</b><span>Standard deviation</span><b>${sd.toFixed(2)} \u00b0C</b>`;
+    $(".stN", el).innerHTML = extra !== null ? `With the extreme reading, the mean moved by <b>${(mean - base.mean).toFixed(2)} \u00b0C</b> and the SD grew to ${sd.toFixed(2)}, but the median moved only ${(med - base.med).toFixed(2)} \u00b0C. That is why the median is safer when data has extremes.` : "The shaded band is the mean \u00b1 1 standard deviation: most readings sit inside it. Move the last reading far away and watch the band widen.";
+    if (!act("statslab")) logEvent(currentModule, "statslab", "activity", "used"); };
+  $(".stS", el).oninput = draw; $(".stX", el).onclick = () => { extra = 45; draw(); }; $(".stR", el).onclick = () => { extra = null; draw(); };
+  draw(); addEventListener("resize", () => { if (alive(el)) draw(); });
+};
+INTERACTIVES.corrlab = function(el){
+  let seed = 3; const rnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280 - .5; };
+  const base = Array.from({length:40}, (_, i) => ({ac:i % 2 === 0, n1:rnd(), n2:rnd()})); let reveal = false;
+  el.innerHTML = bench("Correlation explorer", `<div class="sliders"><label>Relationship <input type="range" class="crS" min="-1" max="1" step="0.05" value="-0.8"></label><b class="mono crSv"></b></div>
+   <canvas class="race crC" style="height:240px" aria-label="Scatter plot of temperature against humidity"></canvas>
+   <div class="controls"><button class="btn primary crRev">Reveal the hidden third factor</button></div><div class="panel crN"></div>`);
+  const draw = () => { const k = +$(".crS", el).value, pts = base.map((b, i) => { const t = 30 + (b.ac ? -1.6 : 1.6) * Math.abs(k) + b.n1 * 2.4; const z = (t - 30) / 2; const h = 65 + k * z * 8 + b.n2 * 14 * (1 - Math.abs(k) * .7); return {t, h, ac:b.ac}; });
+    const mt = pts.reduce((a, p) => a + p.t, 0) / pts.length, mh = pts.reduce((a, p) => a + p.h, 0) / pts.length; let sxy = 0, sxx = 0, syy = 0; pts.forEach(p => { sxy += (p.t - mt) * (p.h - mh); sxx += (p.t - mt) ** 2; syy += (p.h - mh) ** 2; }); const r = sxy / Math.sqrt(sxx * syy);
+    $(".crSv", el).textContent = `r \u2248 ${r.toFixed(2)}`; const cv = $(".crC", el), {g, W, H} = hiDPI(cv), X = t => 40 + (t - 25) / 10 * (W - 60), Y = h => H - 30 - (h - 40) / 50 * (H - 50); g.clearRect(0, 0, W, H);
+    g.strokeStyle = cssv("--line") || "#ddd"; g.strokeRect(40, 10, W - 60, H - 40); g.fillStyle = cssv("--muted") || "#5B6B7F"; g.font = "11px sans-serif"; g.fillText("temperature (\u00b0C) \u2192", W / 2 - 50, H - 8); g.save(); g.translate(12, H / 2 + 40); g.rotate(-Math.PI / 2); g.fillText("humidity (%) \u2192", 0, 0); g.restore();
+    pts.forEach(p => { g.fillStyle = reveal ? (p.ac ? "#2563EB" : "#E76F51") : "#2A9D8F"; g.beginPath(); g.arc(X(p.t), Y(p.h), 5, 0, 7); g.fill(); });
+    if (reveal){ g.fillStyle = "#2563EB"; g.fillText("\u25cf aircon ON", W - 130, 26); g.fillStyle = "#E76F51"; g.fillText("\u25cf aircon OFF", W - 130, 42); }
+    $(".crN", el).innerHTML = (Math.abs(r) > .7 ? `<b>Strong ${r > 0 ? "positive" : "negative"} correlation</b> (r = ${r.toFixed(2)}).` : Math.abs(r) > .3 ? `<b>Moderate correlation</b> (r = ${r.toFixed(2)}).` : `<b>Little or no straight-line relationship</b> (r = ${r.toFixed(2)}).`) + (reveal ? " Now look at the colours: the aircon makes the room both cooler <i>and</i> changes the humidity. Temperature is not causing the humidity change; a third factor drives both. <b>Correlation is not causation.</b>" : " Does temperature cause the humidity change? Before you answer, press <b>Reveal</b>.");
+    if (!act("corrlab")) logEvent(currentModule, "corrlab", "activity", "used"); };
+  $(".crS", el).oninput = draw; $(".crRev", el).onclick = () => { reveal = !reveal; $(".crRev", el).textContent = reveal ? "Hide the third factor" : "Reveal the hidden third factor"; draw(); if (reveal) logEvent(currentModule, "corrlab", "activity", "revealed"); };
+  draw(); addEventListener("resize", () => { if (alive(el)) draw(); });
+};
+INTERACTIVES.pipelinesim = function(el){
+  const RAW0 = [["09:00:00","team1-esp32","temp",29.4,"C"],["09:00:00","team1-esp32","temp",29.4,"C"],["09:00:30"," Team1-ESP32","temp",29.6,"C"],["09:01:00","team1-esp32","temp","","C"],["09:01:30","team1-esp32","temp",999,"C"],["09:02:00","team1-esp32","hum",71.2,"pct"],["09:02:00","team1-esp32","light",-4,"pct"],["10:05:00","team1-esp32","temp",30.8,"C"],["10:05:30","team1-esp32","temp",31.0,"C"],["10:05:30","team1-esp32","hum",68.0,"pct"],["10:06:00","team1-esp32","rssi",-120,"dBm"]];
+  let raw = RAW0.slice(), rssiRule = false, runs = [], tab = "Clean";
+  el.innerHTML = bench("Pipeline simulator: bronze \u2192 silver \u2192 gold", `<div class="controls"><label class="chk"><input type="checkbox" class="psR"><span>Core challenge: add the rule rssi: { min: -95, max: -20 }</span></label><button class="btn small ps999">Send temp_C=999 from a browser</button></div>
+   <div class="ps-flow"><span class="ps-b">Data (bronze)<b class="psNr"></b></span><span>\u2192</span><span class="ps-s">Clean / Rejected (silver)</span><span>\u2192</span><span class="ps-g">Hourly (gold)</span><span>\u2192</span><span class="ps-m">PipelineLog</span></div>
+   <div class="controls"><button class="btn primary psRun">Run runPipeline()</button></div>
+   <div class="seg seg-sm psT" role="tablist">${["Data","Clean","Rejected","Hourly","PipelineLog"].map(t => `<button data-t="${t}" aria-selected="${t === "Data"}">${t}</button>`).join("")}</div><div class="psView adm-tablewrap"></div><div class="panel psN">Press Run to process the raw rows.</div>`);
+  let out = null; tab = "Data";
+  const RULES = () => Object.assign({temp:{min:-10,max:60}, hum:{min:0,max:100}, light:{min:0,max:100}}, rssiRule ? {rssi:{min:-95,max:-20}} : {});
+  const runP = () => { const R = RULES(), seen = new Set(), clean = [], rej = [];
+    raw.forEach(r => { const [ts, dev, sen, val, unit] = r, key = ts + "|" + dev + "|" + sen, rule = R[sen]; let reason = "";
+      if (seen.has(key)) reason = "duplicate"; else if (val === "" || isNaN(Number(val))) reason = "missing"; else if (rule && (val < rule.min || val > rule.max)) reason = "out_of_range"; seen.add(key);
+      if (reason) rej.push([ts, dev, sen, val, unit, reason]); else clean.push([ts, String(dev).trim().toLowerCase(), sen, Number(val), unit]); });
+    const G = {}; clean.forEach(([ts, dev, sen, v]) => { const h = ts.slice(0, 2) + ":00", k = h + "|" + dev + "|" + sen; if (!G[k]) G[k] = {h, dev, sen, sum:0, n:0, min:v, max:v}; const g = G[k]; g.sum += v; g.n++; g.min = Math.min(g.min, v); g.max = Math.max(g.max, v); });
+    const gold = Object.values(G).map(g => [g.h, g.dev, g.sen, Math.round(g.sum / g.n * 10) / 10, g.min, g.max, g.n]), pct = Math.round(clean.length / raw.length * 1000) / 10;
+    runs.push([new Date().toLocaleTimeString(), raw.length, clean.length, rej.length, pct]); out = {clean, rej, gold};
+    $(".psN", el).innerHTML = `Run ${runs.length}: ${raw.length} raw rows \u2192 <b>${clean.length} clean</b>, <b>${rej.length} rejected</b>, ${gold.length} hourly groups. Quality: <b>${pct}%</b>.` + (rssiRule && rej.some(r => r[2] === "rssi") ? " The rssi rule rejected \u2212120 dBm as out_of_range: Core challenge met!" : !rssiRule ? " Look at the rssi reading of \u2212120 dBm: with no rule for rssi, it passes into Clean. Add the rule and run again." : "");
+    if (rssiRule && rej.some(r => r[2] === "rssi") && act("pipelinesim") !== "core") { logEvent(currentModule, "pipelinesim", "activity", "core"); confetti(); } else if (!act("pipelinesim")) logEvent(currentModule, "pipelinesim", "activity", "ran");
+    tab = "Rejected"; show(); };
+  const tbl = (h, rows, cls) => `<table class="t"><tr>${h.map(x => `<th>${x}</th>`).join("")}</tr>${rows.map(r => `<tr class="${cls ? cls(r) : ""}">${r.map(c => `<td>${esc(c === "" ? "(blank)" : String(c))}</td>`).join("")}</tr>`).join("") || `<tr><td colspan="${h.length}" class="explain">Empty. Run the pipeline.</td></tr>`}</table>`;
+  const show = () => { el.querySelectorAll(".psT button").forEach(b => b.setAttribute("aria-selected", b.dataset.t === tab)); $(".psNr", el).textContent = ` ${raw.length} rows`;
+    $(".psView", el).innerHTML = tab === "Data" ? tbl(["timestamp","device_id","sensor","value","unit"], raw) : !out ? tbl(["(not created yet)"], []) : tab === "Clean" ? tbl(["timestamp","device_id","sensor","value","unit"], out.clean) : tab === "Rejected" ? tbl(["timestamp","device_id","sensor","value","unit","reason"], out.rej, () => "ps-rej") : tab === "Hourly" ? tbl(["hour","device_id","sensor","avg","min","max","readings"], out.gold) : tbl(["run_at","raw_rows","clean_rows","rejected_rows","quality_pct"], runs); };
+  el.querySelectorAll(".psT button").forEach(b => b.onclick = () => { tab = b.dataset.t; show(); });
+  $(".psRun", el).onclick = runP; $(".psR", el).onchange = e => { rssiRule = e.target.checked; $(".psN", el).textContent = rssiRule ? "Rule added. Run the pipeline again." : "Rule removed."; };
+  $(".ps999", el).onclick = () => { raw.push(["10:07:00","team1-esp32","temp",999,"C"]); tab = "Data"; show(); $(".psN", el).textContent = "A test row with 999 \u00b0C arrived in Data (bronze). Run the pipeline and find it in Rejected."; };
+  show();
+};
+INTERACTIVES.dewcalc = function(el){
+  el.innerHTML = bench("Dew point calculator (P6, step by step)", `<div class="sliders"><label>Temperature T <input type="range" class="dcT" min="15" max="40" step="0.1" value="30"></label><b class="mono dcTv"></b><label>Humidity RH <input type="range" class="dcH" min="10" max="100" step="1" value="70"></label><b class="mono dcHv"></b></div>
+   <pre class="code dcSteps"></pre><div class="panel dcN"></div>`);
+  const draw = () => { const t = +$(".dcT", el).value, rh = +$(".dcH", el).value, a = 17.625, b = 243.04, g1 = Math.log(rh / 100), g2 = a * t / (b + t), g = g1 + g2, td = Math.round(b * g / (a - g) * 10) / 10;
+    $(".dcTv", el).textContent = t.toFixed(1) + " \u00b0C"; $(".dcHv", el).textContent = rh + " %";
+    $(".dcSteps", el).textContent = `1. ln(RH / 100)        = ln(${(rh / 100).toFixed(2)})                = ${g1.toFixed(4)}\n2. a \u00d7 T / (b + T)     = ${a} \u00d7 ${t.toFixed(1)} / (${b} + ${t.toFixed(1)}) = ${g2.toFixed(4)}\n3. \u03b3 = step 1 + step 2  = ${g.toFixed(4)}\n4. Td = b \u00d7 \u03b3 / (a \u2212 \u03b3) = ${b} \u00d7 ${g.toFixed(4)} / (${a} \u2212 ${g.toFixed(4)})\n   =DEWPOINT(${t.toFixed(1)}, ${rh}) \u2192 ${td} \u00b0C`;
+    const feel = td < 16 ? "comfortable" : td < 20 ? "slightly humid" : td < 24 ? "sticky, uncomfortable for many people" : "oppressive";
+    $(".dcN", el).innerHTML = `Dew point <b>${td} \u00b0C</b>: air cooled to this temperature becomes saturated, and water condenses (like drops on a cold glass). At this dew point the air feels <b>${feel}</b>. ${rh === 100 ? "At 100 % humidity the dew point equals the temperature." : ""}`;
+    if (!act("dewcalc")) logEvent(currentModule, "dewcalc", "activity", "used"); };
+  el.querySelectorAll("input").forEach(x => x.oninput = draw); draw();
+};
+INTERACTIVES.forecastlab = function(el){
+  const H = [8,9,10,11,12,13,14], T = [28.6,29.1,29.7,30.2,30.9,31.3,31.6], ACT = 30.4; let pred = null, shown = false;
+  el.innerHTML = bench("Forecast explorer: predict 16:00", `<p class="explain">Hourly averages from 08:00 to 14:00. <b>1.</b> Guess the 16:00 temperature with the slider. <b>2.</b> Show the FORECAST trend line. <b>3.</b> Reveal the real value.</p>
+   <div class="sliders"><label>My guess for 16:00 <input type="range" class="fcG" min="27" max="36" step="0.1" value="31.5"></label><b class="mono fcGv"></b></div>
+   <canvas class="race fcC" style="height:230px" aria-label="Hourly temperatures with a trend line"></canvas>
+   <div class="controls"><button class="btn fcLine">Show the FORECAST line</button><button class="btn primary fcAct" disabled>Reveal the actual value</button></div><div class="panel fcN">First make your guess, then show the trend line.</div>`);
+  const n = H.length, mx = H.reduce((a, b) => a + b, 0) / n, my = T.reduce((a, b) => a + b, 0) / n, slope = H.reduce((a, h, i) => a + (h - mx) * (T[i] - my), 0) / H.reduce((a, h) => a + (h - mx) ** 2, 0), icpt = my - slope * mx, f16 = Math.round((icpt + slope * 16) * 10) / 10;
+  let line = false, actual = false;
+  const draw = () => { $(".fcGv", el).textContent = (+$(".fcG", el).value).toFixed(1) + " \u00b0C"; const cv = $(".fcC", el), {g, W, H: Hh} = hiDPI(cv), X = h => 40 + (h - 8) / 8 * (W - 60), Y = t => Hh - 30 - (t - 27) / 9 * (Hh - 50); g.clearRect(0, 0, W, Hh);
+    g.fillStyle = cssv("--muted") || "#5B6B7F"; g.font = "10px sans-serif"; for (let h = 8; h <= 16; h += 2) g.fillText(h + ":00", X(h) - 12, Hh - 10); [28, 30, 32, 34].forEach(t => g.fillText(t + " \u00b0C", 2, Y(t) + 3));
+    T.forEach((t, i) => { g.fillStyle = "#1F3A5F"; g.beginPath(); g.arc(X(H[i]), Y(t), 5, 0, 7); g.fill(); });
+    g.fillStyle = "#7C3AED"; g.beginPath(); g.arc(X(16), Y(+$(".fcG", el).value), 6, 0, 7); g.fill(); g.fillText("my guess", X(16) - 50, Y(+$(".fcG", el).value) - 8);
+    if (line){ g.strokeStyle = "#E9A23B"; g.setLineDash([6, 4]); g.lineWidth = 2; g.beginPath(); g.moveTo(X(8), Y(icpt + slope * 8)); g.lineTo(X(16), Y(f16)); g.stroke(); g.setLineDash([]); g.lineWidth = 1; g.fillStyle = "#B45309"; g.fillText("FORECAST " + f16, X(16) - 70, Y(f16) + 16); }
+    if (actual){ g.fillStyle = "#DC2626"; g.beginPath(); g.arc(X(16), Y(ACT), 6, 0, 7); g.fill(); g.fillText("actual " + ACT, X(16) - 52, Y(ACT) + 18); } };
+  $(".fcG", el).oninput = draw;
+  $(".fcLine", el).onclick = () => { pred = +$(".fcG", el).value; line = true; $(".fcAct", el).disabled = false; $(".fcG", el).disabled = true; draw(); $(".fcN", el).innerHTML = `The straight trend line rises <b>${(slope).toFixed(2)} \u00b0C per hour</b>, so =FORECAST predicts <b>${f16} \u00b0C</b> at 16:00. Your guess: ${pred.toFixed(1)} \u00b0C. Now reveal what really happened.`; };
+  $(".fcAct", el).onclick = () => { actual = true; draw(); $(".fcN", el).innerHTML = `Actual: <b>${ACT} \u00b0C</b>. The forecast was off by <b>${(f16 - ACT).toFixed(1)} \u00b0C</b>, your guess by ${(pred - ACT).toFixed(1)} \u00b0C. Why? A straight line assumes the warming continues, but in the afternoon the sun moves off the window and the aircon catches up. Report the difference and a reason: that is the Boss Challenge.`; logEvent(currentModule, "forecastlab", "activity", "done"); };
+  draw(); addEventListener("resize", () => { if (alive(el)) draw(); });
+};
+INTERACTIVES.storybuilder = function(el){
+  const K = "sti_story_" + (user ? user.email : "g"), P = [["question","1. Question","One sentence, e.g. Is the window side of the room warmer than the door side after lunch?"],["data","2. Data","Devices, location, interval, duration, number of readings."],["finding","3. Finding (with a number and unit)","e.g. From 12:00 to 13:00 the window side averaged 31.4 \u00b0C, 1.8 \u00b0C warmer than the door side (120 readings each)."],["chart","4. Chart","Describe your chart: type, title, axis units. Paste its link if you like."],["rec","5. Recommendation","What should someone do because of this finding?"],["limit","6. Limitation","One honest reason the result could be wrong."]];
+  const S = store.get(K, {});
+  el.innerHTML = bench("Data story builder", `<div class="sb-grid">${P.map(p => `<div class="sb-f"><label for="sb-${p[0]}"><b>${p[1]}</b> <span class="sb-ck" data-k="${p[0]}"></span></label><textarea id="sb-${p[0]}" class="dinput sbI" data-k="${p[0]}" rows="${p[0] === "finding" || p[0] === "data" ? 3 : 2}" placeholder="${esc(p[2])}">${esc(S[p[0]] || "")}</textarea></div>`).join("")}</div>
+   <div class="controls"><button class="btn primary sbChk">Check my story</button><button class="btn sbPrint">Print or save as PDF</button></div><div class="feedback sbFb"></div><div class="sb-prev" hidden></div>`);
+  const checks = {question:v => v.length >= 15 && /\?/.test(v), data:v => v.length >= 25 && /\d/.test(v), finding:v => /\d/.test(v) && /(\u00b0c|%|°|lux|dbm|degrees|percent)/i.test(v), chart:v => v.length >= 10, rec:v => v.length >= 15, limit:v => v.length >= 15};
+  const tips = {question:"End your question with a question mark.", data:"Include numbers: interval, duration, or number of readings.", finding:"Include a number with a unit (\u00b0C or %).", chart:"Describe the chart type, title, and units.", rec:"Say what someone should do.", limit:"Give one real reason the result could be wrong."};
+  const mark = () => P.forEach(p => { const v = (S[p[0]] || "").trim(), ok = checks[p[0]](v); el.querySelector(`.sb-ck[data-k="${p[0]}"]`).textContent = v ? (ok ? "\u2713" : "\u25cb") : ""; el.querySelector(`.sb-ck[data-k="${p[0]}"]`).className = "sb-ck " + (ok ? "ok" : ""); });
+  el.querySelectorAll(".sbI").forEach(t => t.oninput = () => { S[t.dataset.k] = t.value; store.set(K, S); mark(); });
+  $(".sbChk", el).onclick = () => { const miss = P.filter(p => !checks[p[0]]((S[p[0]] || "").trim())), fb = $(".sbFb", el);
+    if (miss.length){ fb.className = "feedback sbFb no"; fb.innerHTML = "Almost there:<ul>" + miss.map(p => `<li><b>${p[1].replace(/^\d\. /, "")}:</b> ${tips[p[0]]}</li>`).join("") + "</ul>"; return; }
+    fb.className = "feedback sbFb ok"; fb.textContent = "All six parts are there. Read it aloud to a classmate: can they repeat your finding in one sentence?"; logEvent(currentModule, "storybuilder", "activity", "done"); confetti(); };
+  $(".sbPrint", el).onclick = () => { const w = window.open("", "_blank"); if (!w){ toast("Allow pop-ups to print your story.", "warn"); return; } w.document.write(`<!doctype html><title>Data story</title><style>body{font-family:sans-serif;max-width:720px;margin:30px auto;line-height:1.5;color:#14213D}h1{font-size:22px}h2{font-size:15px;margin:16px 0 4px;color:#1F3A5F}</style><h1>Data story: ${esc(S.question || "")}</h1><p>${esc(user ? user.name : "")} \u2022 ${new Date().toLocaleDateString()}</p>${P.slice(1).map(p => `<h2>${p[1].replace(/^\d\. /, "")}</h2><p>${esc(S[p[0]] || "")}</p>`).join("")}<script>print()<\/script>`); w.document.close(); };
+  mark();
+};
+INTERACTIVES.totlab = function(el){
+  const K = "sti_tot_" + (user ? user.email : "g"), S = store.get(K, {problem:"", ev:["","",""], dec:"", why:""});
+  const prompt = () => `You are a careful data analyst helping a beginner.
+My sensor data problem: ${S.problem || "[describe your gap, spike, or suspicious readings, with times and values]"}
+Use a Tree-of-Thought approach:
+1. Propose three different strategies as separate branches: (A) remove the affected readings, (B) fill or smooth them, (C) keep them but flag them.
+2. For each branch, think step by step: what it does to my averages and chart, what could go wrong, and when it is the right choice.
+3. Compare the three branches in a short table.
+4. Do NOT choose for me. Tell me what evidence from my own data would decide between them.`;
+  el.innerHTML = bench("Tree-of-Thought: three strategies, one decision", `<label><b>1. Describe your cleaning problem</b> (from your own data, with times and values)</label><textarea class="dinput toP" rows="2" style="width:100%;box-sizing:border-box" placeholder="e.g. Light drops to 3 % from 10:12 to 10:15 while everything else is normal.">${esc(S.problem)}</textarea>
+   <div class="codebox"><div class="codehead"><span>2. Your Tree-of-Thought prompt</span><button class="btn small toCopy" type="button">Copy</button></div><pre class="code"><code class="toPr"></code></pre></div><div class="controls"><button class="btn toAsk">Ask Sensi with this prompt</button></div>
+   <b>3. Test each branch with your own evidence</b><table class="t"><tr><th>Branch</th><th>What happens to my result? (number)</th></tr>${["A: remove","B: fill or smooth","C: keep and flag"].map((b, i) => `<tr><td>${b}</td><td><textarea class="dinput toE" data-i="${i}" rows="2" style="width:100%;box-sizing:border-box" placeholder="e.g. mean light becomes 54.9 % (was 51.2 %)">${esc(S.ev[i])}</textarea></td></tr>`).join("")}</table>
+   <label><b>4. My decision</b></label><select class="toD"><option value="">Choose\u2026</option>${["A: remove","B: fill or smooth","C: keep and flag"].map(o => `<option ${S.dec === o ? "selected" : ""}>${o}</option>`).join("")}</select>
+   <label><b>Why, based on my evidence</b> (not because the AI said so)</label><textarea class="dinput toW" rows="2" style="width:100%;box-sizing:border-box">${esc(S.why)}</textarea>
+   <div class="controls"><button class="btn primary toDone">Check my decision</button></div><div class="feedback toFb"></div>
+   <p class="explain">Source: Yao et al. (2023), Tree of thoughts.</p>`);
+  const save = () => { store.set(K, S); $(".toPr", el).textContent = prompt(); };
+  $(".toP", el).oninput = e => { S.problem = e.target.value; save(); }; el.querySelectorAll(".toE").forEach(t => t.oninput = () => { S.ev[+t.dataset.i] = t.value; save(); });
+  $(".toD", el).onchange = e => { S.dec = e.target.value; save(); }; $(".toW", el).oninput = e => { S.why = e.target.value; save(); };
+  $(".toCopy", el).onclick = () => { (navigator.clipboard ? navigator.clipboard.writeText(prompt()) : Promise.reject()).then(() => toast("Prompt copied.")).catch(() => toast("Select the prompt and copy it.", "warn")); };
+  $(".toAsk", el).onclick = () => { if (typeof openAI === "function"){ openAI(); setTimeout(() => { const t = $("#aiIn") || document.querySelector(".ai textarea"); if (t){ t.value = prompt(); t.dispatchEvent(new Event("input")); t.focus(); } }, 300); } };
+  $(".toDone", el).onclick = () => { const miss = []; if (S.problem.trim().length < 15) miss.push("Describe your problem with times and values."); if (S.ev.filter(x => /\d/.test(x)).length < 3) miss.push("Test all three branches and write a number for each."); if (!S.dec) miss.push("Choose your decision."); if (S.why.trim().length < 25) miss.push("Explain why, using your evidence.");
+    const fb = $(".toFb", el); if (miss.length){ fb.className = "feedback toFb no"; fb.innerHTML = "<ul>" + miss.map(m => `<li>${m}</li>`).join("") + "</ul>"; return; }
+    fb.className = "feedback toFb ok"; fb.textContent = "Decision recorded with evidence for all three branches. Add it to your cleaning log and mention it in your data story's limitation."; logEvent(currentModule, "tot", "activity", "done"); confetti(); };
+  save();
 };
 </script>
 <script>/* ============ v2 MOTION LAYER ============ */
@@ -4709,8 +5517,8 @@ function admRender(){
   const L = ADM.learners, students = L.filter(l => l.role === "Student").length, active7 = L.filter(l => admDays(l.lastSeen) <= 7).length, pre = L.filter(l => l.tests.pre).length, done = L.filter(l => U1_MODS.every(m => l.modulesDone.includes(m))).length;
   const qT = L.reduce((a, l) => a + l.quizTotal, 0), qR = L.reduce((a, l) => a + l.quizRight, 0), attention = L.filter(l => admFlags(l).length).length;
   const sb = Object.keys(SB_NAMES).map(k => { const at = L.filter(l => l.sandbox[k]); return {k, attempted:at.length, passed:at.filter(l => l.sandbox[k].passed).length, tries:at.length ? (at.reduce((a, l) => a + l.sandbox[k].tries, 0) / at.length).toFixed(1) : "\u2014", sol:at.filter(l => l.sandbox[k].solution).length, more:at.filter(l => l.sandbox[k].more).length, ai:at.filter(l => l.sandbox[k].aiVerified).length}; });
-  const S = SURVEY.u1, sv = ADM.surveys.filter(r => String(r.unit) === "1" || r.unit === "u1");
-  const sAvg = S.likert.map(([k, q], i) => { const v = sv.map(r => r.s[i]).filter(x => x != null && !isNaN(x)); return [q, v.length ? v.reduce((a, b) => a + b, 0) / v.length : 0, null, v.length]; });
+  const svPanels = Object.keys(SURVEY).map(u => { const S = SURVEY[u], sv = ADM.surveys.filter(r => String(r.unit) === u || String(r.unit) === u.slice(1)); const sAvg = S.likert.map(([k, q], i) => { const v = sv.map(r => r.s[i]).filter(x => x != null && !isNaN(x)); return [q, v.length ? v.reduce((a, b) => a + b, 0) / v.length : 0, null, v.length]; });
+    return `<section class="panel"><h2>${esc(S.title)} (${sv.length} response${sv.length === 1 ? "" : "s"})</h2>${sv.length ? admBars(sAvg.map(a => [a[0], a[1], "#1F3A5F", a[3]]), 5, it => it[3] ? it[1].toFixed(1) + " / 5" : "\u2014") + `<details><summary>Written answers (latest ${Math.min(15, sv.length)})</summary>${sv.slice(-15).reverse().map(r => `<div class="adm-quote"><b>${esc(r.role || "")}</b> ${r.o.filter(Boolean).map((t, i) => t ? `<p><i>${esc(S.open[i] ? S.open[i][1] : "")}</i> ${esc(t)}</p>` : "").join("")}</div>`).join("")}</details>` : `<p class="explain">No responses yet.</p>`}</section>`; }).join("");
   $("#view").innerHTML = `<p class="crumb">Administrator</p><div class="adm-head"><h1>Teacher dashboard</h1><div class="controls"><button class="btn small" id="admRefresh">Refresh</button><button class="btn small" id="admCsv">Export CSV</button><button class="btn small" id="admRes">Research export (de-identified)</button><button class="btn small" id="admOut">Sign out of admin</button></div></div>
    <p class="explain">Data as of ${new Date(ADM.generatedAt).toLocaleString()}. Learner data is confidential (RA 10173): do not share screenshots that show names.</p>
    <div class="adm-cards">${[["Enrolled", L.length, `${students} students`],["Active in last 7 days", active7, admPct(active7, L.length) + "% of enrolled"],["Pre-test done", pre, admPct(pre, L.length) + "%"],["Finished Unit 1", done, admPct(done, L.length) + "%"],["Quiz accuracy", qT ? admPct(qR, qT) + "%" : "\u2014", `${qT} answers`],["Need attention", attention, "see the table below"],["Research consent", L.filter(l => l.researchConsent === "yes").length, `${L.filter(l => l.researchConsent === "no").length} declined \u2022 ${L.filter(l => !l.researchConsent).length} not asked`]].map(c => `<div class="adm-card"><span>${c[0]}</span><b>${c[1]}</b><small>${c[2]}</small></div>`).join("")}</div>
@@ -4718,7 +5526,7 @@ function admRender(){
     <section class="panel"><h2>Active learners per day</h2>${admDaily(ADM.daily)}</section></div>
    <section class="panel"><h2>Pre-test and post-test by competency</h2>${admCompChart(L)}</section>
    <section class="panel"><h2>Sandbox challenges</h2><table class="t"><tr><th>Challenge</th><th>Attempted</th><th>Passed</th><th>Average tries</th><th>Opened explained solution</th><th>Asked for more tries</th><th>Passed by AI review</th></tr>${sb.map(r => `<tr><td>${SB_NAMES[r.k]}</td><td>${r.attempted}</td><td>${r.passed} (${admPct(r.passed, r.attempted)}%)</td><td>${r.tries}</td><td>${r.sol}</td><td>${r.more}</td><td>${r.ai}</td></tr>`).join("")}</table><p class="explain">Many solution views or high average tries on one challenge suggest re-teaching that concept. \u201cPassed by AI review\u201d means the sandbox rejected the code but Sensi judged it correct (often a different approach); spot-check these by asking the learner to explain the code. Full reviews are in the AI_Log tab (section starts with review:).</p></section>
-   <section class="panel"><h2>Unit 1 survey (${sv.length} response${sv.length === 1 ? "" : "s"})</h2>${sv.length ? admBars(sAvg.map(a => [a[0], a[1], "#1F3A5F", a[3]]), 5, it => it[3] ? it[1].toFixed(1) + " / 5" : "\u2014") + `<details><summary>Written answers (latest ${Math.min(15, sv.length)})</summary>${sv.slice(-15).reverse().map(r => `<div class="adm-quote"><b>${esc(r.role || "")}</b> ${r.o.filter(Boolean).map((t, i) => t ? `<p><i>${esc(S.open[i] ? S.open[i][1] : "")}</i> ${esc(t)}</p>` : "").join("")}</div>`).join("")}</details>` : `<p class="explain">No survey responses yet.</p>`}</section>
+   ${svPanels}
    <section class="panel"><div class="adm-head"><h2>Learners</h2><span class="explain" id="admCount"></span></div>
     <div class="controls"><input id="admQ" class="dinput" placeholder="Search name, email, or school" aria-label="Search learners" value="${esc(admQuery)}"><select id="admF" aria-label="Filter learners">${[["all","All learners"],["attention","Needs attention"],["nopre","No pre-test yet"],["done","Finished Unit 1"],["Student","Students"],["Teacher","Teachers"],["Professional","Professionals"]].map(o => `<option value="${o[0]}" ${admFilter === o[0] ? "selected" : ""}>${o[1]}</option>`).join("")}</select></div>
     <div id="admTable" class="adm-tablewrap"></div></section>
@@ -4757,15 +5565,15 @@ async function admLearner(em){
 function admResearchCsv(){
   const L = ADM.learners.filter(l => l.researchConsent === "yes" && l.pid), comps = ["C1","C2","C3","C4","C5","C6","C7","C8"];
   if (!L.length){ toast("No learners have agreed to research use yet.", "warn"); return; }
-  const svBy = {}; ADM.surveys.forEach(r => { if (r.email) svBy[r.email] = r; });
+  const svBy = {}; ADM.surveys.forEach(r => { if (r.email) svBy[r.email + "|" + (String(r.unit).startsWith("u") ? r.unit : "u" + r.unit)] = r; }); const SU = Object.keys(SURVEY);
   const head = ["participant_id","role","grade_levels","age","hours","visits","modules_done","sections_done","quiz_right","quiz_total"]
     .concat(["pre_total"], comps.map(c => "pre_" + c), ["post_total"], comps.map(c => "post_" + c), ["normalized_gain"])
-    .concat(...Object.keys(SB_NAMES).map(k => [k + "_tries", k + "_passed", k + "_solution_viewed"]), ["s1","s2","s3","s4","s5","s6","s7","s8"]);
-  const rows = L.map(l => { const pre = l.tests.pre, post = l.tests.post, sv = svBy[l.email];
+    .concat(...Object.keys(SB_NAMES).map(k => [k + "_tries", k + "_passed", k + "_solution_viewed"]), ...SU.map(u => [1,2,3,4,5,6,7,8].map(n => u + "_s" + n)));
+  const rows = L.map(l => { const pre = l.tests.pre, post = l.tests.post;
     const gain = pre && post && pre.score < 40 ? ((post.score - pre.score) / (40 - pre.score)).toFixed(3) : "";
     return [l.pid, l.role, l.grades, l.age, l.hours, l.visits, l.modulesDone.length, l.sectionsDone.length, l.quizRight, l.quizTotal]
       .concat([pre ? pre.score : ""], comps.map((c, i) => pre ? pre.comp[i] : ""), [post ? post.score : ""], comps.map((c, i) => post ? post.comp[i] : ""), [gain])
-      .concat(...Object.keys(SB_NAMES).map(k => { const c = l.sandbox[k]; return c ? [c.tries, c.passed ? 1 : 0, c.solution ? 1 : 0] : ["", "", ""]; }), sv ? sv.s.map(v => v == null ? "" : v) : ["","","","","","","",""]); });
+      .concat(...Object.keys(SB_NAMES).map(k => { const c = l.sandbox[k]; return c ? [c.tries, c.passed ? 1 : 0, c.solution ? 1 : 0] : ["", "", ""]; }), ...SU.map(u => { const sv = svBy[l.email + "|" + u]; return sv ? sv.s.map(v => v == null ? "" : v) : ["","","","","","","",""]; })); });
   const q = v => `"${String(v == null ? "" : v).replace(/"/g, '""')}"`;
   const csv = [head.join(",")].concat(rows.map(r => r.map(q).join(","))).join("\n");
   const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv + "\n"], {type:"text/csv"})); a.download = `research_deidentified_${new Date().toISOString().slice(0, 10)}.csv`; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
@@ -5294,7 +6102,7 @@ function renderMap(){
   const link = (href, label, extra) => `<a class="mod-link ${h.split("?")[0] === href ? "active" : ""}" href="${href}">${extra || ""}<span>${label}</span></a>`;
   $("#map").innerHTML = `<div class="pill" id="pill"></div>${link("#/overview", "Course overview", `<span class="mapicon">\u2609</span>`)}${link("#/guide", "Study guide", `<span class="mapicon">\u2690</span>`)}${link("#/test/pre", "Pre-test" + (testDone("pre") ? " \u2713" : " (start here)"), `<span class="mapicon">\u2611</span>`)}` + COURSE.map(u => `<div class="unit"><div class="unit-title">${esc(u.title)}</div><div class="unit-sub">${esc(u.sub)}</div>
     ${u.modules.map(m => u.locked ? `<span class="mod-link locked">${ring(0)}${esc(m.id)} ${esc(m.title)}</span>` : `<a class="mod-link ${cur === m.id ? "active" : ""} ${preGate() ? "gated" : ""}" href="#/m/${m.id}">${preGate() ? `<span class="mapicon">\ud83d\udd12</span>` : ring(modulePct(m))}<span>${esc(m.id)} ${esc(m.title)}</span></a>`).join("")}
-    ${u.id === "u1" ? link("#/survey/u1", "Unit 1 survey" + (prog.survey && prog.survey.u1 ? " \u2713" : ""), `<span class="mapicon">\u270e</span>`) : ""}</div>`).join("") +
+    ${SURVEY[u.id] && !u.locked ? link("#/survey/" + u.id, u.title.split(":")[0] + " survey" + (prog.survey && prog.survey[u.id] ? " \u2713" : ""), `<span class="mapicon">\u270e</span>`) : ""}</div>`).join("") +
     link("#/privacy", "Privacy and research", `<span class="mapicon">\u26bf</span>`) + (isAdminEmail() ? link("#/admin", "Teacher dashboard" + (adminActive() ? " \u2022 admin" : ""), `<span class="mapicon">\u2637</span>`) : "") + link("#/test/post", "Post-test" + (testDone("post") ? " \u2713" : TEST_CFG.POSTTEST_OPEN ? "" : " (after the capstone)"), `<span class="mapicon">\u2611</span>`) + `<div class="map-foot">${link("#/badges", `My badges (${earned}/${BADGES.length})`, `<span class="mapicon">\u2b22</span>`)}${link("#/progress", "My progress", `<span class="mapicon">\u2197</span>`)}${link("#/home", "Course home", `<span class="mapicon">\u2302</span>`)}</div>`;
   const a = $("#map .mod-link.active"), pill = $("#pill");
   if (a && pill){ const top = a.offsetTop, hh = a.offsetHeight; pill.style.height = hh + "px"; if (pillTop != null && canAnim()) A(pill, {top:[pillTop + "px", top + "px"]}, SPRING); pill.style.top = top + "px"; pillTop = top; }
@@ -5312,7 +6120,7 @@ function viewHome(){
     <div class="spot span2"><div class="big" data-tick="${done}">0</div><div class="lbl">of ${mods.length} Unit 1 modules complete</div></div>
     <div class="spot span2"><div class="big" data-tick="${((prog.minutes || 0) / 60).toFixed(1)}" data-dec="1" data-suf=" h">0</div><div class="lbl">active learning time on this device</div></div>
     <a class="spot span2" href="#/badges"><div class="big" data-tick="${earned.length}">0</div><div class="lbl">of ${BADGES.length} badges earned</div><div class="mini-badges">${BADGES.slice(0, 7).map(b => badgeSVG(b, !!(prog.badges || {})[b.id], 30)).join("")}</div></a>
-    ${surveyDue ? `<a class="spot span6 continue" href="#/survey/u1"><span class="lbl">You finished Unit 1</span><h3>Answer the Unit 1 survey (3 minutes)</h3></a>` : ""}
+    ${surveyDue ? `<a class="spot span6 continue" href="#/survey/u1"><span class="lbl">You finished Unit 1</span><h3>Answer the Unit 1 survey (3 minutes)</h3></a>` : ""}${["u2","u3"].map(uid => { const u = COURSE.find(x => x.id === uid); const n = uid.slice(1); return u && !u.locked && u.modules.every(m => MODULES[m.id] && modulePct(MODULES[m.id]) === 1) && !(prog.survey && prog.survey[uid]) ? `<a class="spot span6 continue" href="#/survey/${uid}"><span class="lbl">You finished Unit ${n}</span><h3>Answer the Unit ${n} survey (3 minutes)</h3></a>` : ""; }).join("")}
    </div>
    <h2>Unit 1 modules</h2><div class="bento">${mods.map(m => `<a class="spot mod-card span3" href="#/m/${m.id}"><span class="num">Module ${m.id} \u2022 ${m.minutes} min</span><h3>${esc(m.title)}</h3><span class="lbl">${m.sections.length} sections, quiz, checkpoint ${esc(m.checkpoint.code)}</span><div class="bar"><i data-w="${Math.round(modulePct(m) * 100)}"></i></div></a>`).join("")}</div>
    <div class="note">Press <span class="kbd">Ctrl</span> + <span class="kbd">K</span> (or tap Search) to jump to any section. Use Listen to hear any section read aloud, and Ask Sensi when you are stuck.</div>`;
@@ -5349,7 +6157,9 @@ function viewProgress(){
 
 /* ---------- Unit survey ---------- */
 const SURVEY = {u1:{title:"Unit 1 survey", likert:[["s1","The explanations were clear."],["s2","The examples helped me understand."],["s3","The interactive activities helped me learn."],["s4","The code explanations helped me understand programming."],["s5","The coding sandbox helped me practice."],["s6","Sensi, the AI assistant, was helpful.", true],["s7","I feel confident I can wire and program a sensor project."],["s8","The pace of Unit 1 was right for me."]],
-  open:[["o1","What helped you learn the most in Unit 1?"],["o2","What was confusing, or what should we improve?"],["o3","Any other comments? (optional)"]]}};
+  open:[["o1","What helped you learn the most in Unit 1?"],["o2","What was confusing, or what should we improve?"],["o3","Any other comments? (optional)"]]},
+ u2:{title:"Unit 2 survey", likert:[["s1","The explanations of networking (HTTP, URLs, JSON) were clear."],["s2","The concept clinics helped me understand the hard parts."],["s3","The simulators and interactive explainers helped me learn."],["s4","I could follow the steps to build and deploy my Apps Script logger."],["s5","The AI pair-programming activity helped me think about how I use AI."],["s6","Sensi, the AI assistant, was helpful.", true],["s7","I feel confident I can send sensor data from a device to the cloud."],["s8","The pace and amount of work in Unit 2 were right for me."]],
+  open:[["o1","What helped you the most in Unit 2?"],["o2","Where did you get stuck, or what should we improve?"],["o3","Did you use real hardware or the virtual device? Any other comments? (optional)"]]}};
 function viewSurvey(unit){
   const S = SURVEY[unit]; if (!S){ location.hash = "#/home"; return; }
   const done = prog.survey && prog.survey[unit], scale = ["Strongly disagree","Disagree","Neutral","Agree","Strongly agree"];
@@ -5364,7 +6174,7 @@ function viewSurvey(unit){
     S.open.forEach(([k]) => ans[k] = f.querySelector(`[name="${k}"]`).value.trim().slice(0, 1000));
     if (!ans.o1 || !ans.o2){ $("#svErr").textContent = "Please answer the first two written questions."; return; }
     const r = await api("survey", {unit, answers:ans, device}, false);
-    prog.survey = prog.survey || {}; prog.survey[unit] = Date.now(); saveProg(); logEvent("u1", "survey_" + unit, "survey_done", "1");
+    prog.survey = prog.survey || {}; prog.survey[unit] = Date.now(); saveProg(); logEvent(unit, "survey_" + unit, "survey_done", "1");
     toast(r.ok ? "Thank you! Your survey was submitted." : "Saved on this device; it will be sent when you are online.");
     if (!r.ok && !r.offline) store.set("sti_pending_survey", {unit, answers:ans});
     checkBadges(); viewSurvey(unit); scrollTo({top:0}); };
@@ -5599,20 +6409,49 @@ viewModule = function(id){ _vmU2(id);
 Object.assign(INT_NAMES, {urlparts:"URL builder: readings to rows", httpletter:"HTTP as a letter", jsonx:"JSON explorer", "drill:u21":"Drill: HTTP, JSON, and JavaScript", logsim:"Logger simulator", deploylab:"Deployment simulator", "drill:u22":"Drill: the Apps Script logger", knock:"The journey of one reading", reqbuilder:"Request URL checker", "drill:u23":"Drill: device to cloud", outage:"Outage simulator", traffic:"Class traffic simulator", dictionary:"Data dictionary", cotdebug:"Chain-of-Thought debugging log", "drill:u24":"Drill: reliability and data habits"});
 
 /* Unit 2: mission map, Explain-it-back boxes, AI Co-Designer badge */
+BADGES.push({id:"U2-VOICE", name:"Unit 2 Feedback Hero", color:"#B45309", icon:"M-12 -8 h24 v14 h-12 l-6 6 v-6 h-6z", how:"Answer the Unit 2 survey."});
+BADGE_REQS["U2-VOICE"] = [{t:"Answer the Unit 2 survey", ok:() => !!(prog.survey && prog.survey.u2), href:"#/survey/u2"}];
 BADGES.push({id:"U2-AI", name:"AI Co-Designer", color:"#0F766E", icon:"M-10 -8 h20 v14 h-20z M-4 10 h8 M-6 -3 l3 3 -3 3 M2 3 h5", how:"Complete all six steps of the AI pair-programming activity in Module 2.2."});
 BADGE_REQS["U2-AI"] = [{t:"Complete the six-step AI pair-programming activity (plan, sketch, prompt, review, test, reflect)", ok:() => act("aipair") === "done", at:["2.2","aiui"]}];
 BADGES.forEach(b => { const R = BADGE_REQS[b.id]; if (R) b.test = () => R.every(r => r.ok()); });
 Object.assign(INT_NAMES, {grid2d:"2-D array to Sheet cells", "vartrace:p3":"Step through logReadings_", lockrace:"Race condition: with and without the lock", aipair:"AI pair programming: six guided steps", jsviz:"JavaScript ideas you can see", apiexplorer:"API explorer: a real weather API and your logger", virtualdevice:"Virtual device (no hardware needed)", troubleshoot:"Troubleshooting flowchart"});
-const U2_MISSION = [["2.1","Speak HTTP"],["2.2","Your own cloud logger"],["2.3","Board to Sheet"],["2.4","A logger that never gives up"]];
+const MISSIONS = {u2:[["2.1","Speak HTTP"],["2.2","Your own cloud logger"],["2.3","Board to Sheet"],["2.4","A logger that never gives up"]], u3:[["3.1","Tidy your data"],["3.2","Clean and smooth"],["B","Clean with Python"],["3.3","Analyze and automate"],["3.4","Tell a data story"]]};
 const _vmU2b = viewModule;
 viewModule = function(id){ _vmU2b(id);
-  if (/^2\./.test(id)){ const hero = document.querySelector("#view .mod-hero"); if (hero && !document.querySelector("#view .mission")){
+  const MU = (COURSE.find(u => u.modules.some(m => m.id === id)) || {}).id, U2_MISSION = MISSIONS[MU];
+  if (U2_MISSION){ const hero = document.querySelector("#view .mod-hero"); if (hero && !document.querySelector("#view .mission")){
     const d = document.createElement("div"); d.className = "mission"; d.setAttribute("aria-label", "Unit 2 mission map");
-    d.innerHTML = `<span class="mi-l">Unit 2 mission</span>${U2_MISSION.map(([m, t], i) => { const pct = MODULES[m] ? modulePct(MODULES[m]) : 0, st = m === id ? "here" : pct === 1 ? "done" : "";
-      return `${i ? '<span class="mi-arr" aria-hidden="true">\u2192</span>' : ""}<a class="mi-s ${st}" href="#/m/${m}"><b>${st === "done" ? "\u2713 " : ""}${m}</b><span>${t}</span>${st === "here" ? '<em>you are here</em>' : ""}</a>`; }).join("")}`;
+    d.innerHTML = `<span class="mi-l">${MU === "u3" ? "Unit 3" : "Unit 2"} mission</span>${U2_MISSION.map(([m, t], i) => { const pct = MODULES[m] ? modulePct(MODULES[m]) : 0, st = m === id ? "here" : pct === 1 ? "done" : "";
+      return `${i ? '<span class="mi-arr" aria-hidden="true">\u2192</span>' : ""}<a class="mi-s ${st}" href="#/m/${m}"><b>${st === "done" ? "\u2713 " : ""}${m === "B" ? "Lab B" : m}</b><span>${t}</span>${st === "here" ? '<em>you are here</em>' : ""}</a>`; }).join("")}`;
     hero.insertAdjacentElement("afterend", d); } }
+  if (id === "2.4" && !document.querySelector('#view a[href="#/survey/u2"]')){ const ctr = document.querySelector("#view .mod-layout > div > .controls:last-child"); if (ctr) ctr.insertAdjacentHTML("beforebegin", `<div class="callout try"><b>Finished Unit 2?</b><p>Tell us what helped and where you got stuck. It takes about 3 minutes, and it shapes the next units.</p><a class="btn primary" href="#/survey/u2">Answer the Unit 2 survey</a></div>`); }
   document.querySelectorAll("#view .selfexp").forEach(box => { const key = "sti_se_" + (user ? user.email : "g") + "_" + box.dataset.k, t = box.querySelector("textarea"); t.value = store.get(key, ""); let tm = null;
     t.oninput = () => { store.set(key, t.value); clearTimeout(tm); tm = setTimeout(() => { if (t.value.trim().length >= 40) logEvent(currentModule, "selfexp_" + box.dataset.k, "self_explain", String(t.value.trim().length)); }, 1500); }; });
+};
+
+/* Unit 3: badges, survey, mission map, labels */
+SURVEY.u3 = {title:"Unit 3 survey", likert:[["s1","The explanations of statistics (mean, median, standard deviation, z-scores) were clear."],["s2","The concept clinics and explorers helped me understand the hard parts."],["s3","The Messy Monday detective activity helped me learn to clean data."],["s4","Python Lab B helped me see why cleaning with code is useful."],["s5","I understand what my data pipeline (P10) does and why."],["s6","Sensi, the AI assistant, was helpful.", true],["s7","I feel confident I can turn raw sensor data into a clear finding."],["s8","The pace and amount of work in Unit 3 were right for me."]],
+ open:[["o1","What helped you the most in Unit 3?"],["o2","Where did you get stuck, or what should we improve?"],["o3","What did your data story find? Any other comments? (optional)"]]};
+const U3_BADGES = [
+ ["U3-O1","Shape Shifter","#0E7490","M-12 -10 h8 v20 h-8z M0 -4 h12 v8 h-12z","Fold long data into wide, take a snapshot, and score 4/5 on the Module 3.1 quiz.",[["Fold long data into wide in the fold explainer",() => act("fold") === "done",["3.1","longwide"]],["Take a snapshot in the live vs. snapshot demo",() => act("snapshot") === "done",["3.1","build"]],["Score at least 4/5 on the Module 3.1 quiz",() => qc("3.1") >= 4,["3.1","quiz"],() => qc("3.1") + "/5"]]],
+ ["U3-O2","Data Detective","#1F3A5F","M-4 -4 a7 7 0 1 0 0.1 0 M3 3 l8 8","Find at least 9 of the 11 Messy Monday problems and follow the data laundry.",[["Find 9 of 11 problems in Messy Monday",() => act("messyhunt") === "core",["3.2","messy"]],["Follow all 8 stations of the data laundry",() => act("laundry") === "done",["3.2","why"]]]],
+ ["U3-O3","Outlier Judge","#B91C1C","M-12 6 h24 M-8 6 v-8 M0 6 v-14 M8 6 v-4 M10 -10 a2 2 0 1 0 0.1 0","Use the outlier explorer and answer the z-score and IQR quiz items.",[["Use the outlier explorer",() => !!act("outlierlab"),["3.2","stats0"]],["Answer the z-score and IQR quiz items (2 and 3) correctly",() => qok("3.2", 1) && qok("3.2", 2),["3.2","quiz"]]]],
+ ["U3-O4","Noise Tamer","#7C3AED","M-12 2 l4 -6 4 8 4 -10 4 8 4 -4 M-12 8 q12 -8 24 0","Use the smoothing lab and answer the smoothing quiz item.",[["Use the smoothing lab",() => !!act("smoothlab"),["3.2","smooth"]],["Answer the smoothing quiz item (4) correctly",() => qok("3.2", 3),["3.2","quiz"]]]],
+ ["U3-LB","Pandas Pro","#15803D","M-10 -8 h20 v16 h-20z M-10 -2 h20 M-4 -8 v16","Run every cell of the Lab B notebook and score 4/5 on its quiz.",[["Run all 9 cells of the Lab B notebook",() => act("pandaslab") === "done",["B","lab"]],["Score at least 4/5 on the Lab B quiz",() => qc("B") >= 4,["B","quiz"],() => qc("B") + "/5"]]],
+ ["U3-O5","Pipeline Engineer","#C2410C","M-12 -6 h7 v12 h-7z M-2 -6 h7 v12 h-7z M8 -6 h4 v12 h-4z","Meet the Core challenge in the pipeline simulator and answer the pipeline quiz item.",[["Add the rssi rule and reject a bad value in the pipeline simulator",() => act("pipelinesim") === "core",["3.3","pipeline"]],["Answer the pipeline quiz item (4) correctly",() => qok("3.3", 3),["3.3","quiz"]]]],
+ ["U3-O6","Number Cruncher","#2A9D8F","M-10 10 v-8 M-3 10 v-14 M4 10 v-6 M11 10 v-18","Use the statistics and correlation explorers and score 4/5 on the Module 3.3 quiz.",[["Use the statistics explorer",() => !!act("statslab"),["3.3","stats"]],["Reveal the third factor in the correlation explorer",() => act("corrlab") === "revealed",["3.3","corr"]],["Score at least 4/5 on the Module 3.3 quiz",() => qc("3.3") >= 4,["3.3","quiz"],() => qc("3.3") + "/5"]]],
+ ["U3-O7","Storyteller","#C9A227","M-10 -12 h16 l4 4 v20 h-20z M-6 -4 h12 M-6 2 h12 M-6 8 h8","Complete all six parts of your data story.",[["Complete all six parts in the data story builder",() => act("storybuilder") === "done",["3.4","story"]]]],
+ ["U3-O8","Tree Thinker","#166534","M0 12 v-10 M0 2 l-8 -8 M0 2 l8 -8 M0 -2 v-10","Compare three strategies and decide with your own evidence.",[["Complete the Tree-of-Thought decision",() => act("tot") === "done",["3.4","tot"]]]],
+ ["U3-DONE","Unit 3 Complete","#14213D","M0 -12 l3.5 7.5 8 1 -6 5.5 1.5 8 -7 -4 -7 4 1.5 -8 -6 -5.5 8 -1z","Complete all five parts of Unit 3.",["3.1","3.2","B","3.3","3.4"].map(id => [`Finish ${id === "B" ? "Python Lab B" : "Module " + id} (100%)`, () => !!MODULES[id] && modulePct(MODULES[id]) === 1, [id,"top"], () => MODULES[id] ? Math.round(modulePct(MODULES[id]) * 100) + "%" : "0%"])],
+ ["U3-VOICE","Unit 3 Feedback Hero","#B45309","M-12 -8 h24 v14 h-12 l-6 6 v-6 h-6z","Answer the Unit 3 survey.",[["Answer the Unit 3 survey",() => !!(prog.survey && prog.survey.u3),null]]]];
+U3_BADGES.forEach(([id, name, color, icon, how, reqs]) => { BADGES.push({id, name, color, icon, how}); BADGE_REQS[id] = reqs.map(r => Object.assign({t:r[0], ok:r[1]}, r[2] ? {at:r[2]} : {href:"#/survey/u3"}, r[3] ? {v:r[3]} : {})); });
+BADGES.forEach(b => { const R = BADGE_REQS[b.id]; if (R) b.test = () => R.every(r => r.ok()); });
+Object.assign(INT_NAMES, {fold:"Fold long data into wide", snapshot:"Live data vs. a snapshot", "drill:u31":"Drill: tidy and wide data", laundry:"The data laundry: 8 stations", messyhunt:"Messy Monday detective", outlierlab:"Outlier explorer", smoothlab:"Smoothing lab", "drill:u32":"Drill: cleaning, outliers, and smoothing", pandaslab:"Python Lab B notebook", "drill:uB":"Drill: pandas", statslab:"Statistics explorer", corrlab:"Correlation explorer", "drill:u33":"Drill: choosing charts", pipelinesim:"Pipeline simulator", dewcalc:"Dew point calculator", storybuilder:"Data story builder", totlab:"Tree-of-Thought decision", forecastlab:"Forecast explorer", "drill:u34":"Drill: data stories"});
+if (RELEASE.u3) RELEASE_NOTES.unshift({v:"Beta 3", date:"2026-10-19", title:"Unit 3 is open: make sense of your data", items:["Unit 3: Making sense of the data (Modules 3.1 to 3.4 and Python Lab B) is now open.","Reshape your log into a wide table, then clean it with the 8-step workflow and the Messy Monday detective.","Explorers for outliers (z-score and IQR), smoothing, statistics, and correlation.","Python Lab B: run the pandas notebook in the app or download it for Google Colab.","Build a data pipeline (P10), write a custom Sheets function (P6), and tell a data story.","Eleven new Unit 3 badges."], next:"Coming next: Unit 4, Automation and control."});
+const _vmU3 = viewModule;
+viewModule = function(id){ _vmU3(id);
+  if (id === "B"){ const cr = document.querySelector("#view .mod-hero .crumb"); if (cr) cr.textContent = "Unit 3 \u2022 Python Lab B"; }
+  if (id === "3.4" && !document.querySelector('#view a[href="#/survey/u3"]')){ const ctr = document.querySelector("#view .mod-layout > div > .controls:last-child"); if (ctr) ctr.insertAdjacentHTML("beforebegin", `<div class="callout try"><b>Finished Unit 3?</b><p>Tell us what helped and where you got stuck. It takes about 3 minutes.</p><a class="btn primary" href="#/survey/u3">Answer the Unit 3 survey</a></div>`); }
 };
 
 if (!apiReady()) $("#banner").innerHTML = `<div class="banner">Preview mode: progress is saved on this device only. Add the Apps Script web app URL in CONFIG.API_URL to enable tracking, uploads, and Sensi.</div>`;
