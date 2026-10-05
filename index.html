@@ -779,6 +779,19 @@ body.device-phone .nudge{bottom:calc(76px + env(safe-area-inset-bottom))}
 .dict .dinput{min-width:110px;width:100%;box-sizing:border-box}.cot textarea{min-width:150px}
 .p4tabs{margin:8px 0}.p4tabs button{white-space:normal}
 .dq > b{overflow-wrap:anywhere}.parsons{overflow-x:auto}.parsons .sort-item code{white-space:pre-wrap;overflow-wrap:anywhere}
+.mb-card > div > .crumb{display:block;margin:0 0 2px;letter-spacing:.04em}.mb-card > div > b{display:block;font-size:1rem;margin-bottom:2px}
+/* v16: Unit 2 beginner support */
+.selfexp{border:2px dashed var(--teal);border-radius:12px;padding:10px 14px;margin:14px 0;background:color-mix(in srgb,var(--teal) 6%,var(--surface))}.selfexp p{margin:.3em 0}.selfexp textarea{width:100%;box-sizing:border-box;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+.mission{display:flex;flex-wrap:wrap;align-items:stretch;gap:6px;margin:0 0 14px;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}.mi-l{width:100%;font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.mi-s{flex:1;min-width:120px;display:flex;flex-direction:column;gap:2px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);text-decoration:none;color:var(--ink)}.mi-s span{font-size:.85rem;color:var(--muted)}.mi-s em{font-size:.75rem;color:var(--teal);font-style:normal;font-weight:700}
+.mi-s.here{border:2px solid var(--teal);background:color-mix(in srgb,var(--teal) 10%,var(--surface))}.mi-s.done b{color:var(--teal)}.mi-arr{align-self:center;color:var(--muted)}@media (max-width:640px){.mi-arr{display:none}.mi-s{min-width:calc(50% - 6px)}}
+.authsteps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:10px 0}.authcard{border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--surface);position:relative}.as-n{position:absolute;top:-10px;left:-6px;width:24px;height:24px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:700;font-size:.8rem}
+.as-mock{display:flex;flex-direction:column;gap:6px;border:1px solid #CBD5E1;border-radius:8px;padding:10px;background:#fff;color:#202124;font-family:Arial,sans-serif;font-size:.85rem}.as-mock.warn b{color:#B91C1C}.as-btn{align-self:flex-end;background:#1A73E8;color:#fff;border-radius:4px;padding:4px 10px;font-size:.8rem}.as-link{color:#1A73E8;text-decoration:underline;font-size:.8rem}
+.g2t td,.g2t th{padding:4px 6px;font-size:.82rem;min-width:44px}.g2in{outline:2px dashed var(--amber);outline-offset:-2px}.g2r0{background:#DBEAFE}.g2r1{background:#FDE68A}.g2r2{background:#BBF7D0}.g2r3{background:#FBCFE8}.g2Code .g2r{border-radius:3px;padding:0 2px;color:#14213D}
+.lrLog{margin:0;padding-left:1.2em;min-height:140px}.lrLog li{margin:4px 0}.lrA{color:#2563EB}.lrB{color:#B45309}.bad-t{color:var(--bad)}.ok-t{color:var(--teal)}
+.mc-tag{font-size:.72rem;font-weight:600;background:color-mix(in srgb,var(--amber) 30%,var(--surface));border-radius:999px;padding:2px 8px;vertical-align:middle;margin-left:6px}
+.aiBody label{display:block;font-weight:600;margin:.6em 0 .2em}.aiBody textarea{width:100%;box-sizing:border-box}.aiComps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:4px;margin:8px 0}
+.aiFrame{width:100%;height:340px;border:1px solid var(--line);border-radius:10px;background:#fff}.aiCheck{list-style:none;padding:0}.aiCheck li{margin:4px 0}
 </style>
 </head>
 <body>
@@ -2201,6 +2214,166 @@ const M24 = {id:"2.4", title:"Reliability and good data habits", minutes:120,
  checkpoint:{code:"U2-O4, U2-O5, U2-O6", task:"Router or hotspot outage test; completed data dictionary with one proposed schema change; Chain-of-Thought debugging log.", met:"Logging resumes within 2 intervals without reset; every dictionary column filled and 2 consequences of the change named; 3-row log with the final cause confirmed by a test.", upload:"Upload a screenshot of the Sheet before and after the outage, and your data dictionary."},
  refs:["gasQuotas","gasLock","wei","kleppmann","mdnHttp"]};
 
+const AI_SAMPLE_GS = String.raw`// 1) In doGet, add this line right after the existing 'log' line:
+if (action === 'view') return view_(p.device_id);
+
+// 2) Add this new function anywhere in Code.gs:
+function view_(device) {
+  const rows = JSON.parse(latest_(device, 20).getContent());   // last 20 rows
+  const esc = s => String(s).replace(/[&<>"]/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+  const latest = {};
+  rows.forEach(r => latest[r.sensor] = r);                      // newest per sensor
+  const cards = Object.keys(latest).map(s =>
+    '<div class="card"><span>' + esc(s) + '</span><b>' + esc(latest[s].value) +
+    ' ' + esc(latest[s].unit) + '</b></div>').join('');
+  const table = rows.slice().reverse().map(r =>
+    '<tr><td>' + esc(new Date(r.timestamp).toLocaleTimeString()) + '</td><td>' +
+    esc(r.sensor) + '</td><td>' + esc(r.value) + '</td><td>' + esc(r.unit) + '</td></tr>').join('');
+  const html = '<!doctype html><html><head><meta name="viewport" content="width=device-width, initial-scale=1">' +
+    '<style>body{font-family:sans-serif;margin:16px;color:#14213D}.cards{display:flex;gap:10px;flex-wrap:wrap}' +
+    '.card{border:1px solid #ccd;border-radius:10px;padding:10px 14px}.card span{display:block;color:#567}' +
+    '.card b{font-size:1.4em}table{border-collapse:collapse;margin-top:14px;width:100%}' +
+    'td,th{border-bottom:1px solid #dde;padding:6px;text-align:left}</style></head><body>' +
+    '<h1>My IoT logger</h1><p>Device: ' + esc(device || 'all') + '</p><div class="cards">' + cards +
+    '</div><table><tr><th>Time</th><th>Sensor</th><th>Value</th><th>Unit</th></tr>' + table + '</table></body></html>';
+  return HtmlService.createHtmlOutput(html).setTitle('My IoT logger');
+}`;
+function aiSampleHtml(){
+  const rows = [], now = Date.now(); for (let i = 0; i < 4; i++){ const t = new Date(now - (3 - i) * 30000).toLocaleTimeString(); rows.push([t,"temp",(29.2 + i * .1).toFixed(1),"C"],[t,"hum",(70 - i * .3).toFixed(1),"pct"],[t,"light",(55 + i).toFixed(1),"pct"]); }
+  const latest = {}; rows.forEach(r => latest[r[1]] = r);
+  return `<!doctype html><html><head><meta name="viewport" content="width=device-width, initial-scale=1"><style>body{font-family:sans-serif;margin:16px;color:#14213D}.cards{display:flex;gap:10px;flex-wrap:wrap}.card{border:1px solid #ccd;border-radius:10px;padding:10px 14px}.card span{display:block;color:#567}.card b{font-size:1.4em}table{border-collapse:collapse;margin-top:14px;width:100%}td,th{border-bottom:1px solid #dde;padding:6px;text-align:left}</style></head><body><h1>My IoT logger</h1><p>Device: team3-esp32</p><div class="cards">${Object.keys(latest).map(s => `<div class="card"><span>${s}</span><b>${latest[s][2]} ${latest[s][3]}</b></div>`).join("")}</div><table><tr><th>Time</th><th>Sensor</th><th>Value</th><th>Unit</th></tr>${rows.slice().reverse().map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join("")}</table></body></html>`;
+}
+
+/* ============ UNIT 2: BEGINNER SUPPORT (concept clinics, survival guide, AI-assisted programming) ============ */
+function u2Insert(M, afterId, sec){ const i = afterId === null ? -1 : M.sections.findIndex(s => s.id === afterId); M.sections.splice(i + 1, 0, sec); }
+const selfexp = (k, q) => `<div class="selfexp" data-k="${k}"><b>Explain it back</b><p>${q}</p><textarea rows="3" placeholder="Write it in your own words, as if explaining to a friend\u2026"></textarea><span class="explain">Saved on this device. If you get stuck writing it, that is the part to reread.</span></div>`;
+M21.minutes = 120; M22.minutes = 165; M23.minutes = 165; M24.minutes = 135;
+Object.assign(REF, {
+  mdnUrl: ["MDN contributors. (n.d.-e). What is a URL? MDN Web Docs.","https://developer.mozilla.org/en-US/docs/Learn/Common_questions/Web_mechanics/What_is_a_URL"],
+  mdnHow: ["MDN contributors. (n.d.-f). How the web works. MDN Web Docs.","https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web/How_the_Web_works"],
+  mdnArrow: ["MDN contributors. (n.d.-g). Arrow function expressions. MDN Web Docs.","https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions"],
+  gasRange: ["Google. (n.d.-i). Class Range: setValues(values). Google Apps Script reference.","https://developers.google.com/apps-script/reference/spreadsheet/range#setValues(Object)"],
+  gasHtml: ["Google. (n.d.-j). HTML service: create and serve HTML. Google Apps Script guides.","https://developers.google.com/apps-script/guides/html"],
+  gasAuth: ["Google. (n.d.-k). Authorization for Google services. Google Apps Script guides.","https://developers.google.com/apps-script/guides/services/authorization"],
+  countif: ["Google. (n.d.-l). COUNTIF. Google Docs Editors Help.","https://support.google.com/docs/answer/3093480"],
+  schraw: ["Schraw, G., & Dennison, R. S. (1994). Assessing metacognitive awareness. Contemporary Educational Psychology, 19(4), 460\u2013475.","https://doi.org/10.1006/ceps.1994.1033"],
+  chi: ["Chi, M. T. H., de Leeuw, N., Chiu, M.-H., & LaVancher, C. (1994). Eliciting self-explanations improves understanding. Cognitive Science, 18(3), 439\u2013477.","https://doi.org/10.1207/s15516709cog1803_3"]
+});
+/* ---------- 2.1 ---------- */
+u2Insert(M21, null, {id:"survival", title:"Before you start: your Unit 2 survival guide", html:`
+  <p>Unit 2 is the biggest step in the course. You will connect your board to the internet, write a little JavaScript, and build your own cloud logger. <b>It is normal to feel lost at first.</b> Almost every beginner finds networking strange, because you cannot see a message travel. This guide will help you through it.</p>
+  <h3>Your mission in four steps</h3>
+  <table class="t"><tr><th>Module</th><th>You will be able to\u2026</th><th>Hardest idea (we explain it slowly)</th></tr>
+  <tr><td><b>2.1</b></td><td>read a URL and a JSON reply like a developer</td><td>what really happens when you open a URL</td></tr>
+  <tr><td><b>2.2</b></td><td>run your own cloud logger in Google Apps Script</td><td>arrays of rows, and why edits need a new version</td></tr>
+  <tr><td><b>2.3</b></td><td>see your board's readings appear in your Sheet by themselves</td><td>the board code that talks to the internet</td></tr>
+  <tr><td><b>2.4</b></td><td>keep the logger running even when Wi-Fi fails</td><td>buffering and choosing a safe send rate</td></tr></table>
+  <h3>How to get through it</h3>
+  <ol><li><b>Go slowly.</b> Plan four sessions, one per module, rather than one long day. Your progress is saved after every section.</li>
+  <li><b>Play with every simulator before reading the code.</b> Seeing a request travel makes the code make sense.</li>
+  <li><b>Use the Concept clinics.</b> Sections marked <i>Concept clinic</i> explain the hard parts step by step. Skip none of them.</li>
+  <li><b>Write the \u201cExplain it back\u201d boxes.</b> Explaining in your own words is one of the most reliable ways to understand (Chi et al., 1994). If you cannot write it, reread just that part.</li>
+  <li><b>You do not need to memorize code.</b> Professionals copy, adapt, and look things up. What matters is that you can read it and explain what each part does.</li>
+  <li><b>When stuck:</b> reread the error message, try the simulator, ask Sensi for a hint (not the answer), then use <b>Beta feedback</b> to tell us what was confusing. Your report improves the course for everyone.</li></ol>
+  ${tip("You already know more than you think", `<p>Variables, decisions, loops, and functions from Unit 1 work the same way in JavaScript. Only the spelling changes.</p>`)}
+  ${srcs([["Chi et al. (1994)", REF.chi[1]]])}`});
+u2Insert(M21, "network", {id:"clinicweb", title:"Concept clinic: what really happens when you open a URL", html:`
+  <p>You type an address and a page appears in a second. Behind that second, five things happen. Your board does the same five things when it sends a reading.</p>
+  <table class="t"><tr><th>Step</th><th>What happens</th><th>Everyday comparison</th></tr>
+  <tr><td><b>1. Look up the address</b></td><td>The name <code>script.google.com</code> is turned into an IP address by a service called <b>DNS</b> (Domain Name System).</td><td>Looking up a friend's phone number in your contacts by their name.</td></tr>
+  <tr><td><b>2. Connect securely</b></td><td>The client opens a connection to that IP address and both sides agree on encryption (<b>TLS</b>, the \u201cS\u201d in HTTPS).</td><td>Calling the number, then both of you agreeing on a secret language nobody else understands.</td></tr>
+  <tr><td><b>3. Send the request</b></td><td>The client sends <code>GET /macros/s/\u2026/exec?temp_C=29.4\u2026</code> with a few headers (extra labels).</td><td>Saying your order clearly: \u201cOne reading, please: temperature 29.4.\u201d</td></tr>
+  <tr><td><b>4. The server works</b></td><td>Google runs your script (<code>doGet</code>), which writes rows to your Sheet.</td><td>The kitchen cooks your order.</td></tr>
+  <tr><td><b>5. The reply comes back</b></td><td>A status code (200, 302, 404\u2026) and a body (<code>OK:2</code> or a web page).</td><td>The waiter brings your food, or explains why they cannot.</td></tr></table>
+  <h3>Why URLs cannot contain spaces: URL encoding</h3>
+  <p>URLs may contain only certain characters. Anything else is <b>encoded</b> as % followed by a code: a space becomes <code>%20</code>, a <code>#</code> becomes <code>%23</code>, and a <code>%</code> itself becomes <code>%25</code>. That is why our data contract uses simple names like <code>hum_pct</code> instead of <code>humidity %</code>, and device IDs like <code>team3-esp32</code> with no spaces.</p>
+  ${ex("spotting an encoding problem", `<p>A team sends <code>device_id=Team 3</code>. The board actually sends <code>Team</code>, and <code>3</code> is treated as junk, or the request fails. Renaming the device to <code>team3-esp32</code> fixes it permanently.</p>`)}
+  ${selfexp("u21-web", "In your own words: what are the five things that happen between your board sending a reading and receiving <code>OK:3</code>?")}
+  ${srcs([["MDN: how the web works", REF.mdnHow[1]],["MDN: what is a URL?", REF.mdnUrl[1]]])}`});
+u2Insert(M21, "jsbasics", {id:"clinicarrays", title:"Concept clinic: arrays, objects, 2-D arrays, and arrow functions", html:`
+  <p>These four ideas cause most of the confusion in Apps Script. Take them one at a time.</p>
+  <h3>1. Arrays: a numbered list</h3>
+  <p>An array holds values in order, counted from <b>0</b>: in <code>const temps = [29.4, 30.1, 29.9];</code>, <code>temps[0]</code> is 29.4 and <code>temps.length</code> is 3. Like a row of numbered lockers.</p>
+  <h3>2. Objects: named labels</h3>
+  <p>An object holds values under <b>names</b> instead of numbers: <code>const r = {sensor: 'temp', value: 29.4, unit: 'C'};</code> then <code>r.sensor</code> is 'temp'. Like a form with labeled boxes. In P3, <code>e.parameter</code> is an object: <code>p.temp_C</code> is \"29.4\".</p>
+  <table class="t"><tr><th></th><th>Array</th><th>Object</th></tr><tr><td>Brackets</td><td><code>[ ]</code></td><td><code>{ }</code></td></tr><tr><td>Find a value by</td><td>position: <code>a[0]</code></td><td>name: <code>o.value</code></td></tr><tr><td>Best for</td><td>lists of similar things (readings, rows)</td><td>one thing with several properties (one reading)</td></tr></table>
+  <h3>3. 2-D arrays: rows of cells</h3>
+  <p>A Sheet is a grid, so Apps Script uses an <b>array of arrays</b>: an outer array of rows, each row an array of cells. That is why <code>setValues</code> needs <b>double brackets</b>: <code>[[row 1 cells], [row 2 cells]]</code>. The size of the array must match the size of the range exactly. Try it in the grid below.</p>
+  <h3>4. Arrow functions: a short way to write a function</h3>
+  <table class="t"><tr><th>Long form</th><th>Arrow form</th><th>Read it as</th></tr>
+  <tr><td><code>function double(x) { return x * 2; }</code></td><td><code>x =&gt; x * 2</code></td><td>\u201cgiven x, give back x times 2\u201d</td></tr>
+  <tr><td><code>function (k) { Logger.log(k); }</code></td><td><code>k =&gt; { Logger.log(k); }</code></td><td>\u201cgiven k, do this\u201d</td></tr></table>
+  <p>When you write <code>Object.keys(p).forEach(k =&gt; { \u2026 })</code>, you hand a small function to <code>forEach</code>, and <code>forEach</code> calls it once for every key, filling in <code>k</code> each time. A function handed to another function like this is called a <b>callback</b>. In 2.2 you will step through exactly this, one key at a time.</p>
+  ${selfexp("u21-arrays", "Why does <code>setValues</code> need double brackets, like <code>[[a, b, c]]</code>, even for a single row?")}
+  ${srcs([["MDN: arrow functions", REF.mdnArrow[1]],["Apps Script: Range.setValues", REF.gasRange[1]]])}`, interactive:"grid2d"});
+/* ---------- 2.2 ---------- */
+u2Insert(M22, "build", {id:"auth", title:"Concept clinic: Google's permission screens (do not panic)", html:`
+  <p>The first time you run <code>setupSheets</code>, Google shows a series of screens that look alarming. They are normal for <b>every</b> script you write yourself.</p>
+  <div class="authsteps">
+   <div class="authcard"><span class="as-n">1</span><div class="as-mock"><b>Authorization required</b><span>This project requires your permission to access your data.</span><span class="as-btn">Review permissions</span></div><p>Click <b>Review permissions</b>.</p></div>
+   <div class="authcard"><span class="as-n">2</span><div class="as-mock"><b>Choose an account</b><span>you@gmail.com</span></div><p>Choose the <b>same account</b> that owns the Sheet.</p></div>
+   <div class="authcard"><span class="as-n">3</span><div class="as-mock warn"><b>Google hasn\u2019t verified this app</b><span class="as-link">Advanced</span><span class="as-link">Go to IoT Logger (unsafe)</span></div><p>Click <b>Advanced</b>, then <b>Go to \u2026 (unsafe)</b>. Google shows this for any script it has not reviewed. Here, <i>you</i> are the developer and the only user, so it is safe.</p></div>
+   <div class="authcard"><span class="as-n">4</span><div class="as-mock"><b>IoT Logger wants to access your Google Account</b><span>See, edit, create, and delete all your Google Sheets spreadsheets</span><span class="as-btn">Allow</span></div><p>Click <b>Allow</b>. The script needs this to write rows into your Sheet.</p></div></div>
+  ${tip("When should you NOT click Allow?", `<p>Only allow scripts you wrote yourself or copied from a source you trust, like this course. If a stranger sends you a Sheet with a script asking for these permissions, do not allow it.</p>`)}
+  <h3>\u201cExecute as\u201d and \u201cWho has access\u201d in plain words</h3>
+  <table class="t"><tr><th>Setting</th><th>Our choice</th><th>Plain meaning</th></tr><tr><td>Execute as</td><td><b>Me</b></td><td>The script runs with <i>your</i> permission to write to <i>your</i> Sheet, no matter who sends the request.</td></tr><tr><td>Who has access</td><td><b>Anyone</b></td><td>Anyone may send a request to the URL, because boards cannot sign in. Your secret key decides which requests are saved.</td></tr></table>
+  ${selfexp("u22-auth", "Why is it safe to click \u201cGo to (unsafe)\u201d for your own logger, but not for a script a stranger sends you?")}
+  ${srcs([["Apps Script: authorization", REF.gasAuth[1]]])}`});
+u2Insert(M22, "p3", {id:"trace", title:"Concept clinic: follow one request through P3, step by step", html:`
+  <p>Reading 70 lines of code at once is overwhelming. Instead, follow <b>one request</b> through the most important function, <code>logReadings_</code>, one line at a time, and watch each variable change. The request is:</p>
+  <pre class="code url-ex">?key=k1&amp;device_id=t3&amp;temp_C=29.4&amp;hum_pct=70</pre>
+  <p>Press <b>Step</b> and read the note each time. Notice how <code>forEach</code> visits every key, skips the reserved ones, and turns the others into rows.</p>
+  ${selfexp("u22-trace", "What happens to the key <code>device_id</code> inside the loop, and why is it not saved as a reading?")}`, interactive:"vartrace:p3"});
+u2Insert(M22, "why2", {id:"lockclinic", title:"Concept clinic: why the lock matters", html:`
+  <p>Two boards can send readings at almost the same moment. Without a lock, both requests can ask \u201cwhat is the last row?\u201d at the same time, get the same answer, and write to the <b>same</b> row, so one board's readings are silently lost. This is called a <b>race condition</b>.</p>
+  <p>The lock works like a single key to a room: a request must hold the key to write, and others wait in line. Run both versions below.</p>
+  ${selfexp("u22-lock", "Describe, step by step, how two devices could overwrite each other's rows without a lock.")}
+  ${srcs([["Apps Script: LockService", REF.gasLock[1]]])}`, interactive:"lockrace"});
+u2Insert(M22, "deploy", {id:"aiui", title:"AI-assisted programming: design a status page for your logger", html:`
+  <p>Your logger works, but checking a spreadsheet on a phone is clumsy. Let us design a simple <b>status page</b>: a web page your logger serves, showing the latest readings. You will use AI as a <b>programming partner</b>, following the course's human-in-the-loop rules: <b>attempt first, prompt with a framework, verify, protect secrets, disclose, decide.</b></p>
+  <h3>Thinking about your thinking</h3>
+  <p>Good programmers constantly check their own understanding. This is called <b>metacognition</b>, and it has three parts (Schraw &amp; Dennison, 1994). The activity below asks you to do all three:</p>
+  <table class="t"><tr><th>Stage</th><th>Ask yourself</th></tr><tr><td><b>Plan</b></td><td>What exactly do I want? What must it never do? What do I already know?</td></tr><tr><td><b>Monitor</b></td><td>Do I understand what the AI gave me? What did I expect, and what happened?</td></tr><tr><td><b>Evaluate</b></td><td>Does it meet my plan? What did I learn? What would I do differently?</td></tr></table>
+  <h3>How the status page works</h3>
+  <p>Apps Script can reply with a web page instead of text, using <b>HtmlService</b>. You add one new action, <code>view</code>, to P3. Opening <code>YOUR_URL?key=YOUR_KEY&amp;action=view</code> then shows the page. Because the URL contains your key, keep it private, just like the logger URL.</p>
+  ${code("javascript", AI_SAMPLE_GS, "Sample AI output: add this to P3 (one possible answer)")}
+  <h3>Reading the sample like a reviewer</h3>
+  <table class="t"><tr><th>Line</th><th>What it does</th></tr>
+  <tr><td><code>if (action === 'view') return view_(p.device_id);</code></td><td>Added to the router in <code>doGet</code>, <b>after</b> the key check, so only people with the key can see the page.</td></tr>
+  <tr><td><code>JSON.parse(latest_(device, 20).getContent())</code></td><td>Reuses the existing <code>latest_</code> function to get the last 20 rows, then turns its JSON text back into objects.</td></tr>
+  <tr><td><code>const esc = s =&gt; \u2026replace(\u2026)</code></td><td>Escapes special characters so a strange value can never break the page or inject code. A good habit whenever data goes into HTML.</td></tr>
+  <tr><td><code>rows.forEach(r =&gt; latest[r.sensor] = r);</code></td><td>Keeps the newest reading per sensor for the summary cards.</td></tr>
+  <tr><td><code>HtmlService.createHtmlOutput(html)</code></td><td>Sends the finished HTML back as a web page.</td></tr></table>
+  ${mis(`<ul><li>Putting the <code>view</code> check <b>before</b> the key check, which would show your data to anyone.</li><li>Pasting your real key or URL into the AI: always use placeholders.</li><li>Accepting code you cannot explain. If a line is unclear, ask the AI to explain that line, then check it in the documentation.</li><li>Forgetting to deploy a <b>new version</b> after adding the code.</li></ul>`)}
+  <p>Work through the six steps below. Use the sample if you get stuck, but try your own design first.</p>
+  ${srcs([["Apps Script: HTML service", REF.gasHtml[1]],["Schraw & Dennison (1994)", REF.schraw[1]]])}`, interactive:"aipair"});
+/* ---------- 2.3 ---------- */
+u2Insert(M23, "build", {id:"clinicboard", title:"Concept clinic: the board code in plain words", html:`
+  <p>P4 is the longest program so far. Read it in <b>four chunks</b>, in this order, and it becomes manageable.</p>
+  <table class="t"><tr><th>Chunk</th><th>Lines</th><th>Question it answers</th></tr><tr><td>1. Settings</td><td>EDIT THESE block</td><td>Which network, which web app, which key, which device?</td></tr><tr><td>2. The loop</td><td><code>loop()</code> / <code>while True</code></td><td>When do I send? (Every 30 s.)</td></tr><tr><td>3. Building the message</td><td><code>String url = \u2026</code></td><td>What exactly do I send?</td></tr><tr><td>4. The helpers</td><td><code>connectWiFi()</code>, <code>httpsGet()</code></td><td>How do I connect and send? (You can trust these and treat them as tools.)</td></tr></table>
+  <h3><code>#if defined(ESP32)</code>: one recipe, three ovens</h3>
+  <p>Lines starting with <code>#</code> are read <i>before</i> compiling. <code>#if defined(ESP32)</code> means \u201conly keep these lines if I am compiling for an ESP32.\u201d So the same file works on three boards: the compiler simply skips the parts for the other boards, like a recipe with separate instructions for gas, electric, and convection ovens.</p>
+  <h3>Building the URL, step by step</h3>
+  <p>In C++, <code>+</code> joins Strings, and <code>String(t, 1)</code> turns the number 29.43 into the text \"29.4\". Watch the URL grow:</p>
+  ${code("cpp", 'String url = SCRIPT_URL;                    // https://\u2026/exec\nurl = url + "?key=" + API_KEY;              // \u2026/exec?key=t3-mango-48\nurl = url + "&device_id=" + DEVICE_ID;      // \u2026&device_id=team3-esp32\nurl = url + "&temp_C=" + String(t, 1);      // \u2026&temp_C=29.4\nurl = url + "&hum_pct=" + String(h, 1);     // \u2026&hum_pct=70.2', "The same URL as P4, built one piece at a time")}
+  <p>Tip: add <code>Serial.println(url);</code> before sending. Seeing the exact URL solves most problems.</p>
+  <h3>HTTPS and <code>setInsecure()</code></h3>
+  <p>HTTPS seals the message in an envelope only Google can open (encryption), and normally also checks Google's ID card (a <b>certificate</b>) to be sure it is really Google. <code>setInsecure()</code> keeps the envelope sealed but skips the ID check, because storing and updating certificates on small boards is fiddly. It is acceptable for a classroom; in Unit 4 you will learn what real products do instead.</p>
+  ${selfexp("u23-board", "If your readings stopped arriving, which of the four chunks would you check first, and how?")}`});
+/* ---------- 2.4 ---------- */
+u2Insert(M24, "aidebug", {id:"clinicbuffer", title:"Concept clinic: buffering and counting devices", html:`
+  <h3>Buffering: a waiting room for readings</h3>
+  <p>When Wi-Fi is down, instead of throwing a reading away, the board puts it in a <b>buffer</b>: an array that holds up to 10 waiting URLs. When Wi-Fi returns, it sends them one by one, oldest first, and empties the buffer. If the buffer is full, the oldest reading is dropped to make room (a choice you could change).</p>
+  ${code("cpp", 'const int MAX_BUF = 10;\nString buffer[MAX_BUF];         // up to 10 waiting URLs\nint count = 0;\n\nvoid queueOrSend(String url) {\n  if (WiFi.status() != WL_CONNECTED) {\n    if (count < MAX_BUF) buffer[count++] = url;    // keep it for later\n    return;\n  }\n  for (int i = 0; i < count; i++) httpsGet(buffer[i]);   // send the backlog first\n  count = 0;\n  httpsGet(url);                                 // then the new reading\n}', "Buffering in C++ (Extension challenge, simplified)")}
+  ${code("python", 'buffer = []                     # waiting URLs\n\ndef queue_or_send(url):\n    if not wlan.isconnected():\n        if len(buffer) < 10:\n            buffer.append(url)  # keep it for later\n        return\n    while buffer:\n        https_get(buffer.pop(0))  # oldest first\n    https_get(url)', "The same idea in MicroPython")}
+  <p class="explain">Note: the Sheet stamps the time when each row <i>arrives</i>, so buffered readings get the arrival time. To keep the true reading time, a full solution also sends the board's own time with each reading, a design choice you can discuss in the Extension.</p>
+  <h3>Counting rows per device (Boss Challenge)</h3>
+  <ol><li>In an empty cell, type <code>=UNIQUE(B2:B)</code> to list every device ID that has logged.</li><li>Next to the first ID, type <code>=COUNTIF(B:B, E2)</code> (if the ID is in E2) and fill it down. COUNTIF counts the cells in column B equal to that ID.</li><li>Each send adds 3 rows, so <b>rows \u00f7 3 = number of sends</b>. Two devices with similar counts are both logging.</li></ol>
+  ${selfexp("u24-buffer", "Why might buffered readings show the wrong time in the Sheet, and how could you fix it?")}
+  ${srcs([["Google: COUNTIF", REF.countif[1]]])}`});
+M22.refs.push("gasAuth","gasHtml","gasRange","schraw"); M21.refs.push("mdnHow","mdnUrl","mdnArrow","gasRange","chi"); M24.refs.push("countif");
+
 /* Register Unit 2 modules; open them when released, or for an admin preview */
 const UNIT2_MODULES = [M21, M22, M23, M24];
 function adminPreviewOn(){ try { const a = JSON.parse(sessionStorage.getItem("sti_admin") || "null"); return !!(a && a.exp > Date.now()); } catch(e){ return false; } }
@@ -2749,8 +2922,8 @@ const TRACES = {
   py:{code:["while True:","    for i in range(3):","        led.on()","        time.sleep(0.15)","        led.off()","        time.sleep(0.15)","    # end of the for loop","    time.sleep(2)",""], steps:loopSteps("py").map(x => [x.line, x.vars, x.note])}}
 };
 INTERACTIVES.vartrace = function(el, id){
-  const T = TRACES[id]; let lang = "cpp", k = -1, timer = null, out = [];
-  el.innerHTML = bench(id === "loop" ? "Loop tracer: watch the counter and the clock" : "Memory tracer: watch the variable boxes", `<div class="seg seg-sm vtl" role="tablist"><button role="tab" data-l="cpp" aria-selected="true">Arduino C++</button><button role="tab" data-l="py" aria-selected="false">MicroPython</button></div>
+  const T = TRACES[id], LBL = {cpp:"Arduino C++", py:"MicroPython", js:"JavaScript (Apps Script)"}, langs = Object.keys(T).filter(k2 => LBL[k2]); let lang = langs[0], k = -1, timer = null, out = [];
+  el.innerHTML = bench(T.title || (id === "loop" ? "Loop tracer: watch the counter and the clock" : "Memory tracer: watch the variable boxes"), `${langs.length > 1 ? `<div class="seg seg-sm vtl" role="tablist">${langs.map((l2, i) => `<button role="tab" data-l="${l2}" aria-selected="${i === 0}">${LBL[l2]}</button>`).join("")}</div>` : ""}
    <div class="tracer"><div class="panel lines vtcode"></div><div class="panel"><b>Memory</b><div class="vtmem"></div><p class="explain vtnote">Press Step to run the first line.</p><b>Output</b><div class="serial vtout" style="height:70px"></div></div></div>
    <div class="controls"><button class="btn primary vtStep">Step</button><button class="btn vtBack">Back</button><button class="btn vtAuto">Auto run</button><button class="btn vtReset">Reset</button><span class="explain vtpos"></span></div>`);
   const draw = () => { const P = T[lang]; $(".vtcode", el).innerHTML = `<div class="hlbar"></div>` + P.code.map((l, i) => `<div data-l="${i}">${esc(l) || " "}</div>`).join(""); };
@@ -3159,6 +3332,130 @@ Object.assign(DRILLS, {
   {t:"mcq", q:"Two boards in a shared Sheet both use device_id team1-esp32. What is the problem?", o:["None","Their rows cannot be told apart later","The script stops","The key changes"], a:1, e:"Unique IDs are the only way to separate devices in the data.", w:["Duplicate IDs make the data ambiguous.","","The script keeps running.","The key is unrelated."]},
   {t:"mcq", q:"Where should cleaning (removing bad readings) happen?", o:["By deleting rows in the Data tab","On a copy, downstream, keeping the raw Data tab unchanged","In the router","Nowhere"], a:1, e:"The Data tab is the raw, append-only record.", w:["Editing raw data destroys the evidence.","","Routers do not clean data.","Bad readings must be handled, just not in the raw layer."]}]
 });
+
+/* ============ UNIT 2: BEGINNER-SUPPORT INTERACTIVES ============ */
+TRACES.p3 = {title:"Step through logReadings_: one request becomes rows", js:{code:["function logReadings_(p) {","  const device = p.device_id || 'unknown';","  const now = new Date();","  const rows = [];","  Object.keys(p).forEach(k => {","    if (RESERVED.includes(k)) return;","    const parts = k.split('_');","    const sensor = parts[0];","    const unit = parts.slice(1).join('_');","    const value = Number(p[k]);","    if (!isNaN(value)) rows.push([now, device, sensor, value, unit]);","  });","  return text_('OK:' + rows.length);","}"],
+ steps:(() => { const S = [], V = {}; const st = (line, ch, note, out) => { Object.assign(V, ch); S.push([line, Object.assign({}, V), note, out]); };
+  st(1, {device:"'t3'"}, "p.device_id is 't3', so device = 't3'. (If it were missing, || would give 'unknown'.)");
+  st(2, {now:"09:30:00"}, "One timestamp for every row in this request, so the rows line up.");
+  st(3, {rows:"[ ]"}, "An empty array that will collect one row per reading.");
+  const keys = [["key", true],["device_id", true],["temp_C", false, "temp", "C", "29.4"],["hum_pct", false, "hum", "pct", "70"]]; let n = 0;
+  keys.forEach(kk => { st(4, {k:"'" + kk[0] + "'"}, `forEach calls the arrow function with the next key: k = '${kk[0]}'.`);
+    if (kk[1]){ st(5, {}, `'${kk[0]}' is in RESERVED, so return skips to the next key. It is a control value, not a reading.`); return; }
+    st(5, {}, `'${kk[0]}' is not reserved, so we continue.`); st(6, {parts:`['${kk[2]}', '${kk[3]}']`}, `split('_') cuts '${kk[0]}' at the underscore.`);
+    st(7, {sensor:`'${kk[2]}'`}, "The first part is the sensor name."); st(8, {unit:`'${kk[3]}'`}, "Everything after the first part is the unit.");
+    st(9, {value:kk[4]}, `Number('${kk[4]}') turns the text into the number ${kk[4]}.`); n++;
+    st(10, {rows:`${n} row${n > 1 ? "s" : ""}`}, `${kk[4]} is a number, so a row is added: [09:30:00, 't3', '${kk[2]}', ${kk[4]}, '${kk[3]}'].`); });
+  st(12, {}, "The loop is finished. rows.length is 2, so the reply is OK:2.", "OK:2"); return S; })()}};
+INTERACTIVES.grid2d = function(el){
+  let rows = [["09:30","t3","temp",29.4,"C"],["09:30","t3","hum",70,"pct"]], wrong = false;
+  el.innerHTML = bench("2-D array to Sheet cells", `<div class="controls"><button class="btn small g2Add">Add a reading row</button><button class="btn small g2Del">Remove a row</button><label class="chk"><input type="checkbox" class="g2W"><span>Make a mistake: range one row too tall</span></label></div>
+   <div class="two"><div><b>The JavaScript</b><pre class="code g2Code"></pre></div><div><b>The Data tab</b><div class="g2Sheet"></div></div></div><div class="panel g2Note"></div>`);
+  const draw = () => { const start = 6, h = rows.length + (wrong ? 1 : 0);
+    $(".g2Code", el).innerHTML = `const rows = [\n${rows.map((r, i) => `  <span class="g2r g2r${i % 4}">[${r.map(v => typeof v === "string" ? `'${esc(v)}'` : v).join(", ")}]</span>`).join(",\n")}\n];\nsh.getRange(${start}, 1, ${h}, 5).setValues(rows);`;
+    let g = `<table class="t g2t"><tr><th></th>${"ABCDE".split("").map(c => `<th>${c}</th>`).join("")}</tr>`;
+    for (let r = 4; r < start + Math.max(rows.length, h) + 1; r++){ const i = r - start; g += `<tr><th>${r}</th>${[0,1,2,3,4].map(c => { const inR = i >= 0 && i < h, v = i >= 0 && i < rows.length && !wrong ? rows[i][c] : "";
+      return `<td class="${inR ? "g2in" : ""} ${i >= 0 && i < rows.length && !wrong ? "g2r" + (i % 4) : ""}">${r < start ? "\u2026" : esc(String(v))}</td>`; }).join("")}</tr>`; }
+    $(".g2Sheet", el).innerHTML = g + "</table>";
+    $(".g2Note", el).innerHTML = wrong ? `<b>Error:</b> <span class="mono">The number of rows in the data does not match the number of rows in the range. The data has ${rows.length} but the range has ${h}.</span><br>The range (dashed) and the array must be exactly the same size. P3 avoids this by using <code>rows.length</code> for the height.` : `Each inner array (colour) becomes one row; each value becomes one cell. <code>getRange(${start}, 1, ${h}, 5)</code> = start at row ${start}, column 1 (A), ${h} row${h > 1 ? "s" : ""} tall, 5 columns wide.`;
+    if (!act("grid2d")) logEvent(currentModule, "grid2d", "activity", "used"); };
+  $(".g2Add", el).onclick = () => { if (rows.length < 5){ const s = [["light",55.2,"pct"],["rssi",-62,"dBm"],["light",56.0,"pct"]][rows.length % 3]; rows.push(["09:30","t3",s[0],s[1],s[2]]); draw(); } };
+  $(".g2Del", el).onclick = () => { if (rows.length > 1){ rows.pop(); draw(); } };
+  $(".g2W", el).onchange = e => { wrong = e.target.checked; draw(); };
+  draw();
+};
+INTERACTIVES.lockrace = function(el){
+  let busy = false;
+  el.innerHTML = bench("Race condition: two devices, one Sheet", `<div class="controls"><button class="btn lrNo">Run WITHOUT the lock</button><button class="btn primary lrYes">Run WITH LockService</button></div>
+   <div class="two"><ol class="lrLog"></ol><div><b>Data tab</b><table class="t lrT"></table></div></div><div class="panel lrNote">Two boards send readings at the same moment. Watch what each request does.</div>`);
+  const sheet = r => `<tr><th>row</th><th>device</th><th>sensor</th></tr>${[5,6,7].map(n => `<tr><td>${n}</td><td>${r[n] ? r[n][0] : ""}</td><td>${r[n] ? r[n][1] : ""}</td></tr>`).join("")}`;
+  const play = async lock => { if (busy) return; busy = true; const log = $(".lrLog", el), T = $(".lrT", el); log.innerHTML = ""; const R = {5:["older row","\u2026"]}; T.innerHTML = sheet(R);
+    const say = (who, txt) => { const li = document.createElement("li"); li.innerHTML = `<b class="${who === "A" ? "lrA" : who === "B" ? "lrB" : ""}">${who}</b> ${txt}`; log.appendChild(li); anim(li, {opacity:[0, 1], x:[-8, 0]}, {duration:.25}); };
+    const wait = ms => new Promise(r => setTimeout(r, reduceMotion() ? 40 : ms));
+    if (!lock){ say("A", "asks: what is the last row? \u2192 5"); await wait(700); say("B", "asks at the same moment: what is the last row? \u2192 5"); await wait(700);
+      say("A", "writes its readings to row 6"); R[6] = ["team1-esp32","temp"]; T.innerHTML = sheet(R); await wait(700);
+      say("B", "also writes to row 6, overwriting A!"); R[6] = ["team2-picow","temp"]; T.innerHTML = sheet(R); pop(T, 1.03); await wait(500);
+      $(".lrNote", el).innerHTML = `<b class="bad-t">Team 1's reading is lost</b>, and nothing reported an error. That is a race condition.`; }
+    else { say("A", "takes the lock (B must wait)"); await wait(700); say("B", "tries the lock \u2192 waits\u2026"); await wait(700);
+      say("A", "last row is 5 \u2192 writes to row 6, then releases the lock"); R[6] = ["team1-esp32","temp"]; T.innerHTML = sheet(R); await wait(800);
+      say("B", "gets the lock: last row is now 6 \u2192 writes to row 7"); R[7] = ["team2-picow","temp"]; T.innerHTML = sheet(R); await wait(500);
+      $(".lrNote", el).innerHTML = `<b class="ok-t">Both readings are safe.</b> The lock made the requests take turns. B waited a fraction of a second.`; logEvent(currentModule, "lockrace", "activity", "done"); }
+    busy = false; };
+  $(".lrNo", el).onclick = () => play(false); $(".lrYes", el).onclick = () => play(true);
+  $(".lrT", el).innerHTML = sheet({5:["older row","\u2026"]});
+};
+INTERACTIVES.aipair = function(el){
+  const K = "sti_aipair_" + (user ? user.email : "g"), S = store.get(K, {step:0, plan:["","",""], parts:["","","","",""], comps:["title","cards","table"], check:[], monitor:["","",""], reflect:["","","",""], code:""}), save = () => store.set(K, S);
+  const COMPS = [["title","A clear title"],["cards","Big cards with the latest value of each sensor"],["table","A table of the last 20 readings"],["device","Which device the data is from"],["time","When the page was last updated"],["phone","Easy to read on a phone"]];
+  const CHECK = ["The page is only served AFTER the key check (no data without the key)","My real key, URL, and passwords do not appear anywhere in the code or my prompt","It reuses latest_ instead of reading the Sheet in a new way","Values are escaped before going into the HTML","It does not load scripts or files from other websites","I can explain what every line does (or I looked up the ones I could not)","It matches my plan from Step 1","I will deploy a NEW VERSION after adding it"];
+  const steps = ["Plan","Sketch","Prompt","Review","Test","Reflect"];
+  el.innerHTML = bench("AI pair programming: six guided steps", `<div class="walk-dots aiDots">${steps.map((s, i) => `<button data-i="${i}" aria-label="Step ${i + 1}: ${s}">${i + 1}</button>`).join("")}</div><div class="aiBody"></div><div class="controls"><button class="btn aiPrev">Back</button><button class="btn primary aiNext">Next step</button></div>`);
+  const prompt = () => `P (Persona): ${S.parts[0] || "You are a patient Google Apps Script tutor for a beginner."}
+A (Aim): ${S.parts[1] || "Help me add a simple status page to my IoT logger web app (Program P3)."}
+R (Recipients): ${S.parts[2] || "I am a beginner; explain every line in plain words."}
+T (Theme): My web app already has doGet(e) with a key check and a function latest_(device, n) that returns the last n rows as JSON (timestamp, device_id, sensor, value, unit). The page should show: ${S.comps.map(c => (COMPS.find(x => x[0] === c) || [0, c])[1].toLowerCase()).join("; ")}.
+S (Structure): Give me (1) the one line to add to doGet's router AFTER the key check, for action=view, (2) a view_ function that uses HtmlService and escapes all values, (3) a line-by-line explanation, and (4) how to test it.
+Rules: no external libraries or scripts; do not use or ask for my real key or URL (I use placeholders).
+Chain-of-Thought: think step by step about security first, then the layout.`;
+  const ta = (cls, i, val, ph, rows) => `<textarea class="dinput ${cls}" data-i="${i}" rows="${rows || 2}" placeholder="${esc(ph)}">${esc(val)}</textarea>`;
+  const views = [
+   () => `<h3>Step 1 \u2022 Plan <span class="mc-tag">Metacognition: planning</span></h3><p>Before any code, decide what you want. Short answers are fine.</p>
+     <label>What should my status page show, and for whom?</label>${ta("pl", 0, S.plan[0], "e.g. My team checks the latest temperature on a phone during class.")}
+     <label>What must it NEVER do? (Think about security and privacy.)</label>${ta("pl", 1, S.plan[1], "e.g. Never show data without the key; never show the key itself.")}
+     <label>What do I already know that will help?</label>${ta("pl", 2, S.plan[2], "e.g. doGet routes actions; latest_ returns JSON rows; I must redeploy a new version.")}`,
+   () => `<h3>Step 2 \u2022 Sketch first <span class="mc-tag">Human-in-the-loop: attempt first</span></h3><p>Choose what your page should contain. On paper, quickly draw where each part goes. Your sketch is the plan the AI must follow.</p>
+     <div class="aiComps">${COMPS.map(c => `<label class="chk"><input type="checkbox" value="${c[0]}" ${S.comps.includes(c[0]) ? "checked" : ""}><span>${c[1]}</span></label>`).join("")}</div>
+     <p class="explain">Here is one possible result, so you know what you are aiming for (sample data):</p><iframe class="aiFrame" sandbox="" title="Sample status page preview" srcdoc="${esc(aiSampleHtml())}"></iframe>`,
+   () => `<h3>Step 3 \u2022 Prompt with PARTS <span class="mc-tag">Human-in-the-loop: prompt with a framework</span></h3><p>Edit any part, or keep the suggestions. The prompt updates as you type. It already uses placeholders instead of your key.</p>
+     ${["Persona","Aim","Recipients","Theme (filled from your sketch)","Structure"].map((n, i) => i === 3 ? "" : `<label>${n}</label>${ta("pa", i, S.parts[i], ["You are a patient Google Apps Script tutor for a beginner.","Help me add a simple status page to my IoT logger web app (Program P3).","I am a beginner; explain every line in plain words.","","(keep the suggested structure)"][i])}`).join("")}
+     <div class="codebox"><div class="codehead"><span>Your PARTS + Chain-of-Thought prompt</span><button class="btn small aiCopy" type="button">Copy</button></div><pre class="code"><code class="aiPrompt"></code></pre></div>
+     <div class="controls"><button class="btn aiAsk">Ask Sensi with this prompt</button></div><p class="explain">Any AI tool works. Save its answer; you will review it in the next step.</p>`,
+   () => `<h3>Step 4 \u2022 Review the AI's answer <span class="mc-tag">Human-in-the-loop: verify</span></h3><p>Paste the AI's code below (or press <b>Use the sample</b> to practise). Then tick each check <b>only if it is true</b>.</p>
+     <textarea class="dinput aiCode mono" rows="7" placeholder="Paste the AI's code here">${esc(S.code)}</textarea><div class="controls"><button class="btn small aiSample">Use the sample</button></div><div class="aiScan"></div>
+     <ul class="aiCheck">${CHECK.map((c, i) => `<li><label class="chk"><input type="checkbox" data-i="${i}" ${S.check.includes(i) ? "checked" : ""}><span>${c}</span></label></li>`).join("")}</ul>`,
+   () => `<h3>Step 5 \u2022 Test and monitor <span class="mc-tag">Metacognition: monitoring</span></h3><ol><li>Add the code to P3 in your Apps Script editor and save.</li><li><b>Deploy \u2192 Manage deployments \u2192 Edit \u2192 New version.</b></li><li>Open <code>YOUR_URL?key=YOUR_KEY&amp;action=view</code> in your browser.</li><li>Test the security too: open it with a <b>wrong key</b>. You must see <code>ERR:key</code>, not your data.</li></ol>
+     <label>What did I expect to see?</label>${ta("mo", 0, S.monitor[0], "")}<label>What actually happened? (Paste any error message.)</label>${ta("mo", 1, S.monitor[1], "")}<label>What did I change, and why?</label>${ta("mo", 2, S.monitor[2], "If nothing went wrong, write what you checked.")}`,
+   () => `<h3>Step 6 \u2022 Reflect <span class="mc-tag">Metacognition: evaluating</span></h3>
+     <label>Which part of the code can I now explain line by line?</label>${ta("re", 0, S.reflect[0], "")}
+     <label>Which part did I accept without fully understanding, and how will I check it?</label>${ta("re", 1, S.reflect[1], "Be honest: this is the most important answer.")}
+     <label>What did the AI do well, and where did I have to correct or question it?</label>${ta("re", 2, S.reflect[2], "")}
+     <label>AI use statement (disclose): how did I use AI in this task?</label>${ta("re", 3, S.reflect[3], "e.g. I used Sensi to draft the view_ function from my PARTS prompt; I checked it against the checklist, changed the colours, and tested the wrong-key case myself.")}
+     <div class="controls"><button class="btn primary aiFinish">Finish and save</button></div><div class="feedback aiFb"></div>`];
+  const scan = () => { const c = S.code, w = [];
+    if (!c.trim()){ $(".aiScan", el).innerHTML = ""; return; }
+    if (/AKfy[\w-]{20,}|key\s*[:=]\s*['"][^'"]{6,}['"]/.test(c) && !/YOUR_KEY|change-me/.test(c)) w.push("It looks like a real key or deployment ID is in the code. Replace it with a placeholder.");
+    if (/<script[^>]+src=/i.test(c)) w.push("It loads a script from another website. Ask the AI for a version without external scripts.");
+    if (!/action\s*===?\s*['"]view['"]/.test(c)) w.push("I cannot find the router line for action === 'view'. Check where the page is served.");
+    if (!/replace\(|esc\(/.test(c)) w.push("I cannot find any escaping of values. Ask the AI to escape values before putting them into HTML.");
+    if (/getDataRange\(\)\.getValues\(\)/.test(c) && !/latest_/.test(c)) w.push("It reads the whole Sheet. Reusing latest_ is simpler and faster.");
+    $(".aiScan", el).innerHTML = w.length ? `<div class="callout mis"><b>Automatic scan found ${w.length} thing${w.length > 1 ? "s" : ""} to check</b><ul>${w.map(x => `<li>${x}</li>`).join("")}</ul><p class="explain">The scan is only a helper; your own review counts.</p></div>` : `<p class="feedback ok">The automatic scan found no obvious problems. Still review every check yourself.</p>`; };
+  const render = () => { const i = S.step; $(".aiBody", el).innerHTML = views[i](); el.querySelectorAll(".aiDots button").forEach((b, k) => { b.classList.toggle("on", k === i); b.classList.toggle("past", k < i); });
+    $(".aiPrev", el).disabled = i === 0; $(".aiNext", el).hidden = i === views.length - 1;
+    el.querySelectorAll(".pl").forEach(t => t.oninput = () => { S.plan[+t.dataset.i] = t.value; save(); });
+    el.querySelectorAll(".pa").forEach(t => t.oninput = () => { S.parts[+t.dataset.i] = t.value; save(); $(".aiPrompt", el).textContent = prompt(); });
+    el.querySelectorAll(".mo").forEach(t => t.oninput = () => { S.monitor[+t.dataset.i] = t.value; save(); });
+    el.querySelectorAll(".re").forEach(t => t.oninput = () => { S.reflect[+t.dataset.i] = t.value; save(); });
+    el.querySelectorAll(".aiComps input").forEach(c => c.onchange = () => { S.comps = [...el.querySelectorAll(".aiComps input:checked")].map(x => x.value); save(); });
+    el.querySelectorAll(".aiCheck input").forEach(c => c.onchange = () => { S.check = [...el.querySelectorAll(".aiCheck input:checked")].map(x => +x.dataset.i); save(); });
+    const pr = $(".aiPrompt", el); if (pr) pr.textContent = prompt();
+    const cp = $(".aiCopy", el); if (cp) cp.onclick = () => { (navigator.clipboard ? navigator.clipboard.writeText(prompt()) : Promise.reject()).then(() => toast("Prompt copied.")).catch(() => toast("Select the prompt and copy it.", "warn")); S.copied = true; save(); };
+    const ak = $(".aiAsk", el); if (ak) ak.onclick = () => { S.copied = true; save(); if (typeof openAI === "function"){ openAI(); setTimeout(() => { const t = $("#aiIn") || document.querySelector(".ai textarea"); if (t){ t.value = prompt(); t.dispatchEvent(new Event("input")); t.focus(); } }, 300); } };
+    const cd = $(".aiCode", el); if (cd){ cd.oninput = () => { S.code = cd.value; save(); scan(); }; scan(); }
+    const sm = $(".aiSample", el); if (sm) sm.onclick = () => { S.code = AI_SAMPLE_GS; save(); $(".aiCode", el).value = S.code; scan(); toast("Sample loaded. Review it as if an AI wrote it."); };
+    const fin = $(".aiFinish", el); if (fin) fin.onclick = () => { const miss = [];
+      if (S.plan.filter(x => x.trim().length >= 5).length < 2) miss.push("Step 1: answer at least two planning questions");
+      if (!S.copied) miss.push("Step 3: copy the prompt or ask Sensi with it");
+      if (!S.code.trim()) miss.push("Step 4: paste the AI's code (or use the sample)");
+      if (S.check.length < 6) miss.push(`Step 4: review the checklist (${S.check.length} of 8 ticked; tick only what is true)`);
+      if (S.reflect.filter(x => x.trim().length >= 10).length < 3) miss.push("Step 6: answer at least three reflection questions, including the AI use statement");
+      const fb = $(".aiFb", el); if (miss.length){ fb.className = "feedback aiFb no"; fb.innerHTML = "Almost there:<ul>" + miss.map(m => `<li>${esc(m)}</li>`).join("") + "</ul>"; return; }
+      fb.className = "feedback aiFb ok"; fb.textContent = "Saved. You planned, prompted with a framework, verified, tested, and reflected: that is human-in-the-loop programming."; logEvent(currentModule, "aipair", "activity", "done"); confetti(); };
+    anim($(".aiBody", el), {opacity:[0, 1], x:[10, 0]}, {duration:.25}); };
+  el.querySelectorAll(".aiDots button").forEach(b => b.onclick = () => { S.step = +b.dataset.i; save(); render(); });
+  $(".aiPrev", el).onclick = () => { S.step = Math.max(0, S.step - 1); save(); render(); el.scrollIntoView({block:"start", behavior:"smooth"}); };
+  $(".aiNext", el).onclick = () => { S.step = Math.min(views.length - 1, S.step + 1); save(); render(); el.scrollIntoView({block:"start", behavior:"smooth"}); };
+  render();
+};
 </script>
 <script>/* ============ v2 MOTION LAYER ============ */
 const M = window.Motion || null;
@@ -4270,7 +4567,9 @@ if (typeof RELEASE !== "undefined" && RELEASE.u2) RELEASE_NOTES.unshift({v:"Beta
   "Learn HTTP, URLs, JSON, and the JavaScript you need for Google Apps Script.",
   "Build your own cloud logger (Program P3) and send readings from your board to Google Sheets every 30 seconds (Program P4).",
   "New simulators: URL builder, logger and deployment simulators, the journey of one reading, outage and class traffic simulators.",
-  "Data dictionary and Chain-of-Thought debugging activities, plus seven new Unit 2 badges."],
+  "Concept clinics explain the hardest ideas step by step, with \u201cExplain it back\u201d boxes and a survival guide.",
+  "AI pair programming: plan, prompt, verify, test, and reflect while designing a status page for your logger.",
+  "Data dictionary and Chain-of-Thought debugging activities, plus eight new Unit 2 badges."],
   next:"Coming next: Python Lab A, Python and Google Colab."});
 const FB_TYPES = [["broken","Something is broken"],["confusing","Something is confusing"],["content","Wrong fact or typo"],["suggestion","Suggestion"],["other","Other"]];
 function fbContext(sectionId){
@@ -4970,6 +5269,23 @@ viewModule = function(id){ _vmU2(id);
   if (typeof getBoard === "function" && getBoard() === "pico"){ const pb = document.querySelector('#view .p4tabs button[data-p4="py"]'); if (pb) pb.click(); }
 };
 Object.assign(INT_NAMES, {urlparts:"URL builder: readings to rows", httpletter:"HTTP as a letter", jsonx:"JSON explorer", "drill:u21":"Drill: HTTP, JSON, and JavaScript", logsim:"Logger simulator", deploylab:"Deployment simulator", "drill:u22":"Drill: the Apps Script logger", knock:"The journey of one reading", reqbuilder:"Request URL checker", "drill:u23":"Drill: device to cloud", outage:"Outage simulator", traffic:"Class traffic simulator", dictionary:"Data dictionary", cotdebug:"Chain-of-Thought debugging log", "drill:u24":"Drill: reliability and data habits"});
+
+/* Unit 2: mission map, Explain-it-back boxes, AI Co-Designer badge */
+BADGES.push({id:"U2-AI", name:"AI Co-Designer", color:"#0F766E", icon:"M-10 -8 h20 v14 h-20z M-4 10 h8 M-6 -3 l3 3 -3 3 M2 3 h5", how:"Complete all six steps of the AI pair-programming activity in Module 2.2."});
+BADGE_REQS["U2-AI"] = [{t:"Complete the six-step AI pair-programming activity (plan, sketch, prompt, review, test, reflect)", ok:() => act("aipair") === "done", at:["2.2","aiui"]}];
+BADGES.forEach(b => { const R = BADGE_REQS[b.id]; if (R) b.test = () => R.every(r => r.ok()); });
+Object.assign(INT_NAMES, {grid2d:"2-D array to Sheet cells", "vartrace:p3":"Step through logReadings_", lockrace:"Race condition: with and without the lock", aipair:"AI pair programming: six guided steps"});
+const U2_MISSION = [["2.1","Speak HTTP"],["2.2","Your own cloud logger"],["2.3","Board to Sheet"],["2.4","A logger that never gives up"]];
+const _vmU2b = viewModule;
+viewModule = function(id){ _vmU2b(id);
+  if (/^2\./.test(id)){ const hero = document.querySelector("#view .mod-hero"); if (hero && !document.querySelector("#view .mission")){
+    const d = document.createElement("div"); d.className = "mission"; d.setAttribute("aria-label", "Unit 2 mission map");
+    d.innerHTML = `<span class="mi-l">Unit 2 mission</span>${U2_MISSION.map(([m, t], i) => { const pct = MODULES[m] ? modulePct(MODULES[m]) : 0, st = m === id ? "here" : pct === 1 ? "done" : "";
+      return `${i ? '<span class="mi-arr" aria-hidden="true">\u2192</span>' : ""}<a class="mi-s ${st}" href="#/m/${m}"><b>${st === "done" ? "\u2713 " : ""}${m}</b><span>${t}</span>${st === "here" ? '<em>you are here</em>' : ""}</a>`; }).join("")}`;
+    hero.insertAdjacentElement("afterend", d); } }
+  document.querySelectorAll("#view .selfexp").forEach(box => { const key = "sti_se_" + (user ? user.email : "g") + "_" + box.dataset.k, t = box.querySelector("textarea"); t.value = store.get(key, ""); let tm = null;
+    t.oninput = () => { store.set(key, t.value); clearTimeout(tm); tm = setTimeout(() => { if (t.value.trim().length >= 40) logEvent(currentModule, "selfexp_" + box.dataset.k, "self_explain", String(t.value.trim().length)); }, 1500); }; });
+};
 
 if (!apiReady()) $("#banner").innerHTML = `<div class="banner">Preview mode: progress is saved on this device only. Add the Apps Script web app URL in CONFIG.API_URL to enable tracking, uploads, and Sensi.</div>`;
 applyDevice(); applySettings();
