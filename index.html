@@ -808,6 +808,16 @@ body.device-phone .nudge{bottom:calc(76px + env(safe-area-inset-bottom))}
 .js-row{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}@media (max-width:760px){.js-row{grid-template-columns:1fr}}.js-card{border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--surface)}.js-mid{display:flex;flex-direction:column;gap:6px}.js-t{min-height:40px;white-space:pre-wrap;overflow-wrap:anywhere}
 .apT button{white-space:normal}
 .jvT{display:flex!important;flex-wrap:wrap;gap:4px}.jvT button{flex:1 1 auto;min-width:max-content;padding:8px 12px}@media (max-width:640px){.jvT button{min-width:0;flex:1 1 40%}}
+/* v18: virtual device + troubleshooting */
+.vd-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media (max-width:760px){.vd-grid{grid-template-columns:1fr}}
+.vd-l{display:flex;flex-direction:column;gap:3px;font-weight:600;font-size:.88rem;margin-bottom:8px}.vd-l .dinput{width:100%;box-sizing:border-box}
+.vd-board{border:2px solid #1F3A5F;border-radius:14px;padding:12px;background:color-mix(in srgb,#1F3A5F 6%,var(--surface));display:flex;flex-direction:column;gap:6px}
+.vd-board label:not(.chk){display:grid;grid-template-columns:100px 1fr 70px;gap:6px;align-items:center;font-size:.88rem}
+.vd-chip{display:flex;align-items:center;gap:8px;font-size:.8rem}.vd-led{width:12px;height:12px;border-radius:50%;background:#94A3B8}.vd-led.on{background:#22C55E;box-shadow:0 0 8px #22C55E;animation:vdblink 1s infinite}@keyframes vdblink{50%{opacity:.4}}
+.vd-wifi{margin-left:auto;color:var(--muted)}.vd-wifi.on{color:var(--teal);font-weight:700}
+.ts-crumbs{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin-bottom:8px;font-size:.82rem}.ts-cr{background:none;border:1px solid var(--line);border-radius:999px;padding:2px 10px;cursor:pointer;color:var(--ink);font:inherit;font-size:.82rem}
+.ts-card{border:2px solid var(--teal);border-radius:14px;padding:14px 16px;background:var(--surface)}.ts-q{font-weight:700;font-size:1.08rem;margin:0 0 10px}.ts-fix{font-weight:700;font-size:1.05rem;margin:0 0 6px}
+.ts-opts{display:flex;flex-direction:column;gap:6px;align-items:stretch}.ts-opts .btn{text-align:left;white-space:normal}.ts-steps li{margin:4px 0}
 </style>
 </head>
 <body>
@@ -2464,6 +2474,22 @@ u2Insert(M22, "why", {id:"api", title:"Concept clinic: what is an API?", html:`
   ${srcs([["MDN: API (glossary)", REF.mdnApi[1]],["Open-Meteo docs", REF.openMeteo[1]],["Public APIs list", REF.publicApis[1]],["ThingSpeak docs", REF.thingspeak[1]]])}`, interactive:"apiexplorer"});
 M21.refs.push("mdnArray"); M22.refs.push("mdnApi","openMeteo","publicApis","thingspeak");
 
+/* ============ UNIT 2: VIRTUAL DEVICE + TROUBLESHOOTING FLOWCHART ============ */
+u2Insert(M23, "clinicboard", {id:"virtual", title:"No hardware? Use the virtual device", html:`
+  <p>No board today, board not working yet, or learning from home? The <b>virtual device</b> below behaves like your prototype running P4: every 30 seconds it sends temperature, humidity, and light readings to <b>your own web app</b>, and real rows appear in <b>your own Sheet</b>. Everything you learn in Modules 2.3 and 2.4 still applies.</p>
+  <ol><li>Finish Module 2.2 first: you need your web app's <code>/exec</code> URL and your secret key.</li><li>Paste them below, choose a device ID such as <code>team3-virtual</code>, and press <b>Start</b>.</li><li>Open your Sheet: new rows should appear with each send.</li><li>Move the sliders (cover the light, warm the room) and watch the values change in the Sheet.</li></ol>
+  ${tip("Your key stays private", `<p>The URL and key are sent only to <b>your</b> web app, and kept in this browser tab until you close it. Tick \u201cRemember on this device\u201d only on your own computer, never on a shared lab computer.</p>`)}
+  <p class="explain">The virtual device stops automatically after 30 minutes or 60 sends to protect your Apps Script quota. It sends no faster than every 30 seconds, the safe class rate from Module 2.4.</p>`, interactive:"virtualdevice"});
+(function(){ const s = M23.sections.find(x => x.id === "reply"); s.title = "Reading the reply and troubleshooting";
+  s.html = s.html.replace(`<table class="t"><tr><th>Reply or symptom</th>`, `<p>When readings do not arrive, do not guess. If you know the symptom, use the quick reference below. If you are not sure what is wrong, follow the <b>troubleshooting flowchart</b> at the end of this section: it asks what you see, narrows down the cause, and shows the fix.</p><h3>Quick reference</h3><table class="t"><tr><th>Reply or symptom</th>`);
+  s.interactive = "troubleshoot"; })();
+(function(){ const b = M22.sections.find(x => x.id === "build");
+  b.html = b.html.replace(`<p>Practice the browser test in the simulator below before trying your real web app.</p>`, `<p>Practice the browser test in the simulator below before trying your real web app.</p><p class="explain"><b>No board?</b> After your web app works, the <b>virtual device</b> in Module 2.3 can send simulated readings to it every 30 seconds.</p>`);
+  const f = M24.sections.find(x => x.id === "fail");
+  f.html = f.html.replace(`<p>Compare three firmware designs in the outage simulator below.</p>`, `<p class="explain"><b>No board?</b> The virtual device in Module 2.3 has an \u201cunplug Wi-Fi\u201d switch and a buffer option, so you can do the outage challenges with it.</p><p>Compare three firmware designs in the outage simulator below.</p>`);
+  const c = M24.sections.find(x => x.id === "challenges");
+  c.html = c.html.replace(`<li><b>Core:</b> switch off the router or hotspot for 1 minute, then switch it back on.`, `<li><b>Core:</b> switch off the router or hotspot for 1 minute (virtual device: use \u201cUnplug Wi-Fi\u201d), then switch it back on.`); })();
+
 /* Register Unit 2 modules; open them when released, or for an admin preview */
 const UNIT2_MODULES = [M21, M22, M23, M24];
 function adminPreviewOn(){ try { const a = JSON.parse(sessionStorage.getItem("sti_admin") || "null"); return !!(a && a.exp > Date.now()); } catch(e){ return false; } }
@@ -3659,6 +3685,103 @@ INTERACTIVES.apiexplorer = function(el){
   el.querySelectorAll(".apT button").forEach(b => b.onclick = () => { el.querySelectorAll(".apT button").forEach(x => x.setAttribute("aria-selected", x === b)); (b.dataset.t === "om" ? om : mine)(); });
   om();
 };
+
+/* ============ VIRTUAL DEVICE + TROUBLESHOOTING FLOWCHART ============ */
+INTERACTIVES.virtualdevice = function(el){
+  const SK = "sti_vdev", rem = store.get(SK + "_remember", false), saved = rem ? store.get(SK, {}) : JSON.parse(sessionStorage.getItem(SK) || "{}");
+  let timer = null, sends = 0, startAt = 0, offline = false, buffer = [], rowsOk = 0, drift = null;
+  const st = {t:29.4, h:70, l:55};
+  el.innerHTML = bench("Virtual device: your prototype, simulated", `<div class="vd-grid"><div>
+     <label class="vd-l">Your web app URL (ends in /exec)<input class="dinput vdUrl mono" placeholder="https://script.google.com/macros/s/.../exec" value="${esc(saved.url || "")}"></label>
+     <label class="vd-l">Your secret key<input class="dinput vdKey mono" type="password" autocomplete="off" value="${esc(saved.key || "")}"></label>
+     <label class="vd-l">Device ID<input class="dinput vdId mono" value="${esc(saved.id || ((user && user.givenName ? user.givenName.toLowerCase().replace(/[^a-z0-9]/g, "") : "team") + "-virtual"))}"></label>
+     <label class="vd-l">Send every <select class="vdInt"><option value="30">30 s</option><option value="60">60 s</option><option value="120">2 min</option></select></label>
+     <label class="chk"><input type="checkbox" class="vdRem" ${rem ? "checked" : ""}><span>Remember on this device (only on your own computer)</span></label>
+    </div><div class="vd-board">
+     <div class="vd-chip"><span class="vd-led"></span><b>VIRTUAL BOARD</b><span class="vd-wifi">Wi-Fi: off</span></div>
+     <label>Temperature <input type="range" class="vdT" min="15" max="45" step="0.1" value="29.4"><b class="mono vdTv"></b></label>
+     <label>Humidity <input type="range" class="vdH" min="20" max="100" step="0.1" value="70"><b class="mono vdHv"></b></label>
+     <label>Light <input type="range" class="vdLt" min="0" max="100" step="0.1" value="55"><b class="mono vdLv"></b></label>
+     <label class="chk"><input type="checkbox" class="vdDrift" checked><span>Natural drift (values change slowly, like a real room)</span></label>
+     <label class="chk"><input type="checkbox" class="vdOff"><span>Unplug Wi-Fi (Module 2.4 outage test)</span></label>
+     <label class="chk"><input type="checkbox" class="vdBuf"><span>Buffer readings while offline (up to 10)</span></label>
+    </div></div>
+   <div class="controls"><button class="btn primary vdGo">Start</button><button class="btn vdStop" disabled>Stop</button><button class="btn vdOnce">Send one reading now</button><span class="explain vdStat"></span></div>
+   <div class="err vdErr" role="alert"></div><b>Serial Monitor (simulated)</b><div class="serial vdLog" style="height:150px"></div>`);
+  const L = $(".vdLog", el), log = (txt, bad) => { const t = new Date().toLocaleTimeString(); L.textContent += `[${t}] ${txt}\n`; L.scrollTop = L.scrollHeight; if (bad) L.classList.add("bad"); };
+  const vals = () => { $(".vdTv", el).textContent = (+$(".vdT", el).value).toFixed(1) + " \u00b0C"; $(".vdHv", el).textContent = (+$(".vdH", el).value).toFixed(1) + " %"; $(".vdLv", el).textContent = (+$(".vdLt", el).value).toFixed(1) + " %"; };
+  el.querySelectorAll(".vdT, .vdH, .vdLt").forEach(x => x.oninput = vals); vals();
+  const persist = () => { const o = {url:$(".vdUrl", el).value.trim(), key:$(".vdKey", el).value, id:$(".vdId", el).value.trim()}; const r = $(".vdRem", el).checked; store.set(SK + "_remember", r);
+    if (r){ store.set(SK, o); sessionStorage.removeItem(SK); } else { sessionStorage.setItem(SK, JSON.stringify(o)); store.del(SK); } };
+  el.querySelectorAll(".vdUrl, .vdKey, .vdId").forEach(x => x.oninput = persist); $(".vdRem", el).onchange = persist;
+  const wifi = () => { const on = !!timer && !offline; $(".vd-wifi", el).textContent = "Wi-Fi: " + (offline ? "unplugged" : timer ? "connected" : "off"); $(".vd-wifi", el).classList.toggle("on", on); };
+  $(".vdOff", el).onchange = e => { offline = e.target.checked; wifi(); log(offline ? "Wi-Fi lost!" : "Wi-Fi back: connected."); if (!offline && buffer.length) flush(); };
+  const check = () => { const u = $(".vdUrl", el).value.trim(), k = $(".vdKey", el).value, id = $(".vdId", el).value.trim(), E = $(".vdErr", el);
+    if (!/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(u)){ E.textContent = u.includes("/dev") ? "Use the /exec URL from Deploy \u2192 Manage deployments, not the /dev test URL." : "Paste your web app URL. It starts with https://script.google.com/macros/s/ and ends in /exec, with nothing after it."; return null; }
+    if (!k){ E.textContent = "Enter your secret key (from setupSheets in Module 2.2)."; return null; }
+    if (!id || /[^A-Za-z0-9_-]/.test(id)){ E.textContent = "Device ID: letters, numbers, - and _ only, no spaces (for example team3-virtual)."; return null; }
+    E.textContent = ""; return {u, k, id}; };
+  const mask = s => s.replace(/key=[^&]*/, "key=\u2022\u2022\u2022\u2022");
+  const send = async url => { try { const ctl = new AbortController(), to = setTimeout(() => ctl.abort(), 15000); const r = await fetch(url, {signal:ctl.signal, redirect:"follow"}); clearTimeout(to); const t = (await r.text()).trim().slice(0, 120); return {ok:true, text:t}; }
+    catch(e){ try { await fetch(url, {mode:"no-cors"}); return {ok:true, text:"(sent; this browser hid the reply text, so check your Sheet)"}; } catch(e2){ return {ok:false, text:"ERR:connect (" + (e2.message || "network") + ")"}; } } };
+  const flush = async () => { const c = check(); if (!c) return; const b = buffer.splice(0); log(`Sending ${b.length} buffered reading${b.length > 1 ? "s" : ""}\u2026`); for (const u of b){ const r = await send(u); log("Reply: " + r.text, !r.text.startsWith("OK") && !r.text.startsWith("(sent")); } };
+  const tick = async () => { const c = check(); if (!c){ stop(); return; }
+    if (sends >= 60 || Date.now() - startAt > 30 * 60000){ log("Auto-stop: 30 minutes or 60 sends reached (protects your quota)."); stop(); return; }
+    const t = (+$(".vdT", el).value).toFixed(1), h = (+$(".vdH", el).value).toFixed(1), l = (+$(".vdLt", el).value).toFixed(1);
+    const url = `${c.u}?key=${encodeURIComponent(c.k)}&device_id=${encodeURIComponent(c.id)}&temp_C=${t}&hum_pct=${h}&light_pct=${l}`; sends++;
+    if (offline){ if ($(".vdBuf", el).checked && buffer.length < 10){ buffer.push(url); log(`Offline: reading buffered (${buffer.length}/10).`); } else log("Offline: reading lost (no buffer, or buffer full).", true); updStat(); return; }
+    log("GET " + mask(url.replace(c.u, "\u2026/exec"))); const r = await send(url); log("Reply: " + r.text, !r.text.startsWith("OK") && !r.text.startsWith("(sent"));
+    if (r.text.startsWith("OK")) rowsOk += parseInt(r.text.split(":")[1]) || 0; if (r.text === "ERR:key") $(".vdErr", el).textContent = "ERR:key: the key does not match Script properties. Check capitals and spaces.";
+    updStat(); if (sends === 1) logEvent(currentModule, "virtualdevice", "activity", "used"); if (rowsOk >= 9 && act("virtualdevice") !== "logged") logEvent(currentModule, "virtualdevice", "activity", "logged"); };
+  const updStat = () => { $(".vdStat", el).textContent = `${sends} send${sends === 1 ? "" : "s"} \u2022 ${rowsOk} rows confirmed${buffer.length ? " \u2022 " + buffer.length + " buffered" : ""}`; };
+  const doDrift = () => { if (!$(".vdDrift", el).checked) return; [[".vdT", .15, 15, 45],[".vdH", .4, 20, 100],[".vdLt", 1.2, 0, 100]].forEach(([c, d, lo, hi]) => { const i = $(c, el); i.value = Math.min(hi, Math.max(lo, +i.value + (Math.random() - .5) * 2 * d)); }); vals(); };
+  const stop = () => { clearInterval(timer); clearInterval(drift); timer = null; drift = null; $(".vdGo", el).disabled = false; $(".vdStop", el).disabled = true; $(".vd-led", el).classList.remove("on"); wifi(); };
+  $(".vdGo", el).onclick = () => { const c = check(); if (!c) return; persist(); sends = 0; rowsOk = 0; startAt = Date.now(); log(`Connecting to Wi-Fi\u2026 connected! Device ${c.id}, sending every ${$(".vdInt", el).value} s.`);
+    tick(); timer = setInterval(() => alive(el) ? tick() : stop(), +$(".vdInt", el).value * 1000); drift = setInterval(() => alive(el) ? doDrift() : stop(), 5000);
+    $(".vdGo", el).disabled = true; $(".vdStop", el).disabled = false; $(".vd-led", el).classList.add("on"); wifi(); };
+  $(".vdStop", el).onclick = () => { stop(); log("Stopped."); };
+  $(".vdOnce", el).onclick = () => { if (!check()) return; if (!startAt) startAt = Date.now(); tick(); };
+};
+const TS = {
+ start:{q:"What do you see in the Serial Monitor or Shell?", o:[["Nothing, or strange symbols","serial"],["It is stuck at \u201cConnecting to Wi-Fi\u2026\u201d","wifi"],["Reply: ERR:key","key"],["Reply: ERR:no-readings","noread"],["A web page in HTML, or a sign-in page","html"],["Reply: ERR:http \u2026 or ERR:connect","conn"],["Reply: OK:3, but no rows in my Sheet","norows"],["Rows arrive, but the values look wrong","values"],["It worked, then stopped","stopped"]]},
+ serial:{fix:"Check the basics", steps:["Set the Serial Monitor speed to 115200 baud (strange symbols mean the speed is wrong).","Press the board's reset button once to restart the program.","Check the USB cable is a data cable and the right port is selected (Module 1.2)."], back:"start"},
+ wifi:{q:"Is your network 2.4 GHz, with no login page in a browser?", o:[["Yes, or I am not sure","wifi2"],["No: it is 5 GHz-only or needs a login page","wififix"]]},
+ wififix:{fix:"Use a network your board can join", steps:["Turn on a phone hotspot and set it to 2.4 GHz (often called \u201cmaximize compatibility\u201d).","Put the hotspot name and password into P4 and upload again.","Keep the phone's screen on during testing; some phones switch the hotspot off to save battery."], back:"start"},
+ wifi2:{fix:"Fix the Wi-Fi details", steps:["Retype WIFI_SSID and WIFI_PASS exactly: they are case-sensitive, and spaces count.","Move the board closer to the router or phone.","Restart the hotspot or router, then press reset on the board.","ESP8266 and ESP32: check that you selected the right board in Tools \u2192 Board."], back:"start"},
+ key:{fix:"Make the keys match exactly", steps:["Open Apps Script \u2192 Project Settings \u2192 Script properties and look at API_KEY.","Copy it and paste it into API_KEY in P4 (no extra spaces or different capitals).","Make sure SCRIPT_URL is the deployment you are editing: an older deployment might use an older key.","Test: paste your full URL into a browser. If the browser shows OK, the board's URL must differ: print it with Serial.println(url) and compare."], back:"start"},
+ noread:{fix:"Check the readings in the URL", steps:["Add Serial.println(url); just before sending, and read the URL.","Every reading name must be sensor_unit, like temp_C or hum_pct.","Every value must be a number: nan or an empty value is skipped (check the DHT22 wiring).","Paste the printed URL into a browser and try removing one reading at a time."], back:"start"},
+ html:{fix:"Fix the deployment settings", steps:["Use the URL ending in /exec, not /dev.","In Deploy \u2192 Manage deployments \u2192 Edit, check Execute as: Me and Who has access: Anyone.","Choose Version: New version and Deploy.","Test the URL in a private (incognito) browser window: it must show OK, not a sign-in page."], back:"start"},
+ conn:{q:"Does your full URL show OK in a phone browser connected to the same network?", o:[["Yes, the browser works","connboard"],["No, it fails in the browser too","connnet"]]},
+ connnet:{fix:"The network is blocking it", steps:["Some school networks block script.google.com. Try a phone hotspot instead.","Check that the phone has internet: open any website.","If it still fails on a hotspot, re-copy the /exec URL from Manage deployments."], back:"start"},
+ connboard:{fix:"The board's connection needs attention", steps:["Check the reply number: ERR:http -1 usually means the secure connection failed.","Update the board package (Tools \u2192 Board \u2192 Boards Manager) and upload again.","Make sure P4 still has client.setInsecure() (ESP32/ESP8266) and the redirect line.","Pico W: make sure r.close() runs after every request so memory does not run out."], back:"start"},
+ norows:{q:"Are you looking at the Sheet that contains this script?", o:[["Yes, the right Sheet","norows2"],["I am not sure","norowsfix"]]},
+ norowsfix:{fix:"Find the right Sheet", steps:["Open the Apps Script editor from your Sheet with Extensions \u2192 Apps Script.","If that editor does not contain P3, your web app belongs to a different Sheet: open the Sheet from Apps Script with the Overview page or the Drive file list.","Use one Sheet per team and name it clearly (for example Team3 IoT Log)."], back:"start"},
+ norows2:{fix:"Check the tab and the rows", steps:["The tab must be named exactly Data (capital D).","Scroll to the very bottom: new rows are added after the last row, which may be far down.","If you edited P3, deploy a New version: the URL runs the old code until you do."], back:"start"},
+ values:{q:"Which value looks wrong?", o:[["Temperature or humidity is nan, 0, or missing","valdht"],["Light is always 0 or always 100","vallight"],["Temperature is a few degrees too high","valhigh"]]},
+ valdht:{fix:"Fix the DHT22 reading", steps:["Check the DHT22 wiring against the pin map (Module 1.3), with the board unplugged.","Bare sensor: add the 10 k\u03a9 pull-up between DATA and VCC.","Read no faster than every 2 seconds (P4 reads every 30 s, so this is fine)."], back:"start"},
+ vallight:{fix:"Fix the light calculation", steps:["C++: divide by ADC_MAX with a decimal (4095.0 or 1023.0), or integer division gives 0.","Check the LDR and 10 k\u03a9 divider wiring (Module 1.3).","Make sure ADC_MAX matches your board (ESP32 4095, Uno R4 and ESP8266 1023, Pico read_u16 65535)."], back:"start"},
+ valhigh:{fix:"Fix the sensor placement", steps:["Move the DHT22 a few centimetres away from the board: the chip warms the air near it.","Keep it out of direct sun.","This is a systematic error (bias): note it in your data dictionary (Module 2.4)."], back:"start"},
+ stopped:{q:"Did the Wi-Fi or hotspot go off at some point?", o:[["Yes, or possibly","stopwifi"],["No, the network stayed on","stopother"]]},
+ stopwifi:{fix:"Make the logger recover by itself", steps:["Make sure connectWiFi() runs before every send (as in P4), so the board reconnects.","Add the failure counter from Module 2.4 so the board resets Wi-Fi after 3 failed sends.","Test it: switch the hotspot off for 1 minute, then on. Logging should resume without pressing reset."], back:"start"},
+ stopother:{fix:"Check power and sending rate", steps:["A loose USB cable or a weak power bank can reset the board: watch the Serial Monitor for the start-up message.","Keep sending every 30 seconds or slower; faster rates can make requests wait and fail.","Look at Apps Script \u2192 Executions for red errors in your script."], back:"start"}
+};
+INTERACTIVES.troubleshoot = function(el){
+  let path = ["start"];
+  el.innerHTML = bench("Troubleshooting flowchart: my readings are not arriving", `<div class="ts-crumbs"></div><div class="ts-card"></div>`);
+  const render = () => { const id = path[path.length - 1], n = TS[id], card = $(".ts-card", el);
+    $(".ts-crumbs", el).innerHTML = path.map((p, i) => `<button class="ts-cr" data-i="${i}">${i === 0 ? "Start" : esc((TS[path[i - 1]].o || []).find(o => o[1] === p)?.[0] || TS[p].fix || "")}</button>`).join('<span aria-hidden="true">\u203a</span>');
+    el.querySelectorAll(".ts-cr").forEach(b => b.onclick = () => { path = path.slice(0, +b.dataset.i + 1); render(); });
+    if (n.q){ card.innerHTML = `<p class="ts-q">${esc(n.q)}</p><div class="ts-opts">${n.o.map(o => `<button class="btn ts-o" data-to="${o[1]}">${esc(o[0])}</button>`).join("")}</div>`;
+      card.querySelectorAll(".ts-o").forEach(b => b.onclick = () => { path.push(b.dataset.to); render(); }); }
+    else { card.innerHTML = `<p class="ts-fix">\u{1F527} ${esc(n.fix)}</p><ol class="ts-steps">${n.steps.map(s => `<li>${esc(s)}</li>`).join("")}</ol><p><b>Did that fix it?</b></p><div class="ts-opts"><button class="btn primary ts-yes">Yes, it works now</button><button class="btn ts-no">No, still not working</button></div><div class="ts-end"></div>`;
+      logEvent(currentModule, "troubleshoot", "ts_path", path.join(">"));
+      card.querySelector(".ts-yes").onclick = () => { $(".ts-end", el).innerHTML = `<p class="feedback ok">Well done: you debugged it step by step. Write the cause and fix in your notes; the same problem often comes back.</p>`; confetti(); logEvent(currentModule, "troubleshoot", "activity", "solved"); };
+      card.querySelector(".ts-no").onclick = () => { $(".ts-end", el).innerHTML = `<p>Try the other branch of the last question, or start again with what you see now. Still stuck?</p><div class="controls"><button class="btn small ts-restart">Start again</button><button class="btn small ts-fb">Tell us what happened (beta feedback)</button></div>`;
+        $(".ts-restart", el).onclick = () => { path = ["start"]; render(); };
+        $(".ts-fb", el).onclick = () => { if (typeof openFeedback === "function"){ openFeedback("reply"); setTimeout(() => { const m = $("#fbMsg"); if (m){ m.value = "Troubleshooting flowchart: " + path.slice(1).map((p, i) => (TS[path[i]].o || []).find(o => o[1] === p)?.[0] || p).join(" > ") + " > Fix tried: " + (TS[path[path.length - 1]].fix || "") + "\nWhat I see now: "; m.focus(); } const t = document.querySelector('#fbDlg input[value="broken"]'); if (t) t.checked = true; }, 50); } }; }; }
+    anim(card, {opacity:[0, 1], x:[10, 0]}, {duration:.25}); };
+  render();
+};
 </script>
 <script>/* ============ v2 MOTION LAYER ============ */
 const M = window.Motion || null;
@@ -4771,6 +4894,7 @@ if (typeof RELEASE !== "undefined" && RELEASE.u2) RELEASE_NOTES.unshift({v:"Beta
   "Build your own cloud logger (Program P3) and send readings from your board to Google Sheets every 30 seconds (Program P4).",
   "New simulators: URL builder, logger and deployment simulators, the journey of one reading, outage and class traffic simulators.",
   "Visual JavaScript explorer (arrays and .length, objects, forEach/map/filter, split and join, template strings, === vs ==, JSON) and an API explorer with a real weather API.",
+  "No board? A virtual device sends simulated readings to your own web app, and a troubleshooting flowchart helps when readings do not arrive.",
   "Concept clinics explain the hardest ideas step by step, with \u201cExplain it back\u201d boxes and a survival guide.",
   "AI pair programming: plan, prompt, verify, test, and reflect while designing a status page for your logger.",
   "Data dictionary and Chain-of-Thought debugging activities, plus eight new Unit 2 badges."],
@@ -5478,7 +5602,7 @@ Object.assign(INT_NAMES, {urlparts:"URL builder: readings to rows", httpletter:"
 BADGES.push({id:"U2-AI", name:"AI Co-Designer", color:"#0F766E", icon:"M-10 -8 h20 v14 h-20z M-4 10 h8 M-6 -3 l3 3 -3 3 M2 3 h5", how:"Complete all six steps of the AI pair-programming activity in Module 2.2."});
 BADGE_REQS["U2-AI"] = [{t:"Complete the six-step AI pair-programming activity (plan, sketch, prompt, review, test, reflect)", ok:() => act("aipair") === "done", at:["2.2","aiui"]}];
 BADGES.forEach(b => { const R = BADGE_REQS[b.id]; if (R) b.test = () => R.every(r => r.ok()); });
-Object.assign(INT_NAMES, {grid2d:"2-D array to Sheet cells", "vartrace:p3":"Step through logReadings_", lockrace:"Race condition: with and without the lock", aipair:"AI pair programming: six guided steps", jsviz:"JavaScript ideas you can see", apiexplorer:"API explorer: a real weather API and your logger"});
+Object.assign(INT_NAMES, {grid2d:"2-D array to Sheet cells", "vartrace:p3":"Step through logReadings_", lockrace:"Race condition: with and without the lock", aipair:"AI pair programming: six guided steps", jsviz:"JavaScript ideas you can see", apiexplorer:"API explorer: a real weather API and your logger", virtualdevice:"Virtual device (no hardware needed)", troubleshoot:"Troubleshooting flowchart"});
 const U2_MISSION = [["2.1","Speak HTTP"],["2.2","Your own cloud logger"],["2.3","Board to Sheet"],["2.4","A logger that never gives up"]];
 const _vmU2b = viewModule;
 viewModule = function(id){ _vmU2b(id);
