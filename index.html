@@ -792,6 +792,22 @@ body.device-phone .nudge{bottom:calc(76px + env(safe-area-inset-bottom))}
 .mc-tag{font-size:.72rem;font-weight:600;background:color-mix(in srgb,var(--amber) 30%,var(--surface));border-radius:999px;padding:2px 8px;vertical-align:middle;margin-left:6px}
 .aiBody label{display:block;font-weight:600;margin:.6em 0 .2em}.aiBody textarea{width:100%;box-sizing:border-box}.aiComps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:4px;margin:8px 0}
 .aiFrame{width:100%;height:340px;border:1px solid var(--line);border-radius:10px;background:#fff}.aiCheck{list-style:none;padding:0}.aiCheck li{margin:4px 0}
+/* v17: visual JavaScript + API explorer */
+.jvT{flex-wrap:wrap}.jvT button{white-space:normal}
+.lk-row{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.lk{width:100px;min-height:74px;border:2px solid #1F3A5F;border-radius:8px;background:#E2E8F0;color:#14213D;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:transform .2s,background .2s}
+.lk-i{background:#1F3A5F;color:#fff;font-size:.72rem;font-weight:700;border-radius:4px;padding:1px 8px}.lk b{font-size:1.15rem;font-family:"JetBrains Mono",monospace}.lk.hi{background:#FDE68A;transform:translateY(-4px)}.lk.done{opacity:.55}
+.lk-len{display:flex;flex-direction:column;gap:2px;color:#C2410C;margin-bottom:8px}.lk-brace{height:8px;border:2px solid #E76F51;border-top:0;border-radius:0 0 6px 6px;max-width:100%}
+.ob-form{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.ob-box{border:2px solid #2A9D8F;border-radius:8px;min-width:110px;overflow:hidden;background:var(--surface)}.ob-box span{display:block;background:#2A9D8F;color:#fff;font-size:.78rem;font-weight:700;padding:2px 8px}.ob-box b{display:block;padding:8px;font-family:"JetBrains Mono",monospace}.ob-box.hi{border-color:#E76F51;box-shadow:0 0 0 3px color-mix(in srgb,#E76F51 30%,transparent)}.ob-box.hi span{background:#E76F51}
+.belt{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;margin:10px 0}@media (max-width:760px){.belt{grid-template-columns:1fr}}
+.belt-m{border:2px dashed var(--navy);border-radius:12px;padding:10px 12px;text-align:center;min-width:170px;display:flex;flex-direction:column;gap:3px}.belt-m b{font-family:"JetBrains Mono",monospace;font-size:.82rem}.belt-m span{font-size:.75rem;color:var(--muted)}
+.belt .lk{width:78px;min-height:58px}.belt .lk b{font-size:.95rem}
+.sp-text{display:flex;flex-wrap:wrap;gap:2px;font-family:"JetBrains Mono",monospace;font-size:1.3rem;margin:10px 0}.sp-ch{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:2px 6px}.sp-cut{color:#E76F51;font-size:1.2rem;padding:2px 3px}
+.tp-line,.tp-res{font-family:"JetBrains Mono",monospace;font-size:1.05rem;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);overflow-wrap:anywhere}.tp-b{background:#FDE68A;color:#14213D;border-radius:4px;padding:0 3px}.tp-f{background:#BBF7D0;color:#14213D;border-radius:4px;padding:0 3px}.tp-arrow{text-align:center;color:var(--muted);margin:4px 0}
+.eq-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.eq-side{border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center;display:flex;flex-direction:column;gap:6px;align-items:center}.eq-side b{font-family:"JetBrains Mono",monospace;font-size:1.1rem}
+.eq-res{border-radius:10px;padding:10px;text-align:center;font-size:1.05rem}.eq-res.t{background:color-mix(in srgb,var(--teal) 18%,var(--surface))}.eq-res.f{background:color-mix(in srgb,var(--bad) 14%,var(--surface))}.eq-note{grid-column:1/-1}
+.js-row{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}@media (max-width:760px){.js-row{grid-template-columns:1fr}}.js-card{border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--surface)}.js-mid{display:flex;flex-direction:column;gap:6px}.js-t{min-height:40px;white-space:pre-wrap;overflow-wrap:anywhere}
+.apT button{white-space:normal}
+.jvT{display:flex!important;flex-wrap:wrap;gap:4px}.jvT button{flex:1 1 auto;min-width:max-content;padding:8px 12px}@media (max-width:640px){.jvT button{min-width:0;flex:1 1 40%}}
 </style>
 </head>
 <body>
@@ -2374,6 +2390,80 @@ u2Insert(M24, "aidebug", {id:"clinicbuffer", title:"Concept clinic: buffering an
   ${srcs([["Google: COUNTIF", REF.countif[1]]])}`});
 M22.refs.push("gasAuth","gasHtml","gasRange","schraw"); M21.refs.push("mdnHow","mdnUrl","mdnArrow","gasRange","chi"); M24.refs.push("countif");
 
+/* ============ UNIT 2: VISUAL JAVASCRIPT, WHAT IS AN API, USE THE UNIT 1 PROTOTYPE ============ */
+Object.assign(REF, {
+  mdnArray: ["MDN contributors. (n.d.-h). Array. MDN Web Docs.","https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array"],
+  mdnApi: ["MDN contributors. (n.d.-i). API. MDN Web Docs Glossary.","https://developer.mozilla.org/en-US/docs/Glossary/API"],
+  publicApis: ["Public APIs contributors. (n.d.). Public APIs [GitHub repository].","https://github.com/public-apis/public-apis"],
+  thingspeak: ["MathWorks. (n.d.). ThingSpeak documentation.","https://www.mathworks.com/help/thingspeak/"]
+});
+const LOCKERS_SVG = (() => { const v = ["29.4","30.1","29.9"]; let s = `<svg viewBox="0 0 520 190" role="img" aria-label="An array drawn as three numbered lockers"><text x="20" y="22" font-size="13" fill="currentColor" font-family="monospace">const temps = [29.4, 30.1, 29.9];</text>`;
+  v.forEach((x, i) => { const X = 60 + i * 120; s += `<rect x="${X}" y="45" width="100" height="90" rx="8" fill="#E2E8F0" stroke="#1F3A5F" stroke-width="2"/><rect x="${X + 8}" y="53" width="84" height="18" rx="4" fill="#1F3A5F"/><text x="${X + 50}" y="66" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">index ${i}</text><text x="${X + 50}" y="108" text-anchor="middle" font-size="22" font-weight="700" fill="#14213D">${x}</text><text x="${X + 50}" y="155" text-anchor="middle" font-size="12" fill="#2A9D8F" font-family="monospace">temps[${i}]</text>`; });
+  s += `<path d="M60 170 V178 H400 V170" fill="none" stroke="#E76F51" stroke-width="2"/><text x="230" y="190" text-anchor="middle" font-size="12" fill="#E76F51" font-weight="700">temps.length is 3 (three lockers), but the last index is 2</text></svg>`; return s; })();
+/* arrays paragraph in the 2.1 clinic gets the lockers figure */
+(function(){ const s = M21.sections.find(x => x.id === "clinicarrays");
+  s.html = s.html.replace(`Like a row of numbered lockers.</p>`, `Like a row of numbered lockers.</p>
+  ${fig(LOCKERS_SVG, "Figure 2.1.2. An array is a row of lockers. Each locker has an index starting at 0; .length counts the lockers.")}
+  <p><b>Why start at 0?</b> The index means \u201chow many steps from the start.\u201d The first locker is 0 steps away, the second is 1 step away. So in an array of length 3, the indexes are 0, 1, and 2, and <code>temps[3]</code> does not exist (JavaScript gives <code>undefined</code>). The last item is always at <code>temps[temps.length - 1]</code>.</p>`); })();
+u2Insert(M21, "jsbasics", {id:"jsviz", title:"Concept clinic: JavaScript ideas you can see", html:`
+  <p>Unit 2 brings seven ideas you did not meet in Unit 1. Each tab below shows one of them as a picture you can play with. Try every tab: pressing the buttons is the fastest way to understand what the code does.</p>
+  <table class="t"><tr><th>Idea</th><th>Picture</th><th>Where you will use it</th></tr>
+  <tr><td>Arrays and <code>.length</code></td><td>A row of numbered lockers</td><td>The list of rows P3 writes</td></tr>
+  <tr><td>Objects</td><td>A form with labeled boxes</td><td><code>e.parameter</code>, each JSON reading</td></tr>
+  <tr><td><code>forEach</code>, <code>map</code>, <code>filter</code></td><td>A conveyor belt through a machine</td><td>Looping through parameters and rows</td></tr>
+  <tr><td><code>split</code> and <code>join</code></td><td>Scissors and glue for text</td><td><code>temp_C</code> becomes sensor and unit</td></tr>
+  <tr><td>Template strings</td><td>A form letter with blanks</td><td>Building messages and HTML</td></tr>
+  <tr><td><code>===</code> vs <code>==</code></td><td>Checking the value and the type</td><td>The key check in P3</td></tr>
+  <tr><td>JSON</td><td>Packing an object into a parcel of text</td><td>The <code>latest</code> reply and weather APIs</td></tr></table>
+  ${selfexp("u21-jsviz", "Pick one of the seven ideas and explain it with your own everyday comparison (not the one used here).")}
+  ${srcs([["MDN: Array", REF.mdnArray[1]],["MDN: JavaScript guide", REF.mdnJs[1]]])}`, interactive:"jsviz"});
+/* survival guide and 2.3: use the Unit 1 prototype */
+(function(){ const s = M21.sections.find(x => x.id === "survival");
+  s.html = s.html.replace(`<h3>Your mission in four steps</h3>`, `<div class="callout ex"><b>You keep your Unit 1 prototype</b><p>Unit 2 uses the <b>same prototype you built in Unit 1</b>: the same board, DHT22, LDR, LED, breadboard, wiring, and pin map. There is no rewiring. Program P4 (Module 2.3) is Program P2 from Module 1.3 with one new ability: instead of printing readings, it sends them over Wi-Fi to your own Google Sheet. If your P2 works, your hardware is ready for Unit 2.</p></div>
+  <h3>Your mission in four steps</h3>`); })();
+(function(){ const s = M23.sections.find(x => x.id === "build");
+  s.html = s.html.replace(`<ol><li>Open P4 for your board (below).`, `<div class="callout ex"><b>Use your Unit 1 prototype, unchanged</b><p>Keep the circuit exactly as you wired it in Module 1.3. P4 reads the same pins as P2 (the pin map is at the top of P4) and simply adds Wi-Fi and sending. Before starting, run P2 once to confirm the sensors still read correctly, so you know any new problem is in the network part.</p></div>
+   <ol><li>Open P4 for your board (below).`); })();
+/* 2.2: What is an API? */
+u2Insert(M22, "why", {id:"api", title:"Concept clinic: what is an API?", html:`
+  <p>You have just read that your logger is a <b>web API</b>. This word appears everywhere in technology, so it is worth understanding properly.</p>
+  <div class="callout tip"><b>Definition</b><p>An <b>API</b> (Application Programming Interface) is an agreed set of requests that one program can send to another program, and the replies it will get back. It lets programs use each other's data or features <b>without knowing how they work inside</b>. A <b>web API</b> is an API you use over the internet with HTTP requests and replies (MDN contributors, n.d.-i).</p></div>
+  <h3>The restaurant comparison</h3>
+  <table class="t"><tr><th>At a restaurant</th><th>With an API</th><th>In our logger</th></tr>
+  <tr><td>The <b>menu</b> lists what you can order</td><td>The <b>documentation</b> lists the requests you can send</td><td>The reference card below</td></tr>
+  <tr><td>You give your <b>order</b> to the waiter</td><td>You send a <b>request</b> to an <b>endpoint</b> (a URL)</td><td><code>\u2026/exec?key=\u2026&amp;temp_C=29.4</code></td></tr>
+  <tr><td>The kitchen cooks; you never see inside</td><td>The server runs its code; you only see the reply</td><td><code>doGet</code> writes rows</td></tr>
+  <tr><td>The waiter brings your <b>food</b>, or says \u201csold out\u201d</td><td>You get a <b>response</b>: data, or an error</td><td><code>OK:3</code> or <code>ERR:key</code></td></tr>
+  <tr><td>A reservation proves who you are</td><td>An <b>API key</b> proves you may use it</td><td>Your secret key</td></tr></table>
+  <h3>The parts of every web API</h3>
+  <table class="t"><tr><th>Part</th><th>Meaning</th><th>Open-Meteo (weather)</th><th>Your logger (P3)</th></tr>
+  <tr><td><b>Base URL / endpoint</b></td><td>Where to send requests</td><td><code>https://api.open-meteo.com/v1/forecast</code></td><td>your <code>/exec</code> URL</td></tr>
+  <tr><td><b>Parameters</b></td><td>What you ask for</td><td><code>latitude</code>, <code>longitude</code>, <code>current</code></td><td><code>action</code>, <code>device_id</code>, <code>temp_C</code>\u2026</td></tr>
+  <tr><td><b>Authentication</b></td><td>Who may use it</td><td>none (free, open)</td><td><code>key</code></td></tr>
+  <tr><td><b>Response format</b></td><td>The shape of the reply</td><td>JSON</td><td>text (<code>OK:3</code>) or JSON (<code>latest</code>)</td></tr>
+  <tr><td><b>Limits</b></td><td>How much you may use it</td><td>a fair-use daily limit</td><td>send every 30 s or slower</td></tr></table>
+  <h3>APIs you use every day without noticing</h3>
+  <ul><li><b>Weather apps</b> ask a weather API for the forecast at your location.</li><li><b>Ride-hailing and delivery apps</b> ask a maps API for routes and travel times.</li><li><b>\u201cSign in with Google\u201d</b> buttons use Google's sign-in API.</li><li><b>Online payments</b> in shops use a payment provider's API.</li><li><b>IoT platforms</b> such as ThingSpeak give each device an API for sending readings, exactly like your logger.</li></ul>
+  <h3>Where to find APIs</h3>
+  <table class="t"><tr><th>Where</th><th>Examples</th><th>Tip</th></tr>
+  <tr><td><b>Official developer pages</b></td><td>Google for Developers, Open-Meteo docs, ThingSpeak docs</td><td>Look for a link called \u201cDevelopers,\u201d \u201cAPI,\u201d or \u201cDocs\u201d at the bottom of a company's website.</td></tr>
+  <tr><td><b>Public API directories</b></td><td>The community-maintained Public APIs list on GitHub</td><td>Filter for \u201cno auth\u201d to find APIs you can try without a key.</td></tr>
+  <tr><td><b>Government open data portals</b></td><td>Many governments publish data for developers</td><td>Check the terms of use and how often the data is updated.</td></tr>
+  <tr><td><b>Your own projects</b></td><td>Your P3 logger!</td><td>Anything you deploy with a URL that answers requests is an API.</td></tr></table>
+  <h3>Before using any API, check five things</h3>
+  <ol><li><b>Base URL and endpoints:</b> where do requests go?</li><li><b>Parameters:</b> which are required, and what units?</li><li><b>Authentication:</b> is a key needed, and how do I keep it secret?</li><li><b>Limits and terms:</b> how many requests per minute or day, and may I use the data in a project?</li><li><b>Response format:</b> what does a reply look like, including an error reply?</li></ol>
+  ${mis(`<ul><li>Putting an API key in code you share or post online: anyone can then use it in your name.</li><li>Ignoring rate limits: sending too fast can get your key blocked.</li><li>Trusting data without checking where it comes from or how fresh it is.</li></ul>`)}
+  <h3>Your logger's API reference card</h3>
+  <p>Professional APIs come with a reference like this. Yours is now documented too:</p>
+  <table class="t"><tr><th>Action</th><th>Example request</th><th>Reply</th></tr>
+  <tr><td><b>log</b> (default)</td><td><code>?key=KEY&amp;device_id=ID&amp;temp_C=29.4&amp;hum_pct=70</code></td><td><code>OK:2</code>, <code>ERR:key</code>, or <code>ERR:no-readings</code></td></tr>
+  <tr><td><b>latest</b></td><td><code>?key=KEY&amp;action=latest&amp;device_id=ID&amp;n=20</code></td><td>JSON list of the last 20 rows</td></tr>
+  <tr><td><b>cmd</b> (Unit 4)</td><td><code>?key=KEY&amp;action=cmd&amp;device_id=ID</code></td><td><code>led=1;buzzer=0;servo=90;threshold=32;</code></td></tr></table>
+  <p>Try a real public API and your own logger's API in the explorer below.</p>
+  ${selfexp("u22-api", "In your own words, what is an API? Give one example from an app you use, and name its endpoint, one parameter, and what comes back.")}
+  ${srcs([["MDN: API (glossary)", REF.mdnApi[1]],["Open-Meteo docs", REF.openMeteo[1]],["Public APIs list", REF.publicApis[1]],["ThingSpeak docs", REF.thingspeak[1]]])}`, interactive:"apiexplorer"});
+M21.refs.push("mdnArray"); M22.refs.push("mdnApi","openMeteo","publicApis","thingspeak");
+
 /* Register Unit 2 modules; open them when released, or for an admin preview */
 const UNIT2_MODULES = [M21, M22, M23, M24];
 function adminPreviewOn(){ try { const a = JSON.parse(sessionStorage.getItem("sti_admin") || "null"); return !!(a && a.exp > Date.now()); } catch(e){ return false; } }
@@ -3455,6 +3545,119 @@ Chain-of-Thought: think step by step about security first, then the layout.`;
   $(".aiPrev", el).onclick = () => { S.step = Math.max(0, S.step - 1); save(); render(); el.scrollIntoView({block:"start", behavior:"smooth"}); };
   $(".aiNext", el).onclick = () => { S.step = Math.min(views.length - 1, S.step + 1); save(); render(); el.scrollIntoView({block:"start", behavior:"smooth"}); };
   render();
+};
+
+/* ============ VISUAL JAVASCRIPT + API EXPLORER ============ */
+INTERACTIVES.jsviz = function(el){
+  const TABS = [["arr","Arrays and .length"],["obj","Objects"],["loop","forEach, map, filter"],["split","split and join"],["tpl","Template strings"],["eq","=== vs =="],["json","JSON"]];
+  let tab = "arr", arr = [29.4, 30.1, 29.9], obj = {sensor:"temp", value:29.4, unit:"C"}, busy = false;
+  el.innerHTML = bench("JavaScript ideas you can see", `<div class="seg seg-sm jvT" role="tablist">${TABS.map((t, i) => `<button role="tab" data-t="${t[0]}" aria-selected="${i === 0}">${t[1]}</button>`).join("")}</div><div class="jvBody"></div>`);
+  const body = () => $(".jvBody", el), lit = v => typeof v === "string" ? `'${esc(v)}'` : typeof v === "number" && tab !== "obj" && tab !== "json" ? v.toFixed(1) : esc(String(v));
+  const lockers = (a, hi, cls) => `<div class="lk-row">${a.map((v, i) => `<div class="lk ${hi === i ? "hi" : ""} ${cls || ""}" data-i="${i}"><span class="lk-i">index ${i}</span><b>${lit(v)}</b></div>`).join("") || `<span class="explain">(empty array)</span>`}</div>`;
+  const used = () => { if (!act("jsviz")) logEvent(currentModule, "jsviz", "activity", "used"); };
+  const V = {
+   arr(){ body().innerHTML = `<p>An array is a row of lockers. The <b>index</b> counts from 0; <b>.length</b> counts the lockers.</p>
+     <pre class="code jvCode"></pre><div class="jvLk"></div><div class="lk-len"></div>
+     <div class="controls"><label>Value <input class="dinput jvV" value="31.0" style="width:80px"></label><button class="btn small jvPush">temps.push(value)</button><button class="btn small jvPop">temps.pop()</button><label>Read temps[ <input class="dinput jvI" type="number" value="0" style="width:60px"> ]</label><button class="btn small primary jvRead">Read</button><button class="btn small jvLast">Read the last item</button></div><div class="panel jvOut">Try reading index 3, then press Read the last item.</div>`;
+     const draw = hi => { $(".jvCode", el).textContent = `const temps = [${arr.map(v => v.toFixed(1)).join(", ")}];\ntemps.length  // ${arr.length}`; $(".jvLk", el).innerHTML = lockers(arr, hi); $(".lk-len", el).innerHTML = `<span class="lk-brace" style="width:${Math.max(1, arr.length) * 108}px"></span><b>temps.length = ${arr.length}</b>${arr.length ? ` \u2022 last index = ${arr.length - 1}` : ""}`; };
+     $(".jvPush", el).onclick = () => { const v = parseFloat($(".jvV", el).value); if (isNaN(v) || arr.length >= 6) return; arr.push(v); draw(arr.length - 1); $(".jvOut", el).innerHTML = `<code>push</code> added ${v.toFixed(1)} at the <b>end</b>, at index ${arr.length - 1}. The length grew to ${arr.length}.`; used(); };
+     $(".jvPop", el).onclick = () => { if (!arr.length) return; const v = arr.pop(); draw(); $(".jvOut", el).innerHTML = `<code>pop</code> removed the <b>last</b> item (${v.toFixed(1)}). The length is now ${arr.length}.`; used(); };
+     $(".jvRead", el).onclick = () => { const i = parseInt($(".jvI", el).value); draw(i); const inR = i >= 0 && i < arr.length;
+       $(".jvOut", el).innerHTML = inR ? `<code>temps[${i}]</code> is <b>${arr[i].toFixed(1)}</b>: locker ${i} is ${i} step${i === 1 ? "" : "s"} from the start.` : `<code>temps[${i}]</code> is <b>undefined</b>: there is no locker ${i}. With length ${arr.length}, the indexes are 0 to ${arr.length - 1}.`;
+       const l = el.querySelector(`.lk[data-i="${i}"]`); if (l) pop(l, 1.1); else shake($(".jvLk", el)); used(); };
+     $(".jvLast", el).onclick = () => { if (!arr.length) return; const i = arr.length - 1; draw(i); $(".jvOut", el).innerHTML = `<code>temps[temps.length - 1]</code> = <code>temps[${arr.length} - 1]</code> = <code>temps[${i}]</code> = <b>${arr[i].toFixed(1)}</b>. This works for any length.`; used(); };
+     draw(); },
+   obj(){ body().innerHTML = `<p>An object is a form with <b>labeled</b> boxes. You find a value by its <b>name</b> (key), not by a number.</p><pre class="code jvCode"></pre><div class="ob-form"></div>
+     <div class="controls"><span>Read</span>${Object.keys(obj).map(k => `<button class="btn small jvK" data-k="${k}">r.${k}</button>`).join("")}<button class="btn small jvAdd">r.device = 't3'</button><button class="btn small jvMiss">r.colour</button></div><div class="panel jvOut">Tap a button to read a box.</div>`;
+     const draw = hi => { $(".jvCode", el).textContent = `const r = { ${Object.keys(obj).map(k => `${k}: ${typeof obj[k] === "string" ? `'${obj[k]}'` : obj[k]}`).join(", ")} };`;
+       $(".ob-form", el).innerHTML = Object.keys(obj).map(k => `<div class="ob-box ${hi === k ? "hi" : ""}"><span>${k}</span><b>${lit(obj[k])}</b></div>`).join(""); };
+     el.querySelectorAll(".jvK").forEach(b => b.onclick = () => { const k = b.dataset.k; draw(k); $(".jvOut", el).innerHTML = `<code>r.${k}</code> is <b>${lit(obj[k])}</b>. The dot means \u201cthe box labeled ${k}.\u201d`; used(); });
+     $(".jvAdd", el).onclick = () => { obj.device = "t3"; draw("device"); $(".jvOut", el).innerHTML = `Assigning to a new name adds a new labeled box: <code>r.device</code> now exists.`; used(); };
+     $(".jvMiss", el).onclick = () => { draw(); shake($(".ob-form", el)); $(".jvOut", el).innerHTML = `<code>r.colour</code> is <b>undefined</b>: there is no box with that label. Check spelling and capitals; <code>r.Sensor</code> is also undefined.`; used(); };
+     draw(); },
+   loop(){ const src = [29.4, 30.1, 85.0, 29.9]; body().innerHTML = `<p>These three methods send each item, one at a time, through a small function (the <b>callback</b>). They differ in what comes out.</p>
+     <div class="seg seg-sm jvOp" role="tablist"><button data-o="forEach" aria-selected="true">forEach</button><button data-o="map" aria-selected="false">map</button><button data-o="filter" aria-selected="false">filter</button></div>
+     <pre class="code jvCode"></pre><div class="belt"><div class="belt-in"></div><div class="belt-m"><b class="belt-f"></b><span>callback</span></div><div class="belt-out"></div></div><div class="controls"><button class="btn primary jvRun">Run</button></div><div class="panel jvOut"></div>`;
+     let op = "forEach"; const F = {forEach:["temps.forEach(t => Logger.log(t));", t => t, "does something with each item and makes no new array"], map:["const f = temps.map(t => t * 9 / 5 + 32);", t => +(t * 9 / 5 + 32).toFixed(1), "builds a NEW array with every item changed (same length)"], filter:["const ok = temps.filter(t => t < 80);", t => t < 80, "builds a NEW array with only the items that pass the test (maybe shorter)"]};
+     const reset = () => { $(".jvCode", el).textContent = `const temps = [${src.map(v => v.toFixed(1)).join(", ")}];\n${F[op][0]}`; $(".belt-in", el).innerHTML = lockers(src); $(".belt-out", el).innerHTML = `<span class="explain">${op === "forEach" ? "Log:" : "New array:"}</span>`; $(".belt-f", el).textContent = F[op][0].slice(F[op][0].indexOf("t =>"), F[op][0].lastIndexOf(")")); $(".jvOut", el).innerHTML = `<b>${op}</b> ${F[op][2]}. Press Run.`; };
+     el.querySelectorAll(".jvOp button").forEach(b => b.onclick = () => { if (busy) return; op = b.dataset.o; el.querySelectorAll(".jvOp button").forEach(x => x.setAttribute("aria-selected", x === b)); reset(); });
+     $(".jvRun", el).onclick = async () => { if (busy) return; busy = true; reset(); const out = [];
+       for (let i = 0; i < src.length; i++){ const l = el.querySelector(`.belt-in .lk[data-i="${i}"]`); l.classList.add("hi"); pop($(".belt-m", el), 1.08); const r = F[op][1](src[i]);
+         const fb = F[op][0].slice(F[op][0].indexOf("=>") + 3, F[op][0].lastIndexOf(")")); $(".belt-f", el).textContent = `t = ${src[i]}:  ${fb.replace(/\bt\b/g, src[i])}` + (op === "forEach" ? "" : `  \u2192  ${r}`);
+         await new Promise(res => setTimeout(res, reduceMotion() ? 50 : 750)); l.classList.remove("hi"); l.classList.add("done");
+         if (op === "forEach") out.push(src[i]); else if (op === "map") out.push(r); else if (r) out.push(src[i]);
+         $(".belt-out", el).innerHTML = op === "forEach" ? `<span class="explain">Log:</span><pre class="code">${out.join("\n")}</pre>` : `<span class="explain">New array:</span>${lockers(out, out.length - 1)}`; }
+       $(".jvOut", el).innerHTML = op === "forEach" ? "forEach visited all 4 items. It returns nothing, so use it to <b>do</b> something (log, push, write)." : op === "map" ? `map returned a new array of the <b>same length</b> (4). The original <code>temps</code> did not change.` : `filter kept ${out.length} of 4 items. 85.0 failed the test <code>t &lt; 80</code> (an impossible indoor reading). The original did not change.`;
+       busy = false; used(); };
+     reset(); },
+   split(){ body().innerHTML = `<p><code>split</code> cuts text into an array at every separator; <code>join</code> glues an array back into text. P3 uses them to read the data contract.</p>
+     <div class="controls"><label>Parameter name <input class="dinput jvS" value="temp_C" style="width:150px"></label><button class="btn small jvEx" data-v="light_raw">light_raw</button><button class="btn small jvEx" data-v="rssi_dBm">rssi_dBm</button><button class="btn small jvEx" data-v="soil_moist_pct">soil_moist_pct</button><button class="btn small jvEx" data-v="temperature">temperature</button></div>
+     <div class="sp-text"></div><pre class="code jvCode"></pre><div class="jvLk"></div><div class="panel jvOut"></div>`;
+     const draw = () => { const k = $(".jvS", el).value, parts = k.split("_"), sensor = parts[0], unit = parts.slice(1).join("_");
+       $(".sp-text", el).innerHTML = [...k].map(ch => ch === "_" ? `<span class="sp-cut" title="cut here">\u2702</span>` : `<span class="sp-ch">${esc(ch)}</span>`).join("");
+       $(".jvCode", el).textContent = `const parts = '${k}'.split('_');      // ${JSON.stringify(parts)}\nconst sensor = parts[0];                     // '${sensor}'\nconst unit = parts.slice(1).join('_');       // '${unit}'`;
+       $(".jvLk", el).innerHTML = lockers(parts, 0);
+       $(".jvOut", el).innerHTML = parts.length < 2 ? `<b>No underscore</b>, so split gives one piece and the unit is empty (''). This breaks the data contract: name it like <code>temp_C</code>.` : parts.length > 2 ? `Three pieces! <code>slice(1)</code> takes everything after the first piece, and <code>join('_')</code> glues it back, so the unit is <b>'${esc(unit)}'</b>, not just '${esc(parts[1])}'.` : `sensor = <b>'${esc(sensor)}'</b> (piece 0), unit = <b>'${esc(unit)}'</b> (the rest).`; used(); };
+     $(".jvS", el).oninput = draw; el.querySelectorAll(".jvEx").forEach(b => b.onclick = () => { $(".jvS", el).value = b.dataset.v; draw(); }); draw(); },
+   tpl(){ body().innerHTML = `<p>A template string is text with blanks. It uses <b>backticks</b> (\`), and each blank is written <code>\${\u2026}</code>. JavaScript fills each blank with a value.</p>
+     <div class="controls"><label>sensor <input class="dinput jvA" value="temp" style="width:90px"></label><label>value <input class="dinput jvB" value="29.4" style="width:80px"></label><label>unit <input class="dinput jvC" value="C" style="width:70px"></label></div>
+     <div class="tp-line"></div><div class="tp-arrow">\u2193 filled in</div><div class="tp-res"></div><pre class="code jvCode"></pre>`;
+     const draw = () => { const a = $(".jvA", el).value, b = $(".jvB", el).value, c = $(".jvC", el).value;
+       $(".tp-line", el).innerHTML = `\`<span class="tp-b">\${sensor}</span> is <span class="tp-b">\${value}</span> <span class="tp-b">\${unit}</span>\``;
+       $(".tp-res", el).innerHTML = `'<span class="tp-f">${esc(a)}</span> is <span class="tp-f">${esc(b)}</span> <span class="tp-f">${esc(c)}</span>'`;
+       $(".jvCode", el).textContent = `// The same message without a template string:\n'${a}' + ' is ' + ${b} + ' ' + '${c}'\n// C++ equivalent: String(sensor) + " is " + String(value, 1) + " " + unit\n// Python equivalent: "{} is {} {}".format(sensor, value, unit)`; used(); };
+     el.querySelectorAll("input").forEach(i => i.oninput = draw); draw(); },
+   eq(){ const P = [["'29'", "29", "29", 29],["'abc'", "'abc'", "abc", "abc"],["''", "0", "", 0],["'1'", "true", "1", true],["'change-me-123'", "'Change-me-123'", "change-me-123", "Change-me-123"]];
+     body().innerHTML = `<p><code>==</code> converts types before comparing, which gives surprising results. <code>===</code> (strict) compares the value <b>and</b> the type. Always use <code>===</code> and <code>!==</code> in this course.</p>
+     <div class="controls">${P.map((p, i) => `<button class="btn small jvP" data-i="${i}">${esc(p[0])} vs ${esc(p[1])}</button>`).join("")}</div><div class="eq-grid"></div>`;
+     const ty = v => typeof v === "string" ? "text (string)" : typeof v === "boolean" ? "true/false (boolean)" : "number";
+     el.querySelectorAll(".jvP").forEach(b => b.onclick = () => { const p = P[+b.dataset.i], loose = p[2] == p[3], strict = p[2] === p[3];
+       $(".eq-grid", el).innerHTML = `<div class="eq-side"><b>${esc(p[0])}</b><span class="chip">${ty(p[2])}</span></div><div class="eq-side"><b>${esc(p[1])}</b><span class="chip">${ty(p[3])}</span></div>
+        <div class="eq-res ${loose ? "t" : "f"}"><code>==</code> \u2192 <b>${loose}</b></div><div class="eq-res ${strict ? "t" : "f"}"><code>===</code> \u2192 <b>${strict}</b></div>
+        <p class="explain eq-note">${p[0] === "'change-me-123'" ? "Text comparison is case-sensitive: one capital letter makes the key wrong. That is why P3 replies ERR:key." : loose !== strict ? "<b>==</b> quietly converted one side to the other type, so it says they match. <b>===</b> sees a text and a number (or boolean) and says no. In P3, query values always arrive as text, so strict checks avoid surprises." : "Same type and same value, so both say true."}</p>`;
+       A(el.querySelectorAll(".eq-res"), {scale:[.9, 1], opacity:[0, 1]}, {delay:stag(0.1), duration:.25}); used(); }); },
+   json(){ body().innerHTML = `<p><b>JSON.stringify</b> packs an object into a parcel of <b>text</b> so it can travel over the internet. <b>JSON.parse</b> unpacks the text back into an object you can use.</p>
+     <div class="js-row"><div class="js-card"><span class="chip">object (in memory)</span><div class="ob-form js-o"></div></div><div class="js-mid"><button class="btn small primary jvStr">JSON.stringify \u2192</button><button class="btn small jvPar">\u2190 JSON.parse</button></div><div class="js-card"><span class="chip">text (travels in a reply)</span><pre class="code js-t"></pre></div></div><div class="panel jvOut">Press stringify, then parse.</div>`;
+     const o = {sensor:"temp", value:29.4, unit:"C"};
+     $(".js-o", el).innerHTML = Object.keys(o).map(k => `<div class="ob-box"><span>${k}</span><b>${lit(o[k])}</b></div>`).join("");
+     $(".jvStr", el).onclick = () => { const t = JSON.stringify(o); $(".js-t", el).textContent = t; pop($(".js-t", el), 1.05); $(".jvOut", el).innerHTML = `Now it is one piece of text, ${t.length} characters long. Notice the double quotes around every key and around text values, but not around the number 29.4. <code>typeof</code> this is <b>'string'</b>, so <code>.sensor</code> would not work on it yet.`; used(); };
+     $(".jvPar", el).onclick = () => { if (!$(".js-t", el).textContent){ shake($(".jvPar", el)); return; } pop($(".js-o", el), 1.05); $(".jvOut", el).innerHTML = `Parsed back into an object: now <code>data.sensor</code> is 'temp' and <code>data.value + 1</code> is 30.4 (a real number). The status page in Module 2.2 does exactly this: <code>JSON.parse(latest_(\u2026).getContent())</code>.`; used(); }; }
+  };
+  const show = t => { tab = t; el.querySelectorAll(".jvT button").forEach(b => b.setAttribute("aria-selected", b.dataset.t === t)); V[t](); anim(body(), {opacity:[0, 1], y:[6, 0]}, {duration:.25}); };
+  el.querySelectorAll(".jvT button").forEach(b => b.onclick = () => { if (!busy) show(b.dataset.t); });
+  show("arr");
+};
+INTERACTIVES.apiexplorer = function(el){
+  const CITIES = [["Manila",14.5995,120.9842],["Cebu City",10.3157,123.8854],["Davao City",7.1907,125.4553],["Baguio",16.4023,120.596]];
+  const VARS = [["temperature_2m","Temperature"],["relative_humidity_2m","Humidity"],["wind_speed_10m","Wind speed"],["precipitation","Rain"]];
+  el.innerHTML = bench("API explorer", `<div class="seg seg-sm apT" role="tablist"><button data-t="om" aria-selected="true">Real API: Open-Meteo weather</button><button data-t="mine" aria-selected="false">Your logger's API (simulated)</button></div><div class="apBody"></div>`);
+  const om = () => { $(".apBody", el).innerHTML = `<p class="explain">A free, open weather API: no key needed. Choose a place and what to ask for, then send a real request.</p>
+     <div class="controls"><label>Place <select class="apC">${CITIES.map((c, i) => `<option value="${i}">${c[0]}</option>`).join("")}</select></label>${VARS.map((v, i) => `<label class="chk"><input type="checkbox" value="${v[0]}" ${i < 2 ? "checked" : ""}><span>${v[1]}</span></label>`).join("")}</div>
+     <b>Request (endpoint + parameters)</b><pre class="code url-ex apUrl"></pre><div class="controls"><button class="btn primary apGo">Send request</button></div>
+     <div class="two"><div><b>Response</b><pre class="code apResp" style="max-height:260px;overflow:auto"></pre></div><div><b>What it means</b><div class="panel apMean">Press Send request.</div></div></div>`;
+    const url = () => { const c = CITIES[+$(".apC", el).value], v = [...el.querySelectorAll(".apBody .chk input:checked")].map(x => x.value); return `https://api.open-meteo.com/v1/forecast?latitude=${c[1]}&longitude=${c[2]}&current=${v.join(",") || "temperature_2m"}&timezone=Asia/Manila`; };
+    const showUrl = () => { const u = url(), q = u.indexOf("?"); $(".apUrl", el).innerHTML = `<span data-i="host">${esc(u.slice(0, q))}</span><span class="u-q">${esc(u.slice(q))}</span>`; };
+    el.querySelectorAll(".apBody select, .apBody input").forEach(x => x.onchange = showUrl); showUrl();
+    $(".apGo", el).onclick = async () => { const u = url(), resp = $(".apResp", el), mean = $(".apMean", el); resp.textContent = "Sending\u2026"; let data = null, live = true;
+      try { const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 8000); const r = await fetch(u, {signal:ctl.signal}); clearTimeout(t); if (!r.ok) throw new Error("HTTP " + r.status); data = await r.json(); }
+      catch(e){ live = false; const vs = [...el.querySelectorAll(".apBody .chk input:checked")].map(x => x.value); const sample = {temperature_2m:31.2, relative_humidity_2m:68, wind_speed_10m:9.4, precipitation:0}, units = {temperature_2m:"\u00b0C", relative_humidity_2m:"%", wind_speed_10m:"km/h", precipitation:"mm"};
+        data = {latitude:CITIES[+$(".apC", el).value][1], longitude:CITIES[+$(".apC", el).value][2], timezone:"Asia/Manila", current_units:Object.fromEntries([["time","iso8601"]].concat(vs.map(v => [v, units[v]]))), current:Object.fromEntries([["time","2026-10-05T09:30"]].concat(vs.map(v => [v, sample[v]])))}; }
+      resp.textContent = JSON.stringify(data, null, 2); const cur = data.current || {}, un = data.current_units || {};
+      mean.innerHTML = `${live ? `<span class="chip ok">Live reply, status 200</span>` : `<span class="chip">Sample reply</span> <span class="explain">The real request could not be reached from this network, so this is a realistic sample.</span>`}<ul>${Object.keys(cur).filter(k => k !== "time" && k !== "interval").map(k => `<li><code>data.current.${esc(k)}</code> = <b>${esc(String(cur[k]))} ${esc(un[k] || "")}</b></li>`).join("")}<li>Measured at <code>data.current.time</code> = ${esc(String(cur.time || ""))}</li></ul><p class="explain">Same idea as your logger: a request with parameters goes to an endpoint, and structured data comes back.</p>`;
+      logEvent(currentModule, "apiexplorer", "activity", live ? "live" : "sample"); }; };
+  const mine = () => { $(".apBody", el).innerHTML = `<p class="explain">Your P3 logger is an API too. Choose an action and see the request and reply.</p>
+     <div class="controls"><label>Action <select class="apA"><option value="log">log (default)</option><option value="latest">latest</option><option value="cmd">cmd (Unit 4)</option></select></label><label class="chk"><input type="checkbox" class="apK" checked><span>Correct key</span></label><button class="btn primary apGo2">Send</button></div>
+     <b>Request</b><pre class="code url-ex apUrl2"></pre><b>Reply</b><pre class="code apResp2"></pre><div class="panel apMean2"></div>`;
+    const go = () => { const a = $(".apA", el).value, ok = $(".apK", el).checked, key = ok ? "t3-mango-48" : "wrong-key";
+      const q = a === "log" ? `?key=${key}&device_id=team3-esp32&temp_C=29.4&hum_pct=70` : a === "latest" ? `?key=${key}&action=latest&device_id=team3-esp32&n=3` : `?key=${key}&action=cmd&device_id=team3-esp32`;
+      $(".apUrl2", el).innerHTML = `<span data-i="host">https://script.google.com/macros/s/AKfy.../exec</span><span class="u-q">${esc(q)}</span>`;
+      const reply = !ok ? "ERR:key" : a === "log" ? "OK:2" : a === "latest" ? JSON.stringify([{timestamp:"2026-10-05T01:29:30.000Z",device_id:"team3-esp32",sensor:"temp",value:29.4,unit:"C"},{timestamp:"2026-10-05T01:29:30.000Z",device_id:"team3-esp32",sensor:"hum",value:70,unit:"pct"},{timestamp:"2026-10-05T01:30:00.000Z",device_id:"team3-esp32",sensor:"temp",value:29.5,unit:"C"}], null, 2) : "led=1;buzzer=0;servo=90;threshold=32;";
+      $(".apResp2", el).textContent = reply;
+      $(".apMean2", el).innerHTML = !ok ? "The key check is the first thing doGet does, so a wrong key gets ERR:key for every action, and nothing is read or written." : a === "log" ? "Two readings became two tidy rows. This is what your board does every 30 seconds." : a === "latest" ? "JSON, just like the weather API. Note the timestamps are in UTC (Z); your status page converts them to local time. Unit 3's Python lab will read data like this." : "A plain text format that a small board can split at ; and = easily. You will use it in Unit 4 to control the LED from your Sheet.";
+      pop($(".apResp2", el), 1.03); logEvent(currentModule, "apiexplorer", "activity", "mine"); };
+    $(".apGo2", el).onclick = go; go(); };
+  el.querySelectorAll(".apT button").forEach(b => b.onclick = () => { el.querySelectorAll(".apT button").forEach(x => x.setAttribute("aria-selected", x === b)); (b.dataset.t === "om" ? om : mine)(); });
+  om();
 };
 </script>
 <script>/* ============ v2 MOTION LAYER ============ */
@@ -4567,6 +4770,7 @@ if (typeof RELEASE !== "undefined" && RELEASE.u2) RELEASE_NOTES.unshift({v:"Beta
   "Learn HTTP, URLs, JSON, and the JavaScript you need for Google Apps Script.",
   "Build your own cloud logger (Program P3) and send readings from your board to Google Sheets every 30 seconds (Program P4).",
   "New simulators: URL builder, logger and deployment simulators, the journey of one reading, outage and class traffic simulators.",
+  "Visual JavaScript explorer (arrays and .length, objects, forEach/map/filter, split and join, template strings, === vs ==, JSON) and an API explorer with a real weather API.",
   "Concept clinics explain the hardest ideas step by step, with \u201cExplain it back\u201d boxes and a survival guide.",
   "AI pair programming: plan, prompt, verify, test, and reflect while designing a status page for your logger.",
   "Data dictionary and Chain-of-Thought debugging activities, plus eight new Unit 2 badges."],
@@ -5274,7 +5478,7 @@ Object.assign(INT_NAMES, {urlparts:"URL builder: readings to rows", httpletter:"
 BADGES.push({id:"U2-AI", name:"AI Co-Designer", color:"#0F766E", icon:"M-10 -8 h20 v14 h-20z M-4 10 h8 M-6 -3 l3 3 -3 3 M2 3 h5", how:"Complete all six steps of the AI pair-programming activity in Module 2.2."});
 BADGE_REQS["U2-AI"] = [{t:"Complete the six-step AI pair-programming activity (plan, sketch, prompt, review, test, reflect)", ok:() => act("aipair") === "done", at:["2.2","aiui"]}];
 BADGES.forEach(b => { const R = BADGE_REQS[b.id]; if (R) b.test = () => R.every(r => r.ok()); });
-Object.assign(INT_NAMES, {grid2d:"2-D array to Sheet cells", "vartrace:p3":"Step through logReadings_", lockrace:"Race condition: with and without the lock", aipair:"AI pair programming: six guided steps"});
+Object.assign(INT_NAMES, {grid2d:"2-D array to Sheet cells", "vartrace:p3":"Step through logReadings_", lockrace:"Race condition: with and without the lock", aipair:"AI pair programming: six guided steps", jsviz:"JavaScript ideas you can see", apiexplorer:"API explorer: a real weather API and your logger"});
 const U2_MISSION = [["2.1","Speak HTTP"],["2.2","Your own cloud logger"],["2.3","Board to Sheet"],["2.4","A logger that never gives up"]];
 const _vmU2b = viewModule;
 viewModule = function(id){ _vmU2b(id);
